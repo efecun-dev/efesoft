@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="efe-icon-grad" x1="256" y1="50" x2="256" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00b4ff" />
+      <stop offset="35%" stop-color="#0084ff" />
+      <stop offset="100%" stop-color="#0055e5" />
+    </linearGradient>
+  </defs>
+  <path d="M 116 256 H 396 A 140 140 0 0 0 116 256 A 140 140 0 0 0 374.73 330.19" stroke="url(#efe-icon-grad)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
