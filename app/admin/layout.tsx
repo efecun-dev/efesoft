@@ -272,10 +272,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const triggerRouteBlur = (targetHref?: string) => {
     if (targetHref && targetHref !== pathname) {
       setIsPageLeaving(true);
-      window.setTimeout(() => setIsPageLeaving(false), 260);
+      window.setTimeout(() => setIsPageLeaving(false), 200);
     } else if (!targetHref) {
       setIsPageLeaving(true);
-      window.setTimeout(() => setIsPageLeaving(false), 180);
+      window.setTimeout(() => setIsPageLeaving(false), 150);
     }
   };
 
@@ -850,7 +850,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
 
-        {/* Animated Page Stage (Blur-Out on Leave, Blur-In + Lift on Enter) */}
+        {/* Animated Page Stage (Crisp Spatial Slide & Staggered Cascade) */}
+        <div
+          key={`bar-${pathname}-${activeTab}`}
+          className="adm-route-bar"
+          aria-hidden="true"
+        />
         <div className={`adm-page-stage ${isPageLeaving ? "adm-page-stage--leaving" : ""}`}>
           <div key={`${pathname}-${activeTab}`} className="adm-page-transition">
             {children}

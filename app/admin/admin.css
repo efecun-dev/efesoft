@@ -1419,87 +1419,220 @@
 }
 
 /* ==========================================================================
-   Motion, Blur-On/Off Page Transitions, Accordions & Modals
+   Zero-Blur Tactile Spatial Motion: Staggered Cascade, Accordions & Modals
    ========================================================================== */
 
-/* 1. Route / Page Change Transition (Blur-Out -> Blur-In + Lift) */
+/* 1. Top Route Progress Laser Indicator & Spatial Page Transition */
+@keyframes admRouteBarSweep {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  55% {
+    transform: scaleX(0.86);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+.adm-route-bar {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #0071e3 0%, #5e5ce6 55%, #34d399 100%);
+  transform-origin: left center;
+  animation: admRouteBarSweep 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+  z-index: 95;
+}
+
 .adm-page-stage {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
   transition:
-    opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, filter, transform;
+    opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .adm-page-stage--leaving {
-  opacity: 0.22;
-  filter: blur(10px);
-  transform: translateY(4px) scale(0.994);
+  opacity: 0;
+  transform: translate3d(0, -10px, 0) scale(0.988);
   pointer-events: none;
 }
 
-@keyframes admPageBlurIn {
+@keyframes admPageSpatialIn {
   0% {
     opacity: 0;
-    filter: blur(12px);
-    transform: translateY(8px) scale(0.994);
-  }
-  60% {
-    opacity: 1;
-    filter: blur(2px);
+    transform: translate3d(0, 14px, 0) scale(0.992);
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes admSectionCascade {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes admKpiCardSpring {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 .adm-page-transition {
-  animation: admPageBlurIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-  will-change: opacity, filter, transform;
+  animation: admPageSpatialIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
 }
 
-/* 2. In-Page Tab, Filter, Segment & Data Switch Blur Animation */
-@keyframes admDataBlurIn {
+/* Staggered Section Cascade on Page Enter */
+.adm-page-transition .adm-content > * {
+  animation: admSectionCascade 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.adm-page-transition .adm-content > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.adm-page-transition .adm-content > *:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.adm-page-transition .adm-content > *:nth-child(3) {
+  animation-delay: 85ms;
+}
+
+.adm-page-transition .adm-content > *:nth-child(4) {
+  animation-delay: 130ms;
+}
+
+.adm-page-transition .adm-content > *:nth-child(5) {
+  animation-delay: 170ms;
+}
+
+.adm-page-transition .adm-content > *:nth-child(6) {
+  animation-delay: 210ms;
+}
+
+/* Staggered KPI Card Spring Cascade */
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card,
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card {
+  animation: admKpiCardSpring 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card:nth-child(1),
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card:nth-child(1) {
+  animation-delay: 20ms;
+}
+
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card:nth-child(2),
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card:nth-child(2) {
+  animation-delay: 55ms;
+}
+
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card:nth-child(3),
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card:nth-child(4),
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card:nth-child(4) {
+  animation-delay: 125ms;
+}
+
+.adm-page-transition .adm-kpi-grid > .adm-kpi-card:nth-child(5),
+.adm-kpi-grid.adm-data-switch > .adm-kpi-card:nth-child(5) {
+  animation-delay: 160ms;
+}
+
+/* 2. In-Page Tab, Filter, Segment & Data Switch (Crisp Slide & Row Ripple) */
+@keyframes admDataSlideIn {
   0% {
-    opacity: 0.14;
-    filter: blur(7px);
-    transform: translateY(4px);
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.99);
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes admRowRippleIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(12px, 4px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .adm-data-switch {
-  animation: admDataBlurIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: admDataSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered Row Cascade when filtering tables */
+tbody.adm-data-switch > tr:not(.adm-expand-row) {
+  animation: admRowRippleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(1) {
+  animation-delay: 0ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(3) {
+  animation-delay: 25ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(5) {
+  animation-delay: 50ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(7) {
+  animation-delay: 75ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(9) {
+  animation-delay: 100ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(11) {
+  animation-delay: 125ms;
+}
+tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(13) {
+  animation-delay: 150ms;
 }
 
 @keyframes admCardPopIn {
   0% {
     opacity: 0;
-    filter: blur(5px);
-    transform: translateY(5px) scale(0.98);
+    transform: translate3d(0, 10px, 0) scale(0.96);
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
-    transform: translateY(0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 .adm-item-appear {
-  animation: admCardPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: admCardPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* 3. Smooth Expandable Table Detail Row (0fr <-> 1fr + Blur + Slide) */
+/* 3. Smooth Expandable Table Detail Row (0fr <-> 1fr + Staggered Card Unfold) */
 .adm-expand-row {
   background: #f8fafc !important;
 }
@@ -1522,18 +1655,15 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  filter: blur(7px);
   pointer-events: none;
   transition:
-    grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-rows 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .adm-expand-row--open .adm-expand-grid {
   grid-template-rows: 1fr;
   opacity: 1;
-  filter: blur(0px);
   pointer-events: auto;
 }
 
@@ -1544,15 +1674,41 @@
 
 .adm-expand-body {
   padding: 0 18px;
-  transform: translateY(-6px);
+  transform-origin: top center;
+  transform: translate3d(0, -10px, 0) scaleY(0.96);
   transition:
-    padding 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    padding 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .adm-expand-row--open .adm-expand-body {
   padding: 14px 18px;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scaleY(1);
+}
+
+.adm-expand-body > * {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.adm-expand-row--open .adm-expand-body > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.adm-expand-row--open .adm-expand-body > *:nth-child(1) {
+  transition-delay: 25ms;
+}
+
+.adm-expand-row--open .adm-expand-body > *:nth-child(2) {
+  transition-delay: 65ms;
+}
+
+.adm-expand-row--open .adm-expand-body > *:nth-child(3) {
+  transition-delay: 105ms;
 }
 
 /* 4. Smooth Collapsible Top Drawer / Quick-Add Forms */
@@ -1560,20 +1716,17 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  filter: blur(6px);
   margin-top: -14px;
   pointer-events: none;
   transition:
-    grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    margin-top 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .adm-collapse--open {
   grid-template-rows: 1fr;
   opacity: 1;
-  filter: blur(0px);
   margin-top: 0;
   pointer-events: auto;
 }
@@ -1581,9 +1734,15 @@
 .adm-collapse__inner {
   overflow: hidden;
   min-height: 0;
+  transform: translate3d(0, -8px, 0);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 5. Animated Dropdowns & Dialog Modals */
+.adm-collapse--open .adm-collapse__inner {
+  transform: translate3d(0, 0, 0);
+}
+
+/* 5. Animated Dropdowns & Dialog Modals (Crisp Spring Pop) */
 .adm-dropdown-modal {
   position: absolute;
   top: 58px;
@@ -1595,24 +1754,21 @@
   border-radius: 10px;
   padding: 14px;
   z-index: 1000;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   opacity: 0;
-  filter: blur(8px);
-  transform: translateY(-8px) scale(0.96);
+  transform: translate3d(0, -10px, 0) scale(0.95);
   transform-origin: top right;
   pointer-events: none;
   visibility: hidden;
   transition:
-    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.26s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.26s;
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.24s;
 }
 
 .adm-dropdown-modal--open {
   opacity: 1;
-  filter: blur(0px);
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   pointer-events: auto;
   visibility: visible;
 }
@@ -1621,8 +1777,7 @@
   position: fixed;
   inset: 0;
   z-index: 1100;
-  background: rgba(15, 23, 42, 0.32);
-  backdrop-filter: blur(6px);
+  background: rgba(15, 23, 42, 0.36);
   display: grid;
   place-items: center;
   padding: 16px;
@@ -1630,8 +1785,8 @@
   pointer-events: none;
   visibility: hidden;
   transition:
-    opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.26s;
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.22s;
 }
 
 .adm-modal-overlay--open {
@@ -1646,19 +1801,16 @@
   background: #ffffff;
   border: 1px solid var(--adm-border);
   border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.2);
   overflow: hidden;
   opacity: 0;
-  filter: blur(10px);
-  transform: translateY(12px) scale(0.96);
+  transform: translate3d(0, 18px, 0) scale(0.95);
   transition:
-    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .adm-modal-overlay--open .adm-modal-card {
   opacity: 1;
-  filter: blur(0px);
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
 }
