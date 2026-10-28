@@ -297,6 +297,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isSystemHealthRoute = pathname?.startsWith("/admin/system-health");
   const isLeadsRoute = pathname?.startsWith("/admin/leads");
   const isClientsRoute = pathname?.startsWith("/admin/clients");
+  const isPipelineRoute = pathname?.startsWith("/admin/pipeline");
   const currentTab = isAnalyticsRoute
     ? "analytics"
     : isSystemHealthRoute
@@ -305,6 +306,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ? "leads"
     : isClientsRoute
     ? "clients"
+    : isPipelineRoute
+    ? "pipeline"
     : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
@@ -322,6 +325,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             !isSystemHealthRoute &&
             !isLeadsRoute &&
             !isClientsRoute &&
+            !isPipelineRoute &&
             currentTab === "dashboard",
         },
         {
@@ -363,7 +367,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           href: "/admin/clients",
           active: isClientsRoute || currentTab === "clients",
         },
-        { id: "pipeline", label: "Satış Görüşmeleri & Pipeline", icon: <IconDeals /> },
+        {
+          id: "pipeline",
+          label: "Satış Görüşmeleri & Pipeline",
+          icon: <IconDeals />,
+          href: "/admin/pipeline",
+          badge: "10 Fırsat",
+          badgeType: "blue",
+          active: isPipelineRoute || currentTab === "pipeline",
+        },
         { id: "contracts", label: "Sözleşmeler & Teklifler", icon: <IconContracts /> },
       ],
     },
@@ -625,6 +637,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   ? "Gelen Teklif Talepleri"
                   : isClientsRoute
                   ? "Müşteriler & Şirketler (CRM)"
+                  : isPipelineRoute
+                  ? "Satış Görüşmeleri & Pipeline"
                   : "Dashboard"}
               </span>
             </div>
