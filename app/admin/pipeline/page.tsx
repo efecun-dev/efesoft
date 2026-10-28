@@ -567,116 +567,118 @@ export default function AdminPipelinePage() {
         </div>
       </div>
 
-      {/* Quick-Add Opportunity Bar */}
-      {showAddModal && (
-        <form
-          onSubmit={handleCreateDeal}
-          className="adm-card"
-          style={{
-            padding: "12px 16px",
-            borderColor: "rgba(0, 113, 227, 0.35)",
-            background: "#f8fafc",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
-            Yeni Pipeline Fırsatı:
-          </span>
-          <input
-            type="text"
-            placeholder="Şirket / Kurum Adı *"
-            value={newCompany}
-            onChange={(e) => setNewCompany(e.target.value)}
-            required
+      {/* Quick-Add Opportunity Bar (Animated Accordion) */}
+      <div className={`adm-collapse ${showAddModal ? "adm-collapse--open" : ""}`}>
+        <div className="adm-collapse__inner">
+          <form
+            onSubmit={handleCreateDeal}
+            className="adm-card"
             style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "1 1 170px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Fırsat / Proje Başlığı *"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            required
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "2 1 220px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Karar Verici Yetkili"
-            value={newContact}
-            onChange={(e) => setNewContact(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              width: "150px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Tutar (Örn: 950000)"
-            value={newAmount}
-            onChange={(e) => setNewAmount(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              width: "135px",
-            }}
-          />
-          <select
-            value={newStage}
-            onChange={(e) => setNewStage(e.target.value as DealStage)}
-            style={{
-              height: "30px",
-              padding: "0 8px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
+              padding: "12px 16px",
+              borderColor: "rgba(0, 113, 227, 0.35)",
+              background: "#f8fafc",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              flexWrap: "wrap",
             }}
           >
-            {STAGE_META.map((st) => (
-              <option key={st.key} value={st.key}>
-                {st.shortLabel} (%{st.defaultProb})
-              </option>
-            ))}
-          </select>
-          <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
-            Pipeline&apos;a Ekle
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowAddModal(false)}
-            className="adm-topbar__btn"
-          >
-            İptal
-          </button>
-        </form>
-      )}
+            <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
+              Yeni Pipeline Fırsatı:
+            </span>
+            <input
+              type="text"
+              placeholder="Şirket / Kurum Adı *"
+              value={newCompany}
+              onChange={(e) => setNewCompany(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "1 1 170px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Fırsat / Proje Başlığı *"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "2 1 220px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Karar Verici Yetkili"
+              value={newContact}
+              onChange={(e) => setNewContact(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                width: "150px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Tutar (Örn: 950000)"
+              value={newAmount}
+              onChange={(e) => setNewAmount(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                width: "135px",
+              }}
+            />
+            <select
+              value={newStage}
+              onChange={(e) => setNewStage(e.target.value as DealStage)}
+              style={{
+                height: "30px",
+                padding: "0 8px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+              }}
+            >
+              {STAGE_META.map((st) => (
+                <option key={st.key} value={st.key}>
+                  {st.shortLabel} (%{st.defaultProb})
+                </option>
+              ))}
+            </select>
+            <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
+              Pipeline&apos;a Ekle
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddModal(false)}
+              className="adm-topbar__btn"
+            >
+              İptal
+            </button>
+          </form>
+        </div>
+      </div>
 
       {/* 5-Column High-Density KPI Row */}
       <div className="adm-kpi-grid">
@@ -761,7 +763,7 @@ export default function AdminPipelinePage() {
 
       {/* 5-Stage Interactive Kanban Pipeline Board */}
       {(viewMode === "both" || viewMode === "board") && (
-        <div className="adm-card">
+        <div className="adm-card adm-data-switch">
           <div className="adm-card__head" style={{ flexWrap: "wrap", gap: "10px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
               <span className="adm-card__title">
@@ -874,6 +876,7 @@ export default function AdminPipelinePage() {
                         return (
                           <div
                             key={deal.id}
+                            className="adm-item-appear"
                             style={{
                               background: "#ffffff",
                               border: isSelected
@@ -1031,7 +1034,7 @@ export default function AdminPipelinePage() {
 
       {/* Main Pipeline & Negotiation Table with Expandable Meeting Room */}
       {(viewMode === "both" || viewMode === "table") && (
-        <div className="adm-card">
+        <div className="adm-card adm-data-switch">
           <div className="adm-card__head" style={{ flexWrap: "wrap", gap: "10px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
               <span className="adm-card__title">
@@ -1100,7 +1103,7 @@ export default function AdminPipelinePage() {
                   <th style={{ textAlign: "right" }}>Müzakere</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody key={stageFilter} className="adm-data-switch">
                 {filteredDeals.map((deal) => {
                   const isExpanded = expandedDealId === deal.id;
                   const isDeckSent = deckSentIds[deal.id];
@@ -1247,209 +1250,211 @@ export default function AdminPipelinePage() {
                         </td>
                       </tr>
 
-                      {isExpanded && (
-                        <tr style={{ background: "#f8fafc" }}>
-                          <td colSpan={8} style={{ padding: "14px 18px" }}>
-                            <div
-                              style={{
-                                display: "grid",
-                                gridTemplateColumns: "1.3fr 1fr 1fr",
-                                gap: "12px",
-                                borderLeft: "3px solid var(--adm-primary)",
-                                paddingLeft: "14px",
-                              }}
-                            >
-                              {/* Col 1: Executive Meeting Notes, Stakeholders & Modules */}
+                      <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                        <td colSpan={8} className="adm-expand-cell">
+                          <div className="adm-expand-grid">
+                            <div className="adm-expand-inner">
                               <div
+                                className="adm-expand-body"
                                 style={{
-                                  background: "#ffffff",
-                                  border: "1px solid var(--adm-border)",
-                                  borderRadius: "8px",
-                                  padding: "11px 13px",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                  gap: "8px",
+                                  display: "grid",
+                                  gridTemplateColumns: "1.3fr 1fr 1fr",
+                                  gap: "12px",
+                                  borderLeft: "3px solid var(--adm-primary)",
                                 }}
                               >
-                                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
-                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                      Son Toplantı Özeti & Karar Verici Kurul ({deal.id})
-                                    </span>
-                                    <span className="adm-badge adm-badge--neutral">{deal.industry}</span>
-                                  </div>
-
-                                  <p
-                                    style={{
-                                      fontSize: "11.5px",
-                                      color: "var(--adm-text-secondary)",
-                                      lineHeight: 1.48,
-                                      margin: 0,
-                                      background: "var(--adm-surface-2)",
-                                      padding: "8px 10px",
-                                      borderRadius: "6px",
-                                      border: "1px solid var(--adm-border-subtle)",
-                                    }}
-                                  >
-                                    {deal.meetingNotes}
-                                  </p>
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                                    {deal.modules.map((mod, idx) => (
-                                      <span key={idx} className="adm-badge adm-badge--info">
-                                        ✓ {mod}
+                                {/* Col 1: Executive Meeting Notes, Stakeholders & Modules */}
+                                <div
+                                  style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+                                      <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                        Son Toplantı Özeti & Karar Verici Kurul ({deal.id})
                                       </span>
-                                    ))}
+                                      <span className="adm-badge adm-badge--neutral">{deal.industry}</span>
+                                    </div>
+
+                                    <p
+                                      style={{
+                                        fontSize: "11.5px",
+                                        color: "var(--adm-text-secondary)",
+                                        lineHeight: 1.48,
+                                        margin: 0,
+                                        background: "var(--adm-surface-2)",
+                                        padding: "8px 10px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      {deal.meetingNotes}
+                                    </p>
                                   </div>
-                                  <div style={{ fontSize: "10.5px", color: "var(--adm-text-muted)" }}>
-                                    <b>Katılımcılar:</b> {deal.stakeholders.join(" • ")}
+
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                                      {deal.modules.map((mod, idx) => (
+                                        <span key={idx} className="adm-badge adm-badge--info">
+                                          ✓ {mod}
+                                        </span>
+                                      ))}
+                                    </div>
+                                    <div style={{ fontSize: "10.5px", color: "var(--adm-text-muted)" }}>
+                                      <b>Katılımcılar:</b> {deal.stakeholders.join(" • ")}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              {/* Col 2: Pipeline Stage Switcher & Forecast Metrics */}
-                              <div
-                                style={{
-                                  background: "#ffffff",
-                                  border: "1px solid var(--adm-border)",
-                                  borderRadius: "8px",
-                                  padding: "11px 13px",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                  gap: "8px",
-                                }}
-                              >
-                                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                  <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                    Pipeline Aşaması & Olasılık Yönetimi
-                                  </span>
+                                {/* Col 2: Pipeline Stage Switcher & Forecast Metrics */}
+                                <div
+                                  style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Pipeline Aşaması & Olasılık Yönetimi
+                                    </span>
 
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "11.5px",
-                                      padding: "4px 0",
-                                      borderBottom: "1px solid var(--adm-border-subtle)",
-                                    }}
-                                  >
-                                    <span style={{ color: "var(--adm-text-muted)" }}>Ağırlıklı Gelir Katkısı:</span>
-                                    <span style={{ fontWeight: 700, fontFamily: "var(--font-mono)", color: "#1a9e4b" }}>
-                                      ₺{weightedVal.toLocaleString("tr-TR")} (%{deal.probability})
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        fontSize: "11.5px",
+                                        padding: "4px 0",
+                                        borderBottom: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      <span style={{ color: "var(--adm-text-muted)" }}>Ağırlıklı Gelir Katkısı:</span>
+                                      <span style={{ fontWeight: 700, fontFamily: "var(--font-mono)", color: "#1a9e4b" }}>
+                                        ₺{weightedVal.toLocaleString("tr-TR")} (%{deal.probability})
+                                      </span>
+                                    </div>
+
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        fontSize: "11.5px",
+                                        padding: "4px 0",
+                                        borderBottom: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      <span style={{ color: "var(--adm-text-muted)" }}>Sıradaki Toplantı:</span>
+                                      <span style={{ fontWeight: 600 }}>{deal.nextMeeting}</span>
+                                    </div>
+                                  </div>
+
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                    <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
+                                      Fırsat Aşamasını Değiştir:
+                                    </span>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                                      {STAGE_META.map((st) => (
+                                        <button
+                                          key={st.key}
+                                          type="button"
+                                          onClick={() => moveDealToStage(deal.id, st.key)}
+                                          className="adm-table__action-btn"
+                                          style={{
+                                            background: deal.stage === st.key ? "var(--adm-primary)" : "#ffffff",
+                                            color: deal.stage === st.key ? "#ffffff" : "var(--adm-text-secondary)",
+                                            borderColor:
+                                              deal.stage === st.key ? "var(--adm-primary)" : "var(--adm-border)",
+                                          }}
+                                        >
+                                          {st.shortLabel}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Col 3: Executive Presentation Deck & Direct Contact */}
+                                <div
+                                  style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Toplantı & Teklif Aksiyon Merkezi
+                                    </span>
+                                    <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                      Karar Verici: {deal.contactName} ({deal.email})
                                     </span>
                                   </div>
 
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "11.5px",
-                                      padding: "4px 0",
-                                      borderBottom: "1px solid var(--adm-border-subtle)",
-                                    }}
-                                  >
-                                    <span style={{ color: "var(--adm-text-muted)" }}>Sıradaki Toplantı:</span>
-                                    <span style={{ fontWeight: 600 }}>{deal.nextMeeting}</span>
-                                  </div>
-                                </div>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSendPresentation(deal.id)}
+                                      className="adm-topbar__btn adm-topbar__btn--primary"
+                                      style={{
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        background: isDeckSent ? "#1a9e4b" : undefined,
+                                        borderColor: isDeckSent ? "#1a9e4b" : undefined,
+                                      }}
+                                    >
+                                      <Send size={13} />
+                                      <span>
+                                        {isDeckSent
+                                          ? "Sunum Paketi & Takvim Daveti Gönderildi ✓"
+                                          : "Toplantı Daveti & Mimari Sunum Gönder"}
+                                      </span>
+                                    </button>
 
-                                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                  <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                                    Fırsat Aşamasını Değiştir:
-                                  </span>
-                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                                    {STAGE_META.map((st) => (
-                                      <button
-                                        key={st.key}
-                                        type="button"
-                                        onClick={() => moveDealToStage(deal.id, st.key)}
-                                        className="adm-table__action-btn"
-                                        style={{
-                                          background: deal.stage === st.key ? "var(--adm-primary)" : "#ffffff",
-                                          color: deal.stage === st.key ? "#ffffff" : "var(--adm-text-secondary)",
-                                          borderColor:
-                                            deal.stage === st.key ? "var(--adm-primary)" : "var(--adm-border)",
-                                        }}
+                                    <div style={{ display: "flex", gap: "6px" }}>
+                                      <a
+                                        href={`tel:${deal.phone}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
                                       >
-                                        {st.shortLabel}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Col 3: Executive Presentation Deck & Direct Contact */}
-                              <div
-                                style={{
-                                  background: "#ffffff",
-                                  border: "1px solid var(--adm-border)",
-                                  borderRadius: "8px",
-                                  padding: "11px 13px",
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                  gap: "8px",
-                                }}
-                              >
-                                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                  <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                    Toplantı & Teklif Aksiyon Merkezi
-                                  </span>
-                                  <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                    Karar Verici: {deal.contactName} ({deal.email})
-                                  </span>
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleSendPresentation(deal.id)}
-                                    className="adm-topbar__btn adm-topbar__btn--primary"
-                                    style={{
-                                      width: "100%",
-                                      justifyContent: "center",
-                                      background: isDeckSent ? "#1a9e4b" : undefined,
-                                      borderColor: isDeckSent ? "#1a9e4b" : undefined,
-                                    }}
-                                  >
-                                    <Send size={13} />
-                                    <span>
-                                      {isDeckSent
-                                        ? "Sunum Paketi & Takvim Daveti Gönderildi ✓"
-                                        : "Toplantı Daveti & Mimari Sunum Gönder"}
-                                    </span>
-                                  </button>
-
-                                  <div style={{ display: "flex", gap: "6px" }}>
-                                    <a
-                                      href={`tel:${deal.phone}`}
-                                      className="adm-topbar__btn"
-                                      style={{ flex: 1, justifyContent: "center" }}
-                                    >
-                                      <PhoneCall size={12} />
-                                      <span>Yetkiliyi Ara</span>
-                                    </a>
-                                    <a
-                                      href={`mailto:${deal.email}?subject=${encodeURIComponent(
-                                        `Efesoft Kurumsal Çözüm & Sözleşme Görüşmesi - ${deal.company}`
-                                      )}`}
-                                      className="adm-topbar__btn"
-                                      style={{ flex: 1, justifyContent: "center" }}
-                                    >
-                                      <Mail size={12} />
-                                      <span>E-Posta</span>
-                                    </a>
+                                        <PhoneCall size={12} />
+                                        <span>Yetkiliyi Ara</span>
+                                      </a>
+                                      <a
+                                        href={`mailto:${deal.email}?subject=${encodeURIComponent(
+                                          `Efesoft Kurumsal Çözüm & Sözleşme Görüşmesi - ${deal.company}`
+                                        )}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
+                                      >
+                                        <Mail size={12} />
+                                        <span>E-Posta</span>
+                                      </a>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </td>
-                        </tr>
-                      )}
+                          </div>
+                        </td>
+                      </tr>
                     </Fragment>
                   );
                 })}
@@ -1617,3 +1622,4 @@ export default function AdminPipelinePage() {
     </div>
   );
 }
+

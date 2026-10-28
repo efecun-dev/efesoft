@@ -423,98 +423,100 @@ export default function AdminLeadsPage() {
         </div>
       </div>
 
-      {/* Optional Quick-Add Bar */}
-      {showNewModal && (
-        <form
-          onSubmit={handleCreateQuickLead}
-          className="adm-card"
-          style={{
-            padding: "12px 16px",
-            borderColor: "rgba(0, 113, 227, 0.35)",
-            background: "#f8fafc",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
-            Hızlı Talep Oluştur:
-          </span>
-          <input
-            type="text"
-            placeholder="Şirket / Kurum Adı *"
-            value={newCompany}
-            onChange={(e) => setNewCompany(e.target.value)}
-            required
+      {/* Animated Quick-Add Bar */}
+      <div className={`adm-collapse ${showNewModal ? "adm-collapse--open" : ""}`}>
+        <div className="adm-collapse__inner">
+          <form
+            onSubmit={handleCreateQuickLead}
+            className="adm-card"
             style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "1 1 180px",
+              padding: "12px 16px",
+              borderColor: "rgba(0, 113, 227, 0.35)",
+              background: "#f8fafc",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              flexWrap: "wrap",
             }}
-          />
-          <input
-            type="text"
-            placeholder="Yetkili Adı Soyadı *"
-            value={newContact}
-            onChange={(e) => setNewContact(e.target.value)}
-            required
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "1 1 150px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Talep Edilen Proje / Lisans"
-            value={newService}
-            onChange={(e) => setNewService(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "2 1 220px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Tahmini Bütçe"
-            value={newBudget}
-            onChange={(e) => setNewBudget(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              width: "130px",
-            }}
-          />
-          <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
-            Kaydet & Listeye Ekle
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowNewModal(false)}
-            className="adm-topbar__btn"
           >
-            İptal
-          </button>
-        </form>
-      )}
+            <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
+              Hızlı Talep Oluştur:
+            </span>
+            <input
+              type="text"
+              placeholder="Şirket / Kurum Adı *"
+              value={newCompany}
+              onChange={(e) => setNewCompany(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "1 1 180px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Yetkili Adı Soyadı *"
+              value={newContact}
+              onChange={(e) => setNewContact(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "1 1 150px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Talep Edilen Proje / Lisans"
+              value={newService}
+              onChange={(e) => setNewService(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "2 1 220px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Tahmini Bütçe"
+              value={newBudget}
+              onChange={(e) => setNewBudget(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                width: "130px",
+              }}
+            />
+            <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
+              Kaydet & Listeye Ekle
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowNewModal(false)}
+              className="adm-topbar__btn"
+            >
+              İptal
+            </button>
+          </form>
+        </div>
+      </div>
 
       {/* 5-Column High-Density KPI Row */}
       <div className="adm-kpi-grid">
@@ -676,7 +678,7 @@ export default function AdminLeadsPage() {
                 <th style={{ textAlign: "right" }}>İşlemler</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody key={`${categoryFilter}-${statusFilter}`} className="adm-data-switch">
               {filteredLeads.map((item) => {
                 const isExpanded = expandedLeadId === item.id;
                 const isProposalSent = sentProposalIds[item.id];
@@ -803,212 +805,216 @@ export default function AdminLeadsPage() {
                       </td>
                     </tr>
 
-                    {isExpanded && (
-                      <tr style={{ background: "#f8fafc" }}>
-                        <td colSpan={8} style={{ padding: "14px 18px" }}>
-                          <div
-                            style={{
-                              display: "grid",
-                              gridTemplateColumns: "1.4fr 1fr 1fr",
-                              gap: "12px",
-                              borderLeft: "3px solid var(--adm-primary)",
-                              paddingLeft: "14px",
-                            }}
-                          >
-                            {/* Col 1: Client Message & Technical Scope */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                  Müşteri Mesajı & Teknik Kapsam ({item.id})
-                                </span>
-                                <span className="adm-badge adm-badge--neutral">{item.industry}</span>
-                              </div>
-
-                              <p
+                    <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                      <td colSpan={8} className="adm-expand-cell">
+                        <div className="adm-expand-grid">
+                          <div className="adm-expand-inner">
+                            <div className="adm-expand-body">
+                              <div
                                 style={{
-                                  fontSize: "12px",
-                                  color: "var(--adm-text-secondary)",
-                                  lineHeight: 1.5,
-                                  margin: 0,
-                                  background: "var(--adm-surface-2)",
-                                  padding: "8px 10px",
-                                  borderRadius: "6px",
-                                  border: "1px solid var(--adm-border-subtle)",
+                                  display: "grid",
+                                  gridTemplateColumns: "1.4fr 1fr 1fr",
+                                  gap: "12px",
+                                  borderLeft: "3px solid var(--adm-primary)",
+                                  paddingLeft: "14px",
                                 }}
                               >
-                                &ldquo;{item.message}&rdquo;
-                              </p>
-
-                              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                                {item.modules.map((m, idx) => (
-                                  <span key={idx} className="adm-badge adm-badge--info">
-                                    ✓ {m}
-                                  </span>
-                                ))}
-                              </div>
-
-                              <div style={{ fontSize: "11px", color: "var(--adm-text-muted)", fontFamily: "var(--font-mono)" }}>
-                                Telemetri: {item.telemetry}
-                              </div>
-                            </div>
-
-                            {/* Col 2: Engineering Estimate & Stage Control */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                  Mühendislik Analizi & Aşama Yönetimi
-                                </span>
-
+                                {/* Col 1: Client Message & Technical Scope */}
                                 <div
                                   style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
                                     display: "flex",
-                                    justifyContent: "space-between",
-                                    fontSize: "11.5px",
-                                    padding: "5px 0",
-                                    borderBottom: "1px solid var(--adm-border-subtle)",
+                                    flexDirection: "column",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <span style={{ color: "var(--adm-text-muted)" }}>Tahmini Efor / Süre:</span>
-                                  <span style={{ fontWeight: 600, fontFamily: "var(--font-mono)" }}>
-                                    {item.estimatedDays}
-                                  </span>
+                                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Müşteri Mesajı & Teknik Kapsam ({item.id})
+                                    </span>
+                                    <span className="adm-badge adm-badge--neutral">{item.industry}</span>
+                                  </div>
+
+                                  <p
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "var(--adm-text-secondary)",
+                                      lineHeight: 1.5,
+                                      margin: 0,
+                                      background: "var(--adm-surface-2)",
+                                      padding: "8px 10px",
+                                      borderRadius: "6px",
+                                      border: "1px solid var(--adm-border-subtle)",
+                                    }}
+                                  >
+                                    &ldquo;{item.message}&rdquo;
+                                  </p>
+
+                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                                    {item.modules.map((m, idx) => (
+                                      <span key={idx} className="adm-badge adm-badge--info">
+                                        ✓ {m}
+                                      </span>
+                                    ))}
+                                  </div>
+
+                                  <div style={{ fontSize: "11px", color: "var(--adm-text-muted)", fontFamily: "var(--font-mono)" }}>
+                                    Telemetri: {item.telemetry}
+                                  </div>
                                 </div>
 
+                                {/* Col 2: Engineering Estimate & Stage Control */}
                                 <div
                                   style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
                                     display: "flex",
+                                    flexDirection: "column",
                                     justifyContent: "space-between",
-                                    fontSize: "11.5px",
-                                    padding: "5px 0",
-                                    borderBottom: "1px solid var(--adm-border-subtle)",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <span style={{ color: "var(--adm-text-muted)" }}>Sorumlu Mimar:</span>
-                                  <span style={{ fontWeight: 600 }}>{item.assignee}</span>
-                                </div>
-                              </div>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Mühendislik Analizi & Aşama Yönetimi
+                                    </span>
 
-                              <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                                <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                                  Talep Aşamasını Güncelle:
-                                </span>
-                                <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                                  {(
-                                    [
-                                      { k: "new", label: "Yeni" },
-                                      { k: "in-progress", label: "İletişimde" },
-                                      { k: "proposal", label: "Teklif Sunuldu" },
-                                      { k: "won", label: "Onaylandı ✓" },
-                                    ] as { k: LeadStatus; label: string }[]
-                                  ).map((st) => (
-                                    <button
-                                      key={st.k}
-                                      type="button"
-                                      onClick={() => handleStatusChange(item.id, st.k)}
-                                      className="adm-table__action-btn"
+                                    <div
                                       style={{
-                                        background: item.status === st.k ? "var(--adm-primary)" : "#ffffff",
-                                        color: item.status === st.k ? "#ffffff" : "var(--adm-text-secondary)",
-                                        borderColor:
-                                          item.status === st.k ? "var(--adm-primary)" : "var(--adm-border)",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        fontSize: "11.5px",
+                                        padding: "5px 0",
+                                        borderBottom: "1px solid var(--adm-border-subtle)",
                                       }}
                                     >
-                                      {st.label}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
+                                      <span style={{ color: "var(--adm-text-muted)" }}>Tahmini Efor / Süre:</span>
+                                      <span style={{ fontWeight: 600, fontFamily: "var(--font-mono)" }}>
+                                        {item.estimatedDays}
+                                      </span>
+                                    </div>
 
-                            {/* Col 3: Fast Proposal & Direct Contact Actions */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                  Hızlı Teklif & İletişim Aksiyonları
-                                </span>
-                                <div style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                  Müşteriye kurumsal PDF teklif dosyası gönderebilir veya doğrudan keşif toplantısı başlatabilirsiniz.
-                                </div>
-                              </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        fontSize: "11.5px",
+                                        padding: "5px 0",
+                                        borderBottom: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      <span style={{ color: "var(--adm-text-muted)" }}>Sorumlu Mimar:</span>
+                                      <span style={{ fontWeight: 600 }}>{item.assignee}</span>
+                                    </div>
+                                  </div>
 
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleSendProposal(item.id)}
-                                  className="adm-topbar__btn adm-topbar__btn--primary"
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                                    <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
+                                      Talep Aşamasını Güncelle:
+                                    </span>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                                      {(
+                                        [
+                                          { k: "new", label: "Yeni" },
+                                          { k: "in-progress", label: "İletişimde" },
+                                          { k: "proposal", label: "Teklif Sunuldu" },
+                                          { k: "won", label: "Onaylandı ✓" },
+                                        ] as { k: LeadStatus; label: string }[]
+                                      ).map((st) => (
+                                        <button
+                                          key={st.k}
+                                          type="button"
+                                          onClick={() => handleStatusChange(item.id, st.k)}
+                                          className="adm-table__action-btn"
+                                          style={{
+                                            background: item.status === st.k ? "var(--adm-primary)" : "#ffffff",
+                                            color: item.status === st.k ? "#ffffff" : "var(--adm-text-secondary)",
+                                            borderColor:
+                                              item.status === st.k ? "var(--adm-primary)" : "var(--adm-border)",
+                                          }}
+                                        >
+                                          {st.label}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Col 3: Fast Proposal & Direct Contact Actions */}
+                                <div
                                   style={{
-                                    width: "100%",
-                                    justifyContent: "center",
-                                    background: isProposalSent ? "#1a9e4b" : undefined,
-                                    borderColor: isProposalSent ? "#1a9e4b" : undefined,
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <Send size={13} />
-                                  <span>
-                                    {isProposalSent
-                                      ? `PDF Teklif Gönderildi (${item.email}) ✓`
-                                      : "Kurumsal PDF Teklif Hazırla & Gönder"}
-                                  </span>
-                                </button>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Hızlı Teklif & İletişim Aksiyonları
+                                    </span>
+                                    <div style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                      Müşteriye kurumsal PDF teklif dosyası gönderebilir veya doğrudan keşif toplantısı başlatabilirsiniz.
+                                    </div>
+                                  </div>
 
-                                <div style={{ display: "flex", gap: "6px" }}>
-                                  <a
-                                    href={`tel:${item.phone}`}
-                                    className="adm-topbar__btn"
-                                    style={{ flex: 1, justifyContent: "center" }}
-                                  >
-                                    <PhoneCall size={12} />
-                                    <span>Hemen Ara</span>
-                                  </a>
-                                  <a
-                                    href={`mailto:${item.email}?subject=${encodeURIComponent(
-                                      `Efesoft Yazılım & Lisans Teklifi - ${item.company}`
-                                    )}`}
-                                    className="adm-topbar__btn"
-                                    style={{ flex: 1, justifyContent: "center" }}
-                                  >
-                                    <Mail size={12} />
-                                    <span>E-Posta Gönder</span>
-                                  </a>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSendProposal(item.id)}
+                                      className="adm-topbar__btn adm-topbar__btn--primary"
+                                      style={{
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        background: isProposalSent ? "#1a9e4b" : undefined,
+                                        borderColor: isProposalSent ? "#1a9e4b" : undefined,
+                                      }}
+                                    >
+                                      <Send size={13} />
+                                      <span>
+                                        {isProposalSent
+                                          ? `PDF Teklif Gönderildi (${item.email}) ✓`
+                                          : "Kurumsal PDF Teklif Hazırla & Gönder"}
+                                      </span>
+                                    </button>
+
+                                    <div style={{ display: "flex", gap: "6px" }}>
+                                      <a
+                                        href={`tel:${item.phone}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
+                                      >
+                                        <PhoneCall size={12} />
+                                        <span>Hemen Ara</span>
+                                      </a>
+                                      <a
+                                        href={`mailto:${item.email}?subject=${encodeURIComponent(
+                                          `Efesoft Yazılım & Lisans Teklifi - ${item.company}`
+                                        )}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
+                                      >
+                                        <Mail size={12} />
+                                        <span>E-Posta Gönder</span>
+                                      </a>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </td>
-                      </tr>
-                    )}
+                        </div>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Download,
   Inbox,
@@ -15,11 +15,53 @@ import {
   FolderKanban,
   Activity,
   Clock,
+  Send,
 } from "lucide-react";
+
+const DASHBOARD_KPI_BY_RANGE: Record<
+  string,
+  { leads: string; leadsDelta: string; licenses: string; projects: string; mrr: string; sla: string }
+> = {
+  today: {
+    leads: "14 Talep",
+    leadsDelta: "+18.2%",
+    licenses: "1.248 Lisans",
+    projects: "18 Aktif",
+    mrr: "₺64.000",
+    sla: "12 Dakika",
+  },
+  week: {
+    leads: "42 Talep",
+    leadsDelta: "+24.6%",
+    licenses: "1.248 Lisans",
+    projects: "18 Aktif",
+    mrr: "₺460.000",
+    sla: "14 Dakika",
+  },
+  month: {
+    leads: "148 Talep",
+    leadsDelta: "+22.4%",
+    licenses: "1.248 Lisans",
+    projects: "18 Aktif",
+    mrr: "₺1.840.000",
+    sla: "16 Dakika",
+  },
+  year: {
+    leads: "1.420 Talep",
+    leadsDelta: "+38.5%",
+    licenses: "1.248 Lisans",
+    projects: "46 Teslim",
+    mrr: "₺22.100.000",
+    sla: "15 Dakika",
+  },
+};
 
 export default function AdminDashboard() {
   const [leadFilter, setLeadFilter] = useState("all");
   const [dateRange, setDateRange] = useState("month");
+  const [expandedLeadId, setExpandedLeadId] = useState<string | null>("LEAD-1082");
+  const [sentIds, setSentIds] = useState<Record<string, boolean>>({});
+  const currentKpi = DASHBOARD_KPI_BY_RANGE[dateRange] || DASHBOARD_KPI_BY_RANGE.month;
 
   // Sample real-world leads populated from website inquiries
   const leads = [
@@ -152,7 +194,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* 5-Column High-Density KPI Row */}
-      <div className="adm-kpi-grid">
+      <div key={dateRange} className="adm-kpi-grid adm-data-switch">
         {/* KPI 1 */}
         <div className="adm-kpi-card">
           <div className="adm-kpi-card__top">
@@ -161,9 +203,9 @@ export default function AdminDashboard() {
               <Inbox size={15} />
             </span>
           </div>
-          <div className="adm-kpi-card__val">148 Talep</div>
+          <div className="adm-kpi-card__val">{currentKpi.leads}</div>
           <div className="adm-kpi-card__sub">
-            <span className="adm-badge adm-badge--success">+22.4%</span>
+            <span className="adm-badge adm-badge--success">{currentKpi.leadsDelta}</span>
             <span style={{ color: "var(--adm-text-secondary)" }}>8 bekleyen yanıt</span>
           </div>
         </div>
@@ -176,7 +218,7 @@ export default function AdminDashboard() {
               <KeyRound size={15} />
             </span>
           </div>
-          <div className="adm-kpi-card__val">1.248 Lisans</div>
+          <div className="adm-kpi-card__val">{currentKpi.licenses}</div>
           <div className="adm-kpi-card__sub">
             <span className="adm-badge adm-badge--success">+42 bu ay</span>
             <span style={{ color: "var(--adm-text-secondary)" }}>%99.8 SLA</span>
@@ -191,7 +233,7 @@ export default function AdminDashboard() {
               <Rocket size={15} />
             </span>
           </div>
-          <div className="adm-kpi-card__val">18 Aktif</div>
+          <div className="adm-kpi-card__val">{currentKpi.projects}</div>
           <div className="adm-kpi-card__sub">
             <span className="adm-badge adm-badge--info">4 Teslim Haftası</span>
             <span style={{ color: "var(--adm-text-secondary)" }}>%96 zamanında</span>
@@ -201,12 +243,12 @@ export default function AdminDashboard() {
         {/* KPI 4 */}
         <div className="adm-kpi-card">
           <div className="adm-kpi-card__top">
-            <span className="adm-kpi-card__label">Aylık Tekrarlayan Ciro (MRR)</span>
+            <span className="adm-kpi-card__label">Tekrarlayan Ciro (MRR/ARR)</span>
             <span className="adm-kpi-card__icon" style={{ background: "rgba(245, 158, 11, 0.1)", color: "#d97706" }}>
               <CircleDollarSign size={15} />
             </span>
           </div>
-          <div className="adm-kpi-card__val">₺1.840.000</div>
+          <div className="adm-kpi-card__val">{currentKpi.mrr}</div>
           <div className="adm-kpi-card__sub">
             <span className="adm-badge adm-badge--success">+14.8%</span>
             <span style={{ color: "var(--adm-text-secondary)" }}>₺22.1M ARR</span>
@@ -221,7 +263,7 @@ export default function AdminDashboard() {
               <Zap size={15} />
             </span>
           </div>
-          <div className="adm-kpi-card__val">16 Dakika</div>
+          <div className="adm-kpi-card__val">{currentKpi.sla}</div>
           <div className="adm-kpi-card__sub">
             <span className="adm-badge adm-badge--success">Hedef: &lt;30 dk</span>
             <span style={{ color: "var(--adm-text-secondary)" }}>%99.2 SLA</span>
@@ -252,7 +294,7 @@ export default function AdminDashboard() {
 
           <div className="adm-card__body">
             {/* Compact Bar Chart representation */}
-            <div className="adm-chart-row">
+            <div key={dateRange} className="adm-chart-row adm-data-switch">
               {[
                 { m: "Oca", v1: 45, v2: 25 },
                 { m: "Şub", v1: 52, v2: 30 },
@@ -467,67 +509,139 @@ export default function AdminDashboard() {
                 <th style={{ textAlign: "right" }}>İşlemler</th>
               </tr>
             </thead>
-            <tbody>
-              {filteredLeads.map((item) => (
-                <tr key={item.id}>
-                  <td style={{ fontFamily: "var(--font-mono)", fontWeight: 600, color: "var(--adm-text-secondary)", fontSize: "11px" }}>
-                    {item.id}
-                  </td>
-                  <td>
-                    <div className="adm-table__client">
-                      <div className="adm-table__client-avatar">
-                        {item.company.charAt(0)}
-                      </div>
-                      <div className="adm-table__client-meta">
-                        <div className="adm-table__client-name">{item.company}</div>
-                        <div className="adm-table__client-sub">{item.contact}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontSize: "11.5px" }}>
-                      <div>{item.email}</div>
-                      <div style={{ color: "var(--adm-text-muted)", fontFamily: "var(--font-mono)" }}>{item.phone}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <span style={{ fontWeight: 500 }}>{item.service}</span>
-                  </td>
-                  <td>
-                    <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{item.budget}</span>
-                  </td>
-                  <td>
-                    <span style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)" }}>{item.time}</span>
-                  </td>
-                  <td>
-                    <span
-                      className={`adm-badge ${
-                        item.status === "new"
-                          ? "adm-badge--info"
-                          : item.status === "won"
-                          ? "adm-badge--success"
-                          : item.status === "proposal"
-                          ? "adm-badge--purple"
-                          : "adm-badge--warning"
-                      }`}
+            <tbody key={leadFilter} className="adm-data-switch">
+              {filteredLeads.map((item) => {
+                const isExpanded = expandedLeadId === item.id;
+                const isSent = sentIds[item.id];
+                return (
+                  <Fragment key={item.id}>
+                    <tr
+                      style={{
+                        background: isExpanded ? "rgba(0, 113, 227, 0.03)" : undefined,
+                      }}
                     >
-                      {item.statusText}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: "right" }}>
-                    <div className="adm-table__actions" style={{ justifyContent: "flex-end" }}>
-                      <button className="adm-table__action-btn" title="İletişime Geç" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                        <PhoneCall size={12} />
-                        Ara
-                      </button>
-                      <button className="adm-table__action-btn" title="Teklif Hazırla" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                        <FileText size={12} />
-                        Teklif
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      <td style={{ fontFamily: "var(--font-mono)", fontWeight: 600, color: "var(--adm-text-secondary)", fontSize: "11px" }}>
+                        {item.id}
+                      </td>
+                      <td>
+                        <div className="adm-table__client">
+                          <div className="adm-table__client-avatar">
+                            {item.company.charAt(0)}
+                          </div>
+                          <div className="adm-table__client-meta">
+                            <div className="adm-table__client-name">{item.company}</div>
+                            <div className="adm-table__client-sub">{item.contact}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontSize: "11.5px" }}>
+                          <div>{item.email}</div>
+                          <div style={{ color: "var(--adm-text-muted)", fontFamily: "var(--font-mono)" }}>{item.phone}</div>
+                        </div>
+                      </td>
+                      <td>
+                        <span style={{ fontWeight: 500 }}>{item.service}</span>
+                      </td>
+                      <td>
+                        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{item.budget}</span>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)" }}>{item.time}</span>
+                      </td>
+                      <td>
+                        <span
+                          className={`adm-badge ${
+                            item.status === "new"
+                              ? "adm-badge--info"
+                              : item.status === "won"
+                              ? "adm-badge--success"
+                              : item.status === "proposal"
+                              ? "adm-badge--purple"
+                              : "adm-badge--warning"
+                          }`}
+                        >
+                          {item.statusText}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "right" }}>
+                        <div className="adm-table__actions" style={{ justifyContent: "flex-end" }}>
+                          <a
+                            href={`tel:${item.phone}`}
+                            className="adm-table__action-btn"
+                            title="İletişime Geç"
+                            style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                          >
+                            <PhoneCall size={12} />
+                            Ara
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => setExpandedLeadId(isExpanded ? null : item.id)}
+                            className="adm-table__action-btn"
+                            title="Teklif Hazırla"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "4px",
+                              background: isExpanded ? "var(--adm-primary)" : "#ffffff",
+                              color: isExpanded ? "#ffffff" : "var(--adm-text-secondary)",
+                              borderColor: isExpanded ? "var(--adm-primary)" : "var(--adm-border)",
+                            }}
+                          >
+                            <FileText size={12} />
+                            {isExpanded ? "Kapat" : "Teklif"}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                      <td colSpan={8} className="adm-expand-cell">
+                        <div className="adm-expand-grid">
+                          <div className="adm-expand-inner">
+                            <div
+                              className="adm-expand-body"
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "14px",
+                                flexWrap: "wrap",
+                                borderLeft: "3px solid var(--adm-primary)",
+                              }}
+                            >
+                              <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                                <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                  Hızlı Teklif & Kapsam Özeti — {item.company} ({item.id})
+                                </span>
+                                <span style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)" }}>
+                                  Talep Edilen Çözüm: <b>{item.service}</b> • Tahmini Bütçe: <b>{item.budget}</b> • Yetkili: {item.contact}
+                                </span>
+                              </div>
+
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setSentIds((prev) => ({ ...prev, [item.id]: true }))}
+                                  className="adm-topbar__btn adm-topbar__btn--primary"
+                                  style={{
+                                    background: isSent ? "#1a9e4b" : undefined,
+                                    borderColor: isSent ? "#1a9e4b" : undefined,
+                                  }}
+                                >
+                                  <Send size={12} />
+                                  <span>{isSent ? "Kurumsal Teklif PDF Gönderildi ✓" : "Hızlı Kurumsal Teklif Gönder"}</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>

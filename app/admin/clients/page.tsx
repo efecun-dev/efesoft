@@ -427,93 +427,96 @@ export default function AdminClientsPage() {
       </div>
 
       {/* Quick-Add Client Form */}
-      {showAddForm && (
-        <form
-          onSubmit={handleAddClient}
-          className="adm-card"
-          style={{
-            padding: "12px 16px",
-            borderColor: "rgba(0, 113, 227, 0.35)",
-            background: "#f8fafc",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
-            Yeni Kurumsal Müşteri:
-          </span>
-          <input
-            type="text"
-            placeholder="Resmi Şirket Ünvanı *"
-            value={newCompanyName}
-            onChange={(e) => setNewCompanyName(e.target.value)}
-            required
+      {/* Animated Quick-Add Client Form */}
+      <div className={`adm-collapse ${showAddForm ? "adm-collapse--open" : ""}`}>
+        <div className="adm-collapse__inner">
+          <form
+            onSubmit={handleAddClient}
+            className="adm-card"
             style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "2 1 220px",
+              padding: "12px 16px",
+              borderColor: "rgba(0, 113, 227, 0.35)",
+              background: "#f8fafc",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              flexWrap: "wrap",
             }}
-          />
-          <input
-            type="text"
-            placeholder="Ana Yetkili Adı Soyadı *"
-            value={newContactName}
-            onChange={(e) => setNewContactName(e.target.value)}
-            required
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              flex: "1 1 160px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Şehir"
-            value={newCity}
-            onChange={(e) => setNewCity(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              width: "120px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Yıllık Sözleşme (ARR)"
-            value={newArr}
-            onChange={(e) => setNewArr(e.target.value)}
-            style={{
-              height: "30px",
-              padding: "0 10px",
-              borderRadius: "6px",
-              border: "1px solid var(--adm-border)",
-              fontSize: "12px",
-              background: "#ffffff",
-              width: "140px",
-            }}
-          />
-          <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
-            Şirketi Oluştur
-          </button>
-          <button type="button" onClick={() => setShowAddForm(false)} className="adm-topbar__btn">
-            İptal
-          </button>
-        </form>
-      )}
+          >
+            <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-primary)" }}>
+              Yeni Kurumsal Müşteri:
+            </span>
+            <input
+              type="text"
+              placeholder="Resmi Şirket Ünvanı *"
+              value={newCompanyName}
+              onChange={(e) => setNewCompanyName(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "2 1 220px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Ana Yetkili Adı Soyadı *"
+              value={newContactName}
+              onChange={(e) => setNewContactName(e.target.value)}
+              required
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                flex: "1 1 160px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Şehir"
+              value={newCity}
+              onChange={(e) => setNewCity(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                width: "120px",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Yıllık Sözleşme (ARR)"
+              value={newArr}
+              onChange={(e) => setNewArr(e.target.value)}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "6px",
+                border: "1px solid var(--adm-border)",
+                fontSize: "12px",
+                background: "#ffffff",
+                width: "140px",
+              }}
+            />
+            <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
+              Şirketi Oluştur
+            </button>
+            <button type="button" onClick={() => setShowAddForm(false)} className="adm-topbar__btn">
+              İptal
+            </button>
+          </form>
+        </div>
+      </div>
 
       {/* 5-Column High-Density KPI Row */}
       <div className="adm-kpi-grid">
@@ -667,7 +670,7 @@ export default function AdminClientsPage() {
                 <th style={{ textAlign: "right" }}>İnceleme</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody key={`${tierFilter}-${statusFilter}`} className="adm-data-switch">
               {filteredClients.map((client) => {
                 const isExpanded = expandedClientId === client.id;
                 const isRenewalSent = renewalSentIds[client.id];
@@ -844,191 +847,195 @@ export default function AdminClientsPage() {
                       </td>
                     </tr>
 
-                    {isExpanded && (
-                      <tr style={{ background: "#f8fafc" }}>
-                        <td colSpan={8} style={{ padding: "14px 18px" }}>
-                          <div
-                            style={{
-                              display: "grid",
-                              gridTemplateColumns: "1.2fr 1.1fr 1fr",
-                              gap: "12px",
-                              borderLeft: "3px solid var(--adm-primary)",
-                              paddingLeft: "14px",
-                            }}
-                          >
-                            {/* Col 1: Tax Info, Dedicated Server Node & Seat Quota */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                    Kurumsal Kimlik & Sunucu Altyapısı
-                                  </span>
-                                  <span className="adm-badge adm-badge--success">SLA: %99.98</span>
-                                </div>
-
-                                <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)" }}>
-                                  <b>Vergi / Sicil:</b> {client.taxInfo}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    fontFamily: "var(--font-mono)",
-                                    color: "var(--adm-primary)",
-                                    background: "var(--adm-surface-2)",
-                                    padding: "5px 8px",
-                                    borderRadius: "6px",
-                                    border: "1px solid var(--adm-border-subtle)",
-                                  }}
-                                >
-                                  Düğüm: {client.tenantNode}
-                                </div>
-                              </div>
-
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontSize: "11.5px", fontWeight: 600 }}>
-                                  Aktif Kota: {client.seatUsage}
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => handleUpgradeSeats(client.id)}
-                                  className="adm-table__action-btn"
-                                  style={{ color: "var(--adm-primary)", fontWeight: 600 }}
-                                >
-                                  +10 Kullanıcı Ekle
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Col 2: Account Manager Note & Operational Summary */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                  <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                    Müşteri Başarı Notu & Durum Özeti
-                                  </span>
-                                  <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                    Temsilci: <b>{client.accountManager}</b>
-                                  </span>
-                                </div>
-
-                                <p
-                                  style={{
-                                    fontSize: "11.5px",
-                                    color: "var(--adm-text-secondary)",
-                                    lineHeight: 1.48,
-                                    margin: 0,
-                                    background: "var(--adm-surface-2)",
-                                    padding: "8px 10px",
-                                    borderRadius: "6px",
-                                    border: "1px solid var(--adm-border-subtle)",
-                                  }}
-                                >
-                                  {client.lastNote}
-                                </p>
-                              </div>
-
+                    <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                      <td colSpan={8} className="adm-expand-cell">
+                        <div className="adm-expand-grid">
+                          <div className="adm-expand-inner">
+                            <div className="adm-expand-body">
                               <div
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  fontSize: "11px",
-                                  color: "var(--adm-text-muted)",
-                                  fontFamily: "var(--font-mono)",
+                                  display: "grid",
+                                  gridTemplateColumns: "1.2fr 1.1fr 1fr",
+                                  gap: "12px",
+                                  borderLeft: "3px solid var(--adm-primary)",
+                                  paddingLeft: "14px",
                                 }}
                               >
-                                <span>Yıllık ARR: {client.arr}</span>
-                                <span>Toplam LTV: {client.ltv}</span>
-                              </div>
-                            </div>
-
-                            {/* Col 3: Direct Renewal & Communication Actions */}
-                            <div
-                              style={{
-                                background: "#ffffff",
-                                border: "1px solid var(--adm-border)",
-                                borderRadius: "8px",
-                                padding: "11px 13px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                  Sözleşme & İletişim İşlemleri
-                                </span>
-                                <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                  Yetkili: {client.contactName} ({client.email})
-                                </span>
-                              </div>
-
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => handleSendRenewalNotice(client.id)}
-                                  className="adm-topbar__btn adm-topbar__btn--primary"
+                                {/* Col 1: Tax Info, Dedicated Server Node & Seat Quota */}
+                                <div
                                   style={{
-                                    width: "100%",
-                                    justifyContent: "center",
-                                    background: isRenewalSent ? "#1a9e4b" : undefined,
-                                    borderColor: isRenewalSent ? "#1a9e4b" : undefined,
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <Send size={13} />
-                                  <span>
-                                    {isRenewalSent
-                                      ? "Yenileme & Ek Lisans Teklifi Gönderildi ✓"
-                                      : "Sözleşme Yenileme / Upsell Teklifi Gönder"}
-                                  </span>
-                                </button>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                      <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                        Kurumsal Kimlik & Sunucu Altyapısı
+                                      </span>
+                                      <span className="adm-badge adm-badge--success">SLA: %99.98</span>
+                                    </div>
 
-                                <div style={{ display: "flex", gap: "6px" }}>
-                                  <a
-                                    href={`tel:${client.phone}`}
-                                    className="adm-topbar__btn"
-                                    style={{ flex: 1, justifyContent: "center" }}
+                                    <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)" }}>
+                                      <b>Vergi / Sicil:</b> {client.taxInfo}
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontSize: "11px",
+                                        fontFamily: "var(--font-mono)",
+                                        color: "var(--adm-primary)",
+                                        background: "var(--adm-surface-2)",
+                                        padding: "5px 8px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      Düğüm: {client.tenantNode}
+                                    </div>
+                                  </div>
+
+                                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <span style={{ fontSize: "11.5px", fontWeight: 600 }}>
+                                      Aktif Kota: {client.seatUsage}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpgradeSeats(client.id)}
+                                      className="adm-table__action-btn"
+                                      style={{ color: "var(--adm-primary)", fontWeight: 600 }}
+                                    >
+                                      +10 Kullanıcı Ekle
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Col 2: Account Manager Note & Operational Summary */}
+                                <div
+                                  style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                      <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                        Müşteri Başarı Notu & Durum Özeti
+                                      </span>
+                                      <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                        Temsilci: <b>{client.accountManager}</b>
+                                      </span>
+                                    </div>
+
+                                    <p
+                                      style={{
+                                        fontSize: "11.5px",
+                                        color: "var(--adm-text-secondary)",
+                                        lineHeight: 1.48,
+                                        margin: 0,
+                                        background: "var(--adm-surface-2)",
+                                        padding: "8px 10px",
+                                        borderRadius: "6px",
+                                        border: "1px solid var(--adm-border-subtle)",
+                                      }}
+                                    >
+                                      {client.lastNote}
+                                    </p>
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      fontSize: "11px",
+                                      color: "var(--adm-text-muted)",
+                                      fontFamily: "var(--font-mono)",
+                                    }}
                                   >
-                                    <PhoneCall size={12} />
-                                    <span>Yetkiliyi Ara</span>
-                                  </a>
-                                  <a
-                                    href={`mailto:${client.email}`}
-                                    className="adm-topbar__btn"
-                                    style={{ flex: 1, justifyContent: "center" }}
-                                  >
-                                    <Mail size={12} />
-                                    <span>E-Posta</span>
-                                  </a>
+                                    <span>Yıllık ARR: {client.arr}</span>
+                                    <span>Toplam LTV: {client.ltv}</span>
+                                  </div>
+                                </div>
+
+                                {/* Col 3: Direct Renewal & Communication Actions */}
+                                <div
+                                  style={{
+                                    background: "#ffffff",
+                                    border: "1px solid var(--adm-border)",
+                                    borderRadius: "8px",
+                                    padding: "11px 13px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                      Sözleşme & İletişim İşlemleri
+                                    </span>
+                                    <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                      Yetkili: {client.contactName} ({client.email})
+                                    </span>
+                                  </div>
+
+                                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSendRenewalNotice(client.id)}
+                                      className="adm-topbar__btn adm-topbar__btn--primary"
+                                      style={{
+                                        width: "100%",
+                                        justifyContent: "center",
+                                        background: isRenewalSent ? "#1a9e4b" : undefined,
+                                        borderColor: isRenewalSent ? "#1a9e4b" : undefined,
+                                      }}
+                                    >
+                                      <Send size={13} />
+                                      <span>
+                                        {isRenewalSent
+                                          ? "Yenileme & Ek Lisans Teklifi Gönderildi ✓"
+                                          : "Sözleşme Yenileme / Upsell Teklifi Gönder"}
+                                      </span>
+                                    </button>
+
+                                    <div style={{ display: "flex", gap: "6px" }}>
+                                      <a
+                                        href={`tel:${client.phone}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
+                                      >
+                                        <PhoneCall size={12} />
+                                        <span>Yetkiliyi Ara</span>
+                                      </a>
+                                      <a
+                                        href={`mailto:${client.email}`}
+                                        className="adm-topbar__btn"
+                                        style={{ flex: 1, justifyContent: "center" }}
+                                      >
+                                        <Mail size={12} />
+                                        <span>E-Posta</span>
+                                      </a>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </td>
-                      </tr>
-                    )}
+                        </div>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

@@ -411,7 +411,7 @@ export default function AdminLiveTrafficPage() {
       </div>
 
       {/* 5-Column High-Density KPI Row */}
-      <div className="adm-kpi-grid">
+      <div key={timeRange} className="adm-kpi-grid adm-data-switch">
         {/* KPI 1: Active Visitors Right Now */}
         <div className="adm-kpi-card" style={{ borderColor: "rgba(26, 158, 75, 0.28)" }}>
           <div className="adm-kpi-card__top">
@@ -730,97 +730,99 @@ export default function AdminLiveTrafficPage() {
           </div>
 
           <div className="adm-card__body" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {dimensionTab === "geo" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
-                {[
-                  { loc: "🇹🇷 İstanbul, Türkiye", share: 38, count: "16 canlı • 564 bugün", color: "#0071e3" },
-                  { loc: "🇹🇷 İzmir, Türkiye", share: 26, count: "11 canlı • 385 bugün", color: "#1a9e4b" },
-                  { loc: "🇹🇷 Ankara, Türkiye", share: 14, count: "6 canlı • 208 bugün", color: "#9a5cf5" },
-                  { loc: "🇩🇪 Frankfurt & Münih, Almanya", share: 11, count: "5 canlı • 162 bugün", color: "#f59e0b" },
-                  { loc: "🇬🇧 Londra & 🇳🇱 Amsterdam", share: 7, count: "3 canlı • 104 bugün", color: "#06b6d4" },
-                  { loc: "🇹🇷 Manisa, Bursa & Kocaeli OSB", share: 4, count: "1 canlı • 59 bugün", color: "#64748b" },
-                ].map((g, i) => (
-                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontWeight: 500 }}>{g.loc}</span>
-                      <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
-                        %{g.share} • {g.count}
-                      </span>
+            <div key={dimensionTab} className="adm-data-switch">
+              {dimensionTab === "geo" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
+                  {[
+                    { loc: "🇹🇷 İstanbul, Türkiye", share: 38, count: "16 canlı • 564 bugün", color: "#0071e3" },
+                    { loc: "🇹🇷 İzmir, Türkiye", share: 26, count: "11 canlı • 385 bugün", color: "#1a9e4b" },
+                    { loc: "🇹🇷 Ankara, Türkiye", share: 14, count: "6 canlı • 208 bugün", color: "#9a5cf5" },
+                    { loc: "🇩🇪 Frankfurt & Münih, Almanya", share: 11, count: "5 canlı • 162 bugün", color: "#f59e0b" },
+                    { loc: "🇬🇧 Londra & 🇳🇱 Amsterdam", share: 7, count: "3 canlı • 104 bugün", color: "#06b6d4" },
+                    { loc: "🇹🇷 Manisa, Bursa & Kocaeli OSB", share: 4, count: "1 canlı • 59 bugün", color: "#64748b" },
+                  ].map((g, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 500 }}>{g.loc}</span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
+                          %{g.share} • {g.count}
+                        </span>
+                      </div>
+                      <div className="adm-progress">
+                        <div className="adm-progress__fill" style={{ width: `${g.share}%`, background: g.color }} />
+                      </div>
                     </div>
-                    <div className="adm-progress">
-                      <div className="adm-progress__fill" style={{ width: `${g.share}%`, background: g.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {dimensionTab === "device" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
-                {[
-                  {
-                    dev: "iPhone • iOS Safari (Apple WebKit)",
-                    share: 48,
-                    count: "20 canlı • Liquid Glass GPU",
-                    color: "#0071e3",
-                  },
-                  {
-                    dev: "macOS & Windows • Google Chrome",
-                    share: 34,
-                    count: "14 canlı • Masaüstü WebGL",
-                    color: "#1a9e4b",
-                  },
-                  {
-                    dev: "Android • Chrome Mobile",
-                    share: 12,
-                    count: "5 canlı • Mobil",
-                    color: "#9a5cf5",
-                  },
-                  {
-                    dev: "Windows 11 • Microsoft Edge",
-                    share: 6,
-                    count: "3 canlı • Kurumsal PC",
-                    color: "#f59e0b",
-                  },
-                ].map((d, i) => (
-                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontWeight: 500 }}>{d.dev}</span>
-                      <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
-                        %{d.share} ({d.count})
-                      </span>
+              {dimensionTab === "device" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
+                  {[
+                    {
+                      dev: "iPhone • iOS Safari (Apple WebKit)",
+                      share: 48,
+                      count: "20 canlı • Liquid Glass GPU",
+                      color: "#0071e3",
+                    },
+                    {
+                      dev: "macOS & Windows • Google Chrome",
+                      share: 34,
+                      count: "14 canlı • Masaüstü WebGL",
+                      color: "#1a9e4b",
+                    },
+                    {
+                      dev: "Android • Chrome Mobile",
+                      share: 12,
+                      count: "5 canlı • Mobil",
+                      color: "#9a5cf5",
+                    },
+                    {
+                      dev: "Windows 11 • Microsoft Edge",
+                      share: 6,
+                      count: "3 canlı • Kurumsal PC",
+                      color: "#f59e0b",
+                    },
+                  ].map((d, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 500 }}>{d.dev}</span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
+                          %{d.share} ({d.count})
+                        </span>
+                      </div>
+                      <div className="adm-progress">
+                        <div className="adm-progress__fill" style={{ width: `${d.share}%`, background: d.color }} />
+                      </div>
                     </div>
-                    <div className="adm-progress">
-                      <div className="adm-progress__fill" style={{ width: `${d.share}%`, background: d.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            {dimensionTab === "source" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
-                {[
-                  { src: "Google Organik Arama (SEO)", share: 41, count: "17 canlı • %5.4 dönüşüm", color: "#0071e3" },
-                  { src: "Doğrudan Giriş (efesoft.com.tr)", share: 25, count: "11 canlı • Marka araması", color: "#1a9e4b" },
-                  { src: "LinkedIn Kurumsal B2B Kampanya", share: 19, count: "8 canlı • %6.8 dönüşüm", color: "#9a5cf5" },
-                  { src: "Google Ads (Kurumsal ERP/CRM)", share: 10, count: "4 canlı • Sponsorlu", color: "#f59e0b" },
-                  { src: "Müşteri Referansı & GitHub", share: 5, count: "2 canlı • B2B", color: "#06b6d4" },
-                ].map((s, i) => (
-                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontWeight: 500 }}>{s.src}</span>
-                      <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
-                        %{s.share} • {s.count}
-                      </span>
+              {dimensionTab === "source" && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
+                  {[
+                    { src: "Google Organik Arama (SEO)", share: 41, count: "17 canlı • %5.4 dönüşüm", color: "#0071e3" },
+                    { src: "Doğrudan Giriş (efesoft.com.tr)", share: 25, count: "11 canlı • Marka araması", color: "#1a9e4b" },
+                    { src: "LinkedIn Kurumsal B2B Kampanya", share: 19, count: "8 canlı • %6.8 dönüşüm", color: "#9a5cf5" },
+                    { src: "Google Ads (Kurumsal ERP/CRM)", share: 10, count: "4 canlı • Sponsorlu", color: "#f59e0b" },
+                    { src: "Müşteri Referansı & GitHub", share: 5, count: "2 canlı • B2B", color: "#06b6d4" },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 500 }}>{s.src}</span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: "11px" }}>
+                          %{s.share} • {s.count}
+                        </span>
+                      </div>
+                      <div className="adm-progress">
+                        <div className="adm-progress__fill" style={{ width: `${s.share}%`, background: s.color }} />
+                      </div>
                     </div>
-                    <div className="adm-progress">
-                      <div className="adm-progress__fill" style={{ width: `${s.share}%`, background: s.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Top Organic Search Keywords Box */}
             <div
@@ -961,7 +963,7 @@ export default function AdminLiveTrafficPage() {
                 <th style={{ textAlign: "right" }}>İzleme</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody key={sessionFilter} className="adm-data-switch">
               {filteredSessions.map((session) => {
                 const isExpanded = expandedSessionId === session.id;
                 return (
@@ -1146,80 +1148,87 @@ export default function AdminLiveTrafficPage() {
                       </td>
                     </tr>
 
-                    {isExpanded && (
-                      <tr key={`${session.id}-journey`} style={{ background: "#f8fafc" }}>
-                        <td colSpan={8} style={{ padding: "12px 18px" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "8px",
-                              borderLeft: "3px solid var(--adm-primary)",
-                              paddingLeft: "12px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: "8px",
-                              }}
-                            >
-                              <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
-                                Canlı Tıklama & Gezinme Akışı (Clickstream) — {session.org} ({session.id})
-                              </span>
-                              <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
-                                Cihaz: {session.deviceLabel} • {session.browser}
-                              </span>
-                            </div>
-
-                            <div
-                              style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: "8px",
-                                marginTop: "2px",
-                              }}
-                            >
-                              {session.journey.map((step, sIdx) => (
+                    <tr
+                      key={`${session.id}-journey`}
+                      className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}
+                    >
+                      <td colSpan={8} className="adm-expand-cell">
+                        <div className="adm-expand-grid">
+                          <div className="adm-expand-inner">
+                            <div className="adm-expand-body">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "8px",
+                                  borderLeft: "3px solid var(--adm-primary)",
+                                  paddingLeft: "12px",
+                                }}
+                              >
                                 <div
-                                  key={sIdx}
                                   style={{
-                                    padding: "7px 10px",
-                                    borderRadius: "7px",
-                                    background: "#ffffff",
-                                    border: "1px solid var(--adm-border)",
-                                    fontSize: "11.5px",
                                     display: "flex",
-                                    flexDirection: "column",
-                                    gap: "2px",
-                                    minWidth: "190px",
-                                    flex: "1 1 200px",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      fontSize: "10.5px",
-                                      fontFamily: "var(--font-mono)",
-                                    }}
-                                  >
-                                    <span style={{ fontWeight: 700, color: "var(--adm-primary)" }}>
-                                      {sIdx + 1}. {step.page}
-                                    </span>
-                                    <span style={{ color: "var(--adm-text-muted)" }}>{step.time}</span>
-                                  </div>
-                                  <div style={{ color: "var(--adm-text)" }}>{step.event}</div>
+                                  <span style={{ fontWeight: 700, fontSize: "12px", color: "var(--adm-text)" }}>
+                                    Canlı Tıklama & Gezinme Akışı (Clickstream) — {session.org} ({session.id})
+                                  </span>
+                                  <span style={{ fontSize: "11px", color: "var(--adm-text-muted)" }}>
+                                    Cihaz: {session.deviceLabel} • {session.browser}
+                                  </span>
                                 </div>
-                              ))}
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "8px",
+                                    marginTop: "2px",
+                                  }}
+                                >
+                                  {session.journey.map((step, sIdx) => (
+                                    <div
+                                      key={sIdx}
+                                      style={{
+                                        padding: "7px 10px",
+                                        borderRadius: "7px",
+                                        background: "#ffffff",
+                                        border: "1px solid var(--adm-border)",
+                                        fontSize: "11.5px",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "2px",
+                                        minWidth: "190px",
+                                        flex: "1 1 200px",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          fontSize: "10.5px",
+                                          fontFamily: "var(--font-mono)",
+                                        }}
+                                      >
+                                        <span style={{ fontWeight: 700, color: "var(--adm-primary)" }}>
+                                          {sIdx + 1}. {step.page}
+                                        </span>
+                                        <span style={{ color: "var(--adm-text-muted)" }}>{step.time}</span>
+                                      </div>
+                                      <div style={{ color: "var(--adm-text)" }}>{step.event}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </td>
-                      </tr>
-                    )}
+                        </div>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

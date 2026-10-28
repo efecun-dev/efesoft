@@ -714,7 +714,11 @@ export default function AdminSystemHealthPage() {
             </div>
           </div>
 
-          <div className="adm-card__body" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div
+            key={infraTab}
+            className="adm-card__body adm-data-switch"
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
             {infraTab === "nodes" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
                 {[
@@ -988,7 +992,7 @@ export default function AdminSystemHealthPage() {
                 <th style={{ textAlign: "right" }}>İşlemler</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody key={`${regionFilter}-${serviceCategory}`} className="adm-data-switch">
               {filteredServices.map((svc) => {
                 const isExpanded = expandedServiceId === svc.id;
                 const isPinged = pingedId === svc.id;
@@ -1116,125 +1120,133 @@ export default function AdminSystemHealthPage() {
                       </td>
                     </tr>
 
-                    {isExpanded && (
-                      <tr style={{ background: "#f8fafc" }}>
-                        <td colSpan={8} style={{ padding: "12px 18px" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "10px",
-                              borderLeft: "3px solid var(--adm-primary)",
-                              paddingLeft: "14px",
-                            }}
-                          >
-                            {/* Top Telemetry Header */}
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: "8px",
-                              }}
-                            >
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                                <span
-                                  style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: "6px",
-                                    fontWeight: 700,
-                                    fontSize: "12px",
-                                    color: "var(--adm-text)",
-                                  }}
-                                >
-                                  <Terminal size={13} color="var(--adm-primary)" />
-                                  {svc.name} — Canlı Telemetri & Denetim Kayıtları
-                                </span>
-                                <span className="adm-badge adm-badge--success">Healthcheck: 200 OK</span>
-                              </div>
-
-                              <span
+                    <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                      <td colSpan={8} className="adm-expand-cell">
+                        <div className="adm-expand-grid">
+                          <div className="adm-expand-inner">
+                            <div className="adm-expand-body">
+                              <div
                                 style={{
-                                  fontFamily: "var(--font-mono)",
-                                  fontSize: "11px",
-                                  color: "var(--adm-text-secondary)",
-                                  background: "#ffffff",
-                                  border: "1px solid var(--adm-border)",
-                                  padding: "2px 8px",
-                                  borderRadius: "5px",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "10px",
+                                  borderLeft: "3px solid var(--adm-primary)",
+                                  paddingLeft: "14px",
                                 }}
                               >
-                                {svc.endpoint}
-                              </span>
-                            </div>
-
-                            {/* 3-Card Structured Event Grid */}
-                            <div
-                              style={{
-                                display: "grid",
-                                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                                gap: "8px",
-                              }}
-                            >
-                              {svc.logs.map((lg, lIdx) => (
+                                {/* Top Telemetry Header */}
                                 <div
-                                  key={lIdx}
                                   style={{
-                                    padding: "9px 11px",
-                                    borderRadius: "8px",
-                                    background: "#ffffff",
-                                    border: "1px solid var(--adm-border)",
                                     display: "flex",
-                                    flexDirection: "column",
-                                    gap: "5px",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: "8px",
                                   }}
                                 >
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <span
-                                      className={`adm-badge ${
-                                        lg.level === "OK"
-                                          ? "adm-badge--success"
-                                          : lg.level === "WARN"
-                                          ? "adm-badge--warning"
-                                          : "adm-badge--info"
-                                      }`}
-                                    >
-                                      {lg.level === "OK" ? "DOĞRULANDI" : lg.level === "WARN" ? "UYARI" : "SİSTEM BİLGİSİ"}
-                                    </span>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                                     <span
                                       style={{
-                                        fontFamily: "var(--font-mono)",
-                                        fontSize: "10.5px",
-                                        color: "var(--adm-text-muted)",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px",
+                                        fontWeight: 700,
+                                        fontSize: "12px",
+                                        color: "var(--adm-text)",
                                       }}
                                     >
-                                      Saat {lg.time}
+                                      <Terminal size={13} color="var(--adm-primary)" />
+                                      {svc.name} — Canlı Telemetri & Denetim Kayıtları
                                     </span>
+                                    <span className="adm-badge adm-badge--success">Healthcheck: 200 OK</span>
                                   </div>
-                                  <div
+
+                                  <span
                                     style={{
-                                      fontSize: "11.5px",
-                                      color: "var(--adm-text)",
-                                      lineHeight: 1.4,
+                                      fontFamily: "var(--font-mono)",
+                                      fontSize: "11px",
+                                      color: "var(--adm-text-secondary)",
+                                      background: "#ffffff",
+                                      border: "1px solid var(--adm-border)",
+                                      padding: "2px 8px",
+                                      borderRadius: "5px",
                                     }}
                                   >
-                                    {lg.msg}
-                                  </div>
+                                    {svc.endpoint}
+                                  </span>
                                 </div>
-                              ))}
+
+                                {/* 3-Card Structured Event Grid */}
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  {svc.logs.map((lg, lIdx) => (
+                                    <div
+                                      key={lIdx}
+                                      style={{
+                                        padding: "9px 11px",
+                                        borderRadius: "8px",
+                                        background: "#ffffff",
+                                        border: "1px solid var(--adm-border)",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "5px",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span
+                                          className={`adm-badge ${
+                                            lg.level === "OK"
+                                              ? "adm-badge--success"
+                                              : lg.level === "WARN"
+                                              ? "adm-badge--warning"
+                                              : "adm-badge--info"
+                                          }`}
+                                        >
+                                          {lg.level === "OK"
+                                            ? "DOĞRULANDI"
+                                            : lg.level === "WARN"
+                                            ? "UYARI"
+                                            : "SİSTEM BİLGİSİ"}
+                                        </span>
+                                        <span
+                                          style={{
+                                            fontFamily: "var(--font-mono)",
+                                            fontSize: "10.5px",
+                                            color: "var(--adm-text-muted)",
+                                          }}
+                                        >
+                                          Saat {lg.time}
+                                        </span>
+                                      </div>
+                                      <div
+                                        style={{
+                                          fontSize: "11.5px",
+                                          color: "var(--adm-text)",
+                                          lineHeight: 1.4,
+                                        }}
+                                      >
+                                        {lg.msg}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </td>
-                      </tr>
-                    )}
+                        </div>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

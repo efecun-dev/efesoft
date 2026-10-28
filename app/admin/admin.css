@@ -1417,3 +1417,248 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   Motion, Blur-On/Off Page Transitions, Accordions & Modals
+   ========================================================================== */
+
+/* 1. Route / Page Change Transition (Blur-Out -> Blur-In + Lift) */
+.adm-page-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  transition:
+    opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, filter, transform;
+}
+
+.adm-page-stage--leaving {
+  opacity: 0.22;
+  filter: blur(10px);
+  transform: translateY(4px) scale(0.994);
+  pointer-events: none;
+}
+
+@keyframes admPageBlurIn {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(8px) scale(0.994);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.adm-page-transition {
+  animation: admPageBlurIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, filter, transform;
+}
+
+/* 2. In-Page Tab, Filter, Segment & Data Switch Blur Animation */
+@keyframes admDataBlurIn {
+  0% {
+    opacity: 0.14;
+    filter: blur(7px);
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
+.adm-data-switch {
+  animation: admDataBlurIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes admCardPopIn {
+  0% {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(5px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.adm-item-appear {
+  animation: admCardPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 3. Smooth Expandable Table Detail Row (0fr <-> 1fr + Blur + Slide) */
+.adm-expand-row {
+  background: #f8fafc !important;
+}
+
+.adm-expand-row:hover {
+  background: #f8fafc !important;
+}
+
+.adm-expand-row > td.adm-expand-cell {
+  padding: 0 !important;
+  border-bottom: none !important;
+  background: #f8fafc;
+}
+
+.adm-expand-row.adm-expand-row--open > td.adm-expand-cell {
+  border-bottom: 1px solid var(--adm-border-subtle) !important;
+}
+
+.adm-expand-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  filter: blur(7px);
+  pointer-events: none;
+  transition:
+    grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.adm-expand-row--open .adm-expand-grid {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  filter: blur(0px);
+  pointer-events: auto;
+}
+
+.adm-expand-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.adm-expand-body {
+  padding: 0 18px;
+  transform: translateY(-6px);
+  transition:
+    padding 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.adm-expand-row--open .adm-expand-body {
+  padding: 14px 18px;
+  transform: translateY(0);
+}
+
+/* 4. Smooth Collapsible Top Drawer / Quick-Add Forms */
+.adm-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  filter: blur(6px);
+  margin-top: -14px;
+  pointer-events: none;
+  transition:
+    grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.adm-collapse--open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  filter: blur(0px);
+  margin-top: 0;
+  pointer-events: auto;
+}
+
+.adm-collapse__inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* 5. Animated Dropdowns & Dialog Modals */
+.adm-dropdown-modal {
+  position: absolute;
+  top: 58px;
+  right: 20px;
+  width: 360px;
+  max-width: calc(100vw - 84px);
+  background: #ffffff;
+  border: 1px solid var(--adm-border);
+  border-radius: 10px;
+  padding: 14px;
+  z-index: 1000;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.26s;
+}
+
+.adm-dropdown-modal--open {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.adm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.26s;
+}
+
+.adm-modal-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.adm-modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border: 1px solid var(--adm-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(12px) scale(0.96);
+  transition:
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.adm-modal-overlay--open .adm-modal-card {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0) scale(1);
+}
