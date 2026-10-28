@@ -1,15 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Check, ArrowRight } from "./icons";
 import AnimatedNumber from "./AnimatedNumber";
 
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
 export default function PricingSection() {
+  const containerRef = useRef<HTMLElement>(null);
   const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
   const isYearly = billing === "yearly";
 
+  useGSAP(
+    () => {
+      const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (isReduced) return;
+
+      // Card entrance animation
+      gsap.from(".plan", {
+        scrollTrigger: {
+          trigger: ".plans",
+          start: "top 80%",
+          once: true,
+        },
+        y: 40,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 1,
+        ease: "power3.out",
+      });
+
+      // Ambient background orb parallax
+      gsap.to(".pricing .ambient__orb", {
+        y: 120,
+        x: -30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      // Multi-layer parallax for plans on desktop
+      gsap.matchMedia().add("(min-width: 901px)", () => {
+        // Featured plan floats forward with depth
+        gsap.to(".plan--featured", {
+          y: -25,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".plans",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.9,
+          },
+        });
+
+        // Side plans have subtle counter-rate
+        gsap.to(".plan:not(.plan--featured)", {
+          y: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".plans",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.1,
+          },
+        });
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <section id="lisanslama" className="section pricing">
+    <section ref={containerRef} id="lisanslama" className="section pricing">
       {/* Ambient background accent */}
       <div className="ambient" aria-hidden>
         <div

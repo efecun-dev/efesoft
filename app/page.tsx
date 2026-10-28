@@ -5,11 +5,11 @@ import ServicesBento from "./components/ServicesBento";
 import ProductsSection from "./components/ProductsSection";
 import PricingSection from "./components/PricingSection";
 import ProcessSection from "./components/ProcessSection";
+import TechDeepDiveSection from "./components/TechDeepDiveSection";
 import StatsAndTestimonial from "./components/StatsAndTestimonial";
 import CtaSection from "./components/CtaSection";
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
-import LiquidGlassFilter from "./components/LiquidGlassFilter";
 import SpotlightTracker from "./components/SpotlightTracker";
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -19,9 +19,8 @@ export default function Home() {
       {/* 3D Model Loading Screen */}
       <LoadingScreen />
 
-      {/* Lenis Smooth Scroll, SVG Liquid Glass refraction filter & cursor spotlight */}
+      {/* Lenis Smooth Scroll & cursor spotlight */}
       <SmoothScroll />
-      <LiquidGlassFilter />
       <SpotlightTracker />
 
       {/* Floating Navigation */}
@@ -35,6 +34,7 @@ export default function Home() {
         <ProductsSection />
         <PricingSection />
         <ProcessSection />
+        <TechDeepDiveSection />
         <StatsAndTestimonial />
         <CtaSection />
       </main>

@@ -3,10 +3,11 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroScene from "./HeroScene";
-import { ArrowRight, Sparkle, Shield, Rocket } from "./icons";
+import { ArrowRight, Shield, Rocket } from "./icons";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLElement>(null);
@@ -25,30 +26,31 @@ export default function HeroSection() {
       tl.set(".hero__title", { visibility: "visible" })
         .fromTo(
           "[data-hero='pill']",
-          { y: -20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, delay: 0.15 }
+          { y: -20, opacity: 0, filter: "blur(8px)" },
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.9, delay: 0.15 }
         )
         .from(
           ".hero__word",
           {
-            y: 45,
+            y: 52,
             opacity: 0,
-            rotationX: -25,
-            stagger: 0.05,
-            duration: 1.2,
-            ease: "back.out(1.4)",
+            rotationX: -35,
+            filter: "blur(10px)",
+            stagger: 0.06,
+            duration: 1.25,
+            ease: "expo.out",
           },
           "-=0.7"
         )
         .fromTo(
           "[data-hero='sub']",
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.0 },
-          "-=0.8"
+          { y: 28, opacity: 0, filter: "blur(6px)" },
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.0 },
+          "-=0.85"
         )
         .fromTo(
           "[data-hero='ctas'] > *",
-          { y: 20, opacity: 0, scale: 0.95 },
+          { y: 22, opacity: 0, scale: 0.94 },
           { y: 0, opacity: 1, scale: 1, stagger: 0.1, duration: 0.85 },
           "-=0.7"
         )
@@ -60,10 +62,130 @@ export default function HeroSection() {
         )
         .fromTo(
           "[data-hero-widget]",
-          { y: 35, opacity: 0, scale: 0.92 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.15, duration: 1.2, ease: "expo.out" },
-          "-=0.8"
+          { y: 40, opacity: 0, scale: 0.9, filter: "blur(8px)" },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            stagger: 0.15,
+            duration: 1.25,
+            ease: "expo.out",
+          },
+          "-=0.85"
         );
+
+      /* ---------- Real-time multi-plane pointer depth parallax ---------- */
+      const container = containerRef.current;
+      let cleanupPointer: (() => void) | undefined;
+      if (container && window.matchMedia("(pointer: fine)").matches) {
+        const w1x = gsap.quickTo(".widget--deploy", "x", { duration: 0.9, ease: "power3.out" });
+        const w2x = gsap.quickTo(".widget--license", "x", { duration: 1.1, ease: "power3.out" });
+        const w3x = gsap.quickTo(".widget--code", "x", { duration: 0.75, ease: "power3.out" });
+
+        const onMove = (e: PointerEvent) => {
+          const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+          w1x(nx * -18);
+          w2x(nx * 26);
+          w3x(nx * -14);
+        };
+        window.addEventListener("pointermove", onMove, { passive: true });
+        cleanupPointer = () => window.removeEventListener("pointermove", onMove);
+      }
+
+      /* ---------- Multi-plane scroll parallax scrub ---------- */
+      // Ambient orbs parallax
+      gsap.to(".hero .ambient__orb:first-child", {
+        y: 130,
+        x: -35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      gsap.to(".hero .ambient__orb:last-child", {
+        y: -110,
+        x: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      });
+
+      // Hero text gently recedes with depth
+      gsap.to(".hero__content", {
+        y: 75,
+        scale: 0.97,
+        opacity: 0.35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "80% top",
+          scrub: 0.8,
+        },
+      });
+
+      // Floating glass widgets parallax at 3 distinct velocities
+      gsap.to(".widget--deploy", {
+        y: -125,
+        rotationZ: -2.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8,
+        },
+      });
+
+      gsap.to(".widget--license", {
+        y: -175,
+        rotationZ: 2,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.1,
+        },
+      });
+
+      gsap.to(".widget--code", {
+        y: -90,
+        rotationZ: -1.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+
+      // Scroll hint fades out on first scroll
+      gsap.to(".hero__scroll", {
+        opacity: 0,
+        y: 15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "120px top",
+          scrub: true,
+        },
+      });
+
+      return () => {
+        cleanupPointer?.();
+      };
     },
     { scope: containerRef }
   );
@@ -182,7 +304,7 @@ export default function HeroSection() {
             </div>
             <div>
               <div className="widget__title">EfeCloud Canlı Dağıtım</div>
-              <div className="widget__desc">v4.8.2 · Sıfır Kesinti</div>
+              <div className="widget__desc">v4.8.2 · Sıfır Kesinti · 0.4ms</div>
             </div>
           </div>
           <div className="widget__progress">
@@ -205,7 +327,7 @@ export default function HeroSection() {
             </div>
             <div>
               <div className="widget__title">Kurumsal Lisans</div>
-              <div className="widget__desc">SaaS & On-Premise</div>
+              <div className="widget__desc">SaaS &amp; On-Premise</div>
             </div>
           </div>
           <div className="widget__big">

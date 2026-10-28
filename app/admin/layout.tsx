@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import "./admin.css";
 import Image from "next/image";
 
@@ -207,10 +208,25 @@ function IconBell() {
 
 function IconMenu() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+    </svg>
+  );
+}
+
+function IconChevronLeft() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
+function IconChevronRight() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m9 18 6-6-6-6" />
     </svg>
   );
 }
@@ -219,8 +235,9 @@ interface NavItem {
   id: string;
   label: string;
   icon: React.ReactNode;
+  href?: string;
   badge?: string;
-  badgeType?: "blue" | "amber";
+  badgeType?: "blue" | "amber" | "green";
   active?: boolean;
 }
 
@@ -230,26 +247,122 @@ interface NavGroup {
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  // On mobile/tablet (<=960px): false = 60px icon rail, true = 270px expanded drawer
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // On desktop (>960px): false = 270px expanded sidebar, true = 64px icon rail
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [filterQuery, setFilterQuery] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [railTooltip, setRailTooltip] = useState<{
+    label: string;
+    badge?: string;
+    top: number;
+    left: number;
+  } | null>(null);
+
+  const handleToggleSidebar = () => {
+    setRailTooltip(null);
+    if (typeof window !== "undefined" && window.innerWidth <= 960) {
+      setSidebarOpen((prev) => !prev);
+    } else {
+      setDesktopCollapsed((prev) => !prev);
+    }
+  };
+
+  const handleNavItemHover = (
+    e: React.MouseEvent<HTMLElement>,
+    item: NavItem
+  ) => {
+    const isMobileRail =
+      typeof window !== "undefined" && window.innerWidth <= 960 && !sidebarOpen;
+    const isDesktopRail =
+      typeof window !== "undefined" && window.innerWidth > 960 && desktopCollapsed;
+
+    if (isMobileRail || isDesktopRail) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setRailTooltip({
+        label: item.label,
+        badge: item.badge,
+        top: rect.top + rect.height / 2,
+        left: rect.right + 10,
+      });
+    } else {
+      setRailTooltip(null);
+    }
+  };
+
+  const isAnalyticsRoute = pathname?.startsWith("/admin/analytics");
+  const isSystemHealthRoute = pathname?.startsWith("/admin/system-health");
+  const isLeadsRoute = pathname?.startsWith("/admin/leads");
+  const isClientsRoute = pathname?.startsWith("/admin/clients");
+  const currentTab = isAnalyticsRoute
+    ? "analytics"
+    : isSystemHealthRoute
+    ? "system-health"
+    : isLeadsRoute
+    ? "leads"
+    : isClientsRoute
+    ? "clients"
+    : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
   const navGroups: NavGroup[] = [
     {
       category: "GENEL & ANALİTİK",
       items: [
-        { id: "dashboard", label: "Dashboard (Genel Bakış)", icon: <IconDashboard />, active: activeTab === "dashboard" },
-        { id: "analytics", label: "Canlı Trafik & Ziyaretçiler", icon: <IconAnalytics /> },
-        { id: "system-health", label: "Sunucu & Sistem Sağlığı", icon: <IconServer />, badge: "99.98%" },
+        {
+          id: "dashboard",
+          label: "Dashboard (Genel Bakış)",
+          icon: <IconDashboard />,
+          href: "/admin",
+          active:
+            !isAnalyticsRoute &&
+            !isSystemHealthRoute &&
+            !isLeadsRoute &&
+            !isClientsRoute &&
+            currentTab === "dashboard",
+        },
+        {
+          id: "analytics",
+          label: "Canlı Trafik & Ziyaretçiler",
+          icon: <IconAnalytics />,
+          href: "/admin/analytics",
+          badge: "42 Canlı",
+          badgeType: "green",
+          active: isAnalyticsRoute || currentTab === "analytics",
+        },
+        {
+          id: "system-health",
+          label: "Sunucu & Sistem Sağlığı",
+          icon: <IconServer />,
+          href: "/admin/system-health",
+          badge: "99.98%",
+          badgeType: "green",
+          active: isSystemHealthRoute || currentTab === "system-health",
+        },
       ],
     },
     {
       category: "MÜŞTERİ & SATIŞ (CRM)",
       items: [
-        { id: "leads", label: "Gelen Teklif Talepleri", icon: <IconInbox />, badge: "8 Yeni", badgeType: "blue" },
-        { id: "clients", label: "Müşteriler & Şirketler (CRM)", icon: <IconUsers /> },
+        {
+          id: "leads",
+          label: "Gelen Teklif Talepleri",
+          icon: <IconInbox />,
+          href: "/admin/leads",
+          badge: "8 Yeni",
+          badgeType: "blue",
+          active: isLeadsRoute || currentTab === "leads",
+        },
+        {
+          id: "clients",
+          label: "Müşteriler & Şirketler (CRM)",
+          icon: <IconUsers />,
+          href: "/admin/clients",
+          active: isClientsRoute || currentTab === "clients",
+        },
         { id: "pipeline", label: "Satış Görüşmeleri & Pipeline", icon: <IconDeals /> },
         { id: "contracts", label: "Sözleşmeler & Teklifler", icon: <IconContracts /> },
       ],
@@ -311,14 +424,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="adm-shell">
-      {/* Sidebar */}
-      <aside className={`adm-sidebar ${sidebarOpen ? "adm-sidebar--open" : ""}`}>
-        {/* Brand Header */}
+      {/* Mobile Backdrop when Sidebar is Expanded over Content */}
+      <div
+        className={`adm-sidebar-backdrop ${sidebarOpen ? "adm-sidebar-backdrop--visible" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      {/* Sidebar (Icon Rail when Closed, Full 270px when Open) */}
+      <aside
+        className={`adm-sidebar ${sidebarOpen ? "adm-sidebar--open" : ""} ${
+          desktopCollapsed ? "adm-sidebar--collapsed" : ""
+        }`}
+      >
+        {/* Brand Header & Collapse/Expand Button */}
         <div className="adm-sidebar__brand">
           <Link href="/admin" className="adm-sidebar__logo-link">
-            <Image src="/logo/efesoft-logo-light-4k.png" alt="Efesoft" width={120} height={40} />
+            <Image
+              src="/logo/efesoft-logo-light-4k.png"
+              alt="Efesoft Logo"
+              width={124}
+              height={39}
+              priority
+              className="adm-sidebar__logo-img"
+            />
           </Link>
-          <span className="adm-sidebar__version">v2.4 Pro</span>
+
+          <button
+            type="button"
+            onClick={handleToggleSidebar}
+            className="adm-sidebar__collapse-btn"
+            title={desktopCollapsed && !sidebarOpen ? "Menüyü Genişlet" : "Menüyü Daralt (İkon Görünümü)"}
+            aria-label="Menüyü Daralt veya Genişlet"
+          >
+            {desktopCollapsed && !sidebarOpen ? <IconChevronRight /> : <IconChevronLeft />}
+          </button>
         </div>
 
         {/* Search / Filter Navigation */}
@@ -336,37 +475,66 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation Categories */}
-        <nav className="adm-sidebar__nav">
+        <nav
+          className="adm-sidebar__nav"
+          onScroll={() => setRailTooltip(null)}
+        >
           {filteredGroups.map((group) => (
             <div key={group.category} className="adm-nav-group">
               <div className="adm-nav-group__title">{group.category}</div>
-              {group.items.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`adm-nav-item ${item.active ? "adm-nav-item--active" : ""}`}
-                >
-                  <div className="adm-nav-item__left">
-                    <span className="adm-nav-item__icon">{item.icon}</span>
-                    <span className="adm-nav-item__label">{item.label}</span>
+              {group.items.map((item) => {
+                const badgeClass = `adm-nav-item__badge ${
+                  item.badgeType === "blue"
+                    ? "adm-nav-item__badge--blue"
+                    : item.badgeType === "amber"
+                    ? "adm-nav-item__badge--amber"
+                    : item.badgeType === "green"
+                    ? "adm-nav-item__badge--green"
+                    : ""
+                }`;
+                const inner = (
+                  <>
+                    <div className="adm-nav-item__left">
+                      <span className="adm-nav-item__icon">{item.icon}</span>
+                      <span className="adm-nav-item__label">{item.label}</span>
+                    </div>
+                    {item.badge && <span className={badgeClass}>{item.badge}</span>}
+                  </>
+                );
+
+                return item.href ? (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    title={item.badge ? `${item.label} (${item.badge})` : item.label}
+                    onMouseEnter={(e) => handleNavItemHover(e, item)}
+                    onMouseLeave={() => setRailTooltip(null)}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setSidebarOpen(false);
+                      setRailTooltip(null);
+                    }}
+                    className={`adm-nav-item ${item.active ? "adm-nav-item--active" : ""}`}
+                  >
+                    {inner}
+                  </Link>
+                ) : (
+                  <div
+                    key={item.id}
+                    title={item.badge ? `${item.label} (${item.badge})` : item.label}
+                    onMouseEnter={(e) => handleNavItemHover(e, item)}
+                    onMouseLeave={() => setRailTooltip(null)}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setSidebarOpen(false);
+                      setRailTooltip(null);
+                    }}
+                    className={`adm-nav-item ${item.active ? "adm-nav-item--active" : ""}`}
+                  >
+                    {inner}
                   </div>
-                  {item.badge && (
-                    <span
-                      className={`adm-nav-item__badge ${item.badgeType === "blue"
-                        ? "adm-nav-item__badge--blue"
-                        : item.badgeType === "amber"
-                          ? "adm-nav-item__badge--amber"
-                          : ""
-                        }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </nav>
@@ -385,7 +553,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <div className="adm-sidebar__user">
             <div className="adm-sidebar__user-left">
-              <div className="adm-sidebar__avatar">
+              <div className="adm-sidebar__avatar" title="Emirhan Demir — Kurucu & Baş Mimar">
                 ED
                 <span className="adm-sidebar__avatar-dot" />
               </div>
@@ -395,11 +563,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             </div>
             <Link href="/" className="adm-sidebar__site-link" title="Web Sitesine Dön">
-              Siteye Git ↗
+              <span className="adm-sidebar__site-link-text">Siteye Git</span>
+              <span>↗</span>
             </Link>
           </div>
         </div>
       </aside>
+
+      {/* Floating Tooltip for Collapsed Icon Rail */}
+      {railTooltip && (
+        <div
+          className="adm-rail-tooltip"
+          style={{
+            top: `${railTooltip.top}px`,
+            left: `${railTooltip.left}px`,
+          }}
+        >
+          <span>{railTooltip.label}</span>
+          {railTooltip.badge && (
+            <span
+              style={{
+                background: "rgba(255, 255, 255, 0.16)",
+                color: "#34d399",
+                padding: "1px 6px",
+                borderRadius: "999px",
+                fontSize: "10px",
+                fontFamily: "var(--font-mono)",
+              }}
+            >
+              {railTooltip.badge}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Main Container */}
       <div className="adm-main">
@@ -407,19 +603,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="adm-topbar">
           <div className="adm-topbar__left">
             <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={handleToggleSidebar}
               className="adm-topbar__toggle-btn"
-              aria-label="Menüyü aç"
+              title="Yan Menüyü Daralt / Genişlet"
+              aria-label="Yan Menüyü Daralt veya Genişlet"
             >
               <IconMenu />
             </button>
 
             <div className="adm-topbar__breadcrumb">
-              <span>Efesoft</span>
-              <span className="adm-topbar__breadcrumb-sep">/</span>
-              <span>Yönetim</span>
-              <span className="adm-topbar__breadcrumb-sep">/</span>
-              <span className="adm-topbar__breadcrumb-current">Dashboard</span>
+              <span className="adm-topbar__breadcrumb-prefix">Efesoft</span>
+              <span className="adm-topbar__breadcrumb-sep adm-topbar__breadcrumb-prefix">/</span>
+              <span className="adm-topbar__breadcrumb-prefix">Yönetim</span>
+              <span className="adm-topbar__breadcrumb-sep adm-topbar__breadcrumb-prefix">/</span>
+              <span className="adm-topbar__breadcrumb-current">
+                {isAnalyticsRoute
+                  ? "Canlı Trafik & Ziyaretçiler"
+                  : isSystemHealthRoute
+                  ? "Sunucu & Sistem Sağlığı"
+                  : isLeadsRoute
+                  ? "Gelen Teklif Talepleri"
+                  : isClientsRoute
+                  ? "Müşteriler & Şirketler (CRM)"
+                  : "Dashboard"}
+              </span>
             </div>
 
             <div className="adm-topbar__status-pill">
@@ -439,7 +646,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="adm-topbar__notif-badge" />
             </button>
 
-            <Link href="/" className="adm-topbar__btn" target="_blank">
+            <Link
+              href="/"
+              className="adm-topbar__btn adm-topbar__btn--secondary-hide"
+              target="_blank"
+            >
               Canlı Siteyi Gör ↗
             </Link>
 

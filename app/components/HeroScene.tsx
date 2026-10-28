@@ -92,14 +92,20 @@ float blob(vec2 p, vec2 c, float r){
 void main(){
   vec2 p = vUv;
   p.x *= uAspect;
-  float t = uTime * 0.07;
+  float t = uTime * 0.08;
   vec2 f = vec2(uFocus.x * uAspect, uFocus.y);
 
   vec3 col = uBase;
-  col = mix(col, uC1, blob(p, f + vec2(0.25*sin(t*1.3), 0.18*cos(t)), 0.75) * 0.75);
-  col = mix(col, uC2, blob(p, f + vec2(-0.42 + 0.2*cos(t*0.9), -0.28 + 0.12*sin(t*1.7)), 0.7) * 0.7);
-  col = mix(col, uC3, blob(p, f + vec2(0.35 + 0.15*sin(t*1.1), -0.35 + 0.1*cos(t*1.4)), 0.6) * 0.6);
-  col = mix(col, uC4, blob(p, vec2(0.12*uAspect + 0.1*sin(t), 0.92), 0.55) * 0.35);
+  col = mix(col, uC1, blob(p, f + vec2(0.25*sin(t*1.3), 0.18*cos(t)), 0.78) * 0.78);
+  col = mix(col, uC2, blob(p, f + vec2(-0.42 + 0.2*cos(t*0.9), -0.28 + 0.12*sin(t*1.7)), 0.72) * 0.72);
+  col = mix(col, uC3, blob(p, f + vec2(0.35 + 0.15*sin(t*1.1), -0.35 + 0.1*cos(t*1.4)), 0.62) * 0.62);
+  col = mix(col, uC4, blob(p, vec2(0.14*uAspect + 0.1*sin(t), 0.88), 0.58) * 0.38);
+
+  // Subtle architectural dot matrix in the aurora background for glass refraction
+  vec2 gridUv = fract(p * 18.0) - 0.5;
+  float dotMask = smoothstep(0.09, 0.04, length(gridUv));
+  float focusDist = smoothstep(1.1, 0.1, length(p - f));
+  col = mix(col, vec3(0.0, 0.44, 0.89), dotMask * focusDist * 0.07);
 
   // subtle grain to avoid banding
   float n = fract(sin(dot(vUv * 1000.0, vec2(12.9898, 78.233))) * 43758.5453);
@@ -116,18 +122,18 @@ function makeGlass(overrides: Partial<THREE.MeshPhysicalMaterialParameters> = {}
   return new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     metalness: 0,
-    roughness: 0.05,
+    roughness: 0.04,
     transmission: 1,
-    thickness: 1.4,
-    ior: 1.42,
-    dispersion: 0.45,
-    iridescence: 0.9,
-    iridescenceIOR: 1.25,
-    iridescenceThicknessRange: [120, 640],
+    thickness: 1.5,
+    ior: 1.45,
+    dispersion: 0.52,
+    iridescence: 0.92,
+    iridescenceIOR: 1.28,
+    iridescenceThicknessRange: [120, 680],
     clearcoat: 1,
-    clearcoatRoughness: 0.06,
+    clearcoatRoughness: 0.05,
     specularIntensity: 1,
-    envMapIntensity: 1.25,
+    envMapIntensity: 1.35,
     attenuationColor: new THREE.Color("#eaf2ff"),
     attenuationDistance: 2.2,
     ...overrides,
@@ -141,29 +147,62 @@ export default function HeroScene() {
     const mount = mountRef.current;
     if (!mount) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isSmall = window.matchMedia("(max-width: 900px)").matches;
+    const markReady = () => {
+      if (typeof window !== "undefined") {
+        (window as unknown as { __efesoft_3d_ready?: boolean }).__efesoft_3d_ready = true;
+        window.dispatchEvent(new CustomEvent("efesoft:3d-ready"));
+      }
+    };
 
-    /* ---------- renderer ---------- */
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.5 : 1.75));
-    renderer.toneMapping = THREE.NeutralToneMapping;
-    renderer.toneMappingExposure = 1.05;
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
+    let cleanupScene: (() => void) | null = null;
+    const initRaf = requestAnimationFrame(() => {
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isSmall = window.matchMedia("(max-width: 900px)").matches;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0, 10);
+      /* ---------- safe WebGL pre-flight check ---------- */
+      const canvas = document.createElement("canvas");
+      const glOpts: WebGLContextAttributes = {
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      };
+      const gl =
+        (canvas.getContext("webgl2", glOpts) as WebGLRenderingContext | null) ||
+        (canvas.getContext("webgl", glOpts) as WebGLRenderingContext | null);
 
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const room = new RoomEnvironment();
-    const envTex = pmrem.fromScene(room, 0.035).texture;
-    scene.environment = envTex;
+      if (!gl) {
+        markReady();
+        return;
+      }
+
+      let renderer: THREE.WebGLRenderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          context: gl,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+      } catch {
+        markReady();
+        return;
+      }
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.5 : 1.75));
+      renderer.toneMapping = THREE.NeutralToneMapping;
+      renderer.toneMappingExposure = 1.06;
+      renderer.setClearColor(0x000000, 0);
+      mount.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+      camera.position.set(0, 0, 10);
+
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const room = new RoomEnvironment();
+      const envTex = pmrem.fromScene(room, 0.035).texture;
+      room.dispose();
+      scene.environment = envTex;
 
     /* ---------- background aurora ---------- */
     const bgUniforms = {
@@ -171,10 +210,10 @@ export default function HeroScene() {
       uAspect: { value: 1 },
       uFocus: { value: new THREE.Vector2(0.72, 0.5) },
       uBase: { value: new THREE.Color("#f4f6fb") },
-      uC1: { value: new THREE.Color("#b9d4ff") },
-      uC2: { value: new THREE.Color("#d9ccff") },
-      uC3: { value: new THREE.Color("#bff0ea") },
-      uC4: { value: new THREE.Color("#ffe1d1") },
+      uC1: { value: new THREE.Color("#b4d2ff") },
+      uC2: { value: new THREE.Color("#d5c6ff") },
+      uC3: { value: new THREE.Color("#b8f0ea") },
+      uC4: { value: new THREE.Color("#ffe0cf") },
     };
     const bgMat = new THREE.ShaderMaterial({
       uniforms: bgUniforms,
@@ -191,10 +230,10 @@ export default function HeroScene() {
     scene.add(bg);
 
     /* ---------- lights (env does most of the work) ---------- */
-    const key = new THREE.DirectionalLight(0xffffff, 1.6);
+    const key = new THREE.DirectionalLight(0xffffff, 1.75);
     key.position.set(3, 5, 6);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0xb8c8ff, 1.2);
+    const rim = new THREE.DirectionalLight(0xb8c8ff, 1.35);
     rim.position.set(-6, -2, -3);
     scene.add(rim);
 
@@ -209,7 +248,7 @@ export default function HeroScene() {
       uTime: { value: 0 },
       uAmp: { value: 0.2 },
     };
-    const blobMat = makeGlass({ thickness: 2.2, dispersion: 0.6 });
+    const blobMat = makeGlass({ thickness: 2.3, dispersion: 0.65 });
     blobMat.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = blobUniforms.uTime;
       shader.uniforms.uAmp = blobUniforms.uAmp;
@@ -221,8 +260,8 @@ export default function HeroScene() {
           uniform float uAmp;
           ${NOISE}
           float displace(vec3 p){
-            float n = snoise(p * 1.25 + vec3(uTime * 0.22, uTime * 0.17, -uTime * 0.12));
-            n += 0.35 * snoise(p * 2.6 - vec3(uTime * 0.18));
+            float n = snoise(p * 1.25 + vec3(uTime * 0.24, uTime * 0.18, -uTime * 0.14));
+            n += 0.35 * snoise(p * 2.6 - vec3(uTime * 0.2));
             return n * uAmp;
           }
           vec3 orthogonal(vec3 v){
@@ -246,9 +285,32 @@ export default function HeroScene() {
         )
         .replace("#include <begin_vertex>", "vec3 transformed = dispPos;");
     };
-    const blobGeo = new THREE.IcosahedronGeometry(1.35, isSmall ? 48 : 80);
+    const blobGeo = new THREE.IcosahedronGeometry(1.32, isSmall ? 32 : 48);
     const blob = new THREE.Mesh(blobGeo, blobMat);
     rig.add(blob);
+
+    /* ---------- precision orbital gyroscope rings ---------- */
+    const metalRingMat = new THREE.MeshPhysicalMaterial({
+      color: 0xe2e8f0,
+      metalness: 0.92,
+      roughness: 0.14,
+      clearcoat: 1,
+      iridescence: 0.6,
+    });
+    const outerGyroGeo = new THREE.TorusGeometry(2.05, 0.022, 24, 160);
+    const outerGyro = new THREE.Mesh(outerGyroGeo, metalRingMat);
+    outerGyro.rotation.x = Math.PI * 0.32;
+    outerGyro.rotation.y = Math.PI * 0.12;
+    rig.add(outerGyro);
+
+    const innerGyroGeo = new THREE.TorusGeometry(1.68, 0.032, 24, 140);
+    const innerGyro = new THREE.Mesh(
+      innerGyroGeo,
+      makeGlass({ thickness: 0.6, attenuationColor: new THREE.Color("#cfe4ff") })
+    );
+    innerGyro.rotation.x = -Math.PI * 0.25;
+    innerGyro.rotation.z = Math.PI * 0.18;
+    rig.add(innerGyro);
 
     /* ---------- secondary glass objects ---------- */
     const torusGeo = new THREE.TorusGeometry(0.46, 0.17, 48, 128);
@@ -267,6 +329,11 @@ export default function HeroScene() {
     capsule.rotation.z = -0.7;
     rig.add(capsule);
 
+    const octaGeo = new THREE.OctahedronGeometry(0.38, 0);
+    const octa = new THREE.Mesh(octaGeo, makeGlass({ thickness: 1.2, dispersion: 0.8 }));
+    octa.position.set(-1.55, -1.15, 0.5);
+    rig.add(octa);
+
     /* ---------- solid color orbs (seen through the glass) ---------- */
     const orbGeo = new THREE.SphereGeometry(1, 48, 48);
     const orbSpecs = [
@@ -281,10 +348,10 @@ export default function HeroScene() {
         orbGeo,
         new THREE.MeshPhysicalMaterial({
           color: s.color,
-          roughness: 0.28,
+          roughness: 0.25,
           metalness: 0.0,
           clearcoat: 1,
-          clearcoatRoughness: 0.12,
+          clearcoatRoughness: 0.1,
           sheen: 0.6,
           sheenColor: new THREE.Color("#ffffff"),
         })
@@ -293,6 +360,57 @@ export default function HeroScene() {
       rig.add(m);
       return { mesh: m, ...s };
     });
+
+    /* ---------- 3D Spatial Depth Particle Field ---------- */
+    const particleCount = isSmall ? 36 : 70;
+    const pPositions = new Float32Array(particleCount * 3);
+    const pScales = new Float32Array(particleCount);
+    for (let i = 0; i < particleCount; i++) {
+      const r = 2.2 + Math.random() * 2.8;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.75;
+      pPositions[i * 3 + 2] = (Math.random() - 0.5) * 3.5;
+      pScales[i] = 0.4 + Math.random() * 0.8;
+    }
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    particleGeo.setAttribute("aScale", new THREE.BufferAttribute(pScales, 1));
+    const particleMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      },
+      vertexShader: /* glsl */ `
+        attribute float aScale;
+        uniform float uTime;
+        uniform float uPixelRatio;
+        varying float vAlpha;
+        void main() {
+          vec3 pos = position;
+          pos.y += sin(uTime * 0.6 + position.x * 1.5) * 0.12;
+          pos.x += cos(uTime * 0.45 + position.y * 1.5) * 0.08;
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          gl_PointSize = aScale * 24.0 * uPixelRatio * (1.0 / -mvPosition.z);
+          vAlpha = smoothstep(-5.0, 2.0, pos.z) * 0.45;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        varying float vAlpha;
+        void main() {
+          float d = length(gl_PointCoord - vec2(0.5));
+          if (d > 0.5) discard;
+          float strength = smoothstep(0.5, 0.05, d);
+          gl_FragColor = vec4(0.15, 0.52, 0.98, strength * vAlpha);
+        }
+      `,
+    });
+    const particleField = new THREE.Points(particleGeo, particleMat);
+    rig.add(particleField);
 
     /* ---------- layout ---------- */
     const layout = () => {
@@ -309,7 +427,7 @@ export default function HeroScene() {
       if (camera.aspect < 0.9) {
         // mobile: centered under the copy
         root.position.set(0, -visibleH * 0.26, 0);
-        root.scale.setScalar(Math.min(0.62, (visibleW / 6.2)));
+        root.scale.setScalar(Math.min(0.62, visibleW / 6.2));
         bgUniforms.uFocus.value.set(0.5, 0.26);
       } else {
         // desktop: right column
@@ -333,7 +451,7 @@ export default function HeroScene() {
       pointer.ty = ny;
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
-      pointer.vel = Math.min(1, pointer.vel + Math.hypot(dx, dy) / 900);
+      pointer.vel = Math.min(1, pointer.vel + Math.hypot(dx, dy) / 800);
       lastX = e.clientX;
       lastY = e.clientY;
     };
@@ -353,44 +471,84 @@ export default function HeroScene() {
     /* ---------- intro ---------- */
     const intro = { s: reduced ? 1 : 0.001 };
     if (!reduced) {
-      gsap.to(intro, { s: 1, duration: 2.2, ease: "elastic.out(1, 0.6)", delay: 0.25 });
+      gsap.to(intro, { s: 1, duration: 2.2, ease: "elastic.out(1, 0.6)", delay: 0.2 });
     }
 
     /* ---------- loop ---------- */
-    const clock = new THREE.Clock();
+    let lastTime = performance.now();
+    const startTime = performance.now();
     let running = false;
     let firstFrameRendered = false;
 
     const render = () => {
-      const dt = Math.min(clock.getDelta(), 0.05);
-      const t = clock.elapsedTime;
+      const now = performance.now();
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      const t = (now - startTime) / 1000;
+      lastTime = now;
       const motion = reduced ? 0 : 1;
 
-      pointer.x += (pointer.tx - pointer.x) * 0.05;
-      pointer.y += (pointer.ty - pointer.y) * 0.05;
+      pointer.x += (pointer.tx - pointer.x) * 0.055;
+      pointer.y += (pointer.ty - pointer.y) * 0.055;
       pointer.vel *= 0.94;
 
       bgUniforms.uTime.value = t * motion;
       blobUniforms.uTime.value = t * motion;
-      blobUniforms.uAmp.value = 0.18 + pointer.vel * 0.16 * motion;
+      blobUniforms.uAmp.value = 0.18 + pointer.vel * 0.18 * motion + scroll.p * 0.08;
+      particleMat.uniforms.uTime.value = t * motion;
 
-      rig.rotation.y = pointer.x * 0.35 + scroll.p * 1.2 + t * 0.05 * motion;
-      rig.rotation.x = pointer.y * 0.22 + scroll.p * 0.35;
-      rig.position.y = scroll.p * 1.6;
-      rig.scale.setScalar(intro.s * (1 - scroll.p * 0.15));
+      // Multi-axis 3D parallax with pointer & scroll
+      rig.rotation.y = pointer.x * 0.42 + scroll.p * 1.45 + t * 0.05 * motion;
+      rig.rotation.x = pointer.y * 0.26 + scroll.p * 0.42;
+      rig.position.y = scroll.p * 1.65 - pointer.y * 0.18;
+      rig.position.x = pointer.x * 0.22;
+      rig.scale.setScalar(intro.s * (1 - scroll.p * 0.14));
 
-      blob.rotation.y += dt * 0.08 * motion;
+      blob.rotation.y += dt * 0.09 * motion;
 
+      // Orbital gyroscope counter-rotation + scroll expansion
+      outerGyro.rotation.z = t * 0.22 * motion + scroll.p * 1.8;
+      outerGyro.rotation.x = Math.PI * 0.32 + Math.sin(t * 0.4) * 0.15 * motion;
+      outerGyro.scale.setScalar(1 + scroll.p * 0.22);
+
+      innerGyro.rotation.y = -t * 0.32 * motion - scroll.p * 1.5;
+      innerGyro.rotation.x = -Math.PI * 0.25 + Math.cos(t * 0.5) * 0.18 * motion;
+      innerGyro.scale.setScalar(1 + scroll.p * 0.12);
+
+      // Secondary floating satellites with scroll dispersion
+      const spread = 1 + scroll.p * 0.35;
       torus.rotation.x = t * 0.4 * motion + 0.6;
       torus.rotation.y = t * 0.3 * motion;
-      torus.position.y = 1.15 + Math.sin(t * 0.9) * 0.12 * motion;
+      torus.position.set(
+        -1.85 * spread,
+        (1.15 + Math.sin(t * 0.9) * 0.12 * motion) * spread,
+        0.4 + scroll.p * 0.5
+      );
 
       cube.rotation.x = t * 0.25 * motion + 0.4;
       cube.rotation.y = t * 0.35 * motion + 0.6;
-      cube.position.y = -1.25 + Math.cos(t * 0.8) * 0.14 * motion;
+      cube.position.set(
+        1.65 * spread,
+        (-1.25 + Math.cos(t * 0.8) * 0.14 * motion) * spread,
+        0.6 + scroll.p * 0.4
+      );
 
       capsule.rotation.z = -0.7 + Math.sin(t * 0.6) * 0.25 * motion;
-      capsule.position.y = 1.45 + Math.sin(t * 1.1 + 1) * 0.1 * motion;
+      capsule.position.set(
+        1.55 * spread,
+        (1.45 + Math.sin(t * 1.1 + 1) * 0.1 * motion) * spread,
+        -0.2 - scroll.p * 0.3
+      );
+
+      octa.rotation.x = -t * 0.35 * motion;
+      octa.rotation.z = t * 0.45 * motion;
+      octa.position.set(
+        -1.55 * spread,
+        (-1.15 + Math.sin(t * 0.95 + 2.0) * 0.12 * motion) * spread,
+        0.5 + scroll.p * 0.35
+      );
+
+      particleField.rotation.y = -t * 0.03 * motion + pointer.x * 0.15;
+      particleField.rotation.x = pointer.y * 0.1;
 
       for (const o of orbs) {
         const a = o.phase + t * o.speed * motion;
@@ -405,17 +563,14 @@ export default function HeroScene() {
 
       if (!firstFrameRendered) {
         firstFrameRendered = true;
-        if (typeof window !== "undefined") {
-          (window as unknown as { __efesoft_3d_ready?: boolean }).__efesoft_3d_ready = true;
-          window.dispatchEvent(new CustomEvent("efesoft:3d-ready"));
-        }
+        markReady();
       }
     };
 
     const start = () => {
       if (running) return;
       running = true;
-      clock.getDelta();
+      lastTime = performance.now();
       renderer.setAnimationLoop(render);
     };
     const stop = () => {
@@ -433,7 +588,7 @@ export default function HeroScene() {
     document.addEventListener("visibilitychange", onVisibility);
 
     /* ---------- cleanup ---------- */
-    return () => {
+    cleanupScene = () => {
       stop();
       io.disconnect();
       ro.disconnect();
@@ -443,7 +598,7 @@ export default function HeroScene() {
       gsap.killTweensOf(intro);
 
       scene.traverse((obj) => {
-        if (obj instanceof THREE.Mesh) {
+        if (obj instanceof THREE.Mesh || obj instanceof THREE.Points) {
           obj.geometry.dispose();
           const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
           mats.forEach((m) => m.dispose());
@@ -453,6 +608,12 @@ export default function HeroScene() {
       pmrem.dispose();
       renderer.dispose();
       renderer.domElement.remove();
+    };
+    });
+
+    return () => {
+      cancelAnimationFrame(initRaf);
+      cleanupScene?.();
     };
   }, []);
 

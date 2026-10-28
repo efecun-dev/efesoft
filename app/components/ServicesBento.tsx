@@ -24,17 +24,119 @@ export default function ServicesBento() {
       const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (isReduced) return;
 
+      gsap.from(".services .section__head > *", {
+        scrollTrigger: {
+          trigger: ".services .section__head",
+          start: "top 85%",
+          once: true,
+        },
+        y: 32,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 1.0,
+        ease: "power3.out",
+      });
+
       gsap.from(".bento .card", {
         scrollTrigger: {
           trigger: ".bento",
           start: "top 82%",
           once: true,
         },
-        y: 40,
+        y: 48,
         opacity: 0,
+        scale: 0.96,
         stagger: 0.12,
-        duration: 1.1,
-        ease: "power3.out",
+        duration: 1.15,
+        ease: "expo.out",
+      });
+
+      /* ---------- Multi-plane scroll parallax scrub ---------- */
+      // Ambient background orbs
+      gsap.to(".services .ambient__orb:first-child", {
+        y: 130,
+        x: -40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      gsap.to(".services .ambient__orb:last-child", {
+        y: -100,
+        x: 35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+
+      gsap.matchMedia().add("(min-width: 901px)", () => {
+        // The iPhone mock inside Card 2 shifts with internal depth
+        gsap.to(".mock-phone", {
+          y: -50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".card--mobile",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        });
+
+        // Web mock in Card 1 floats with internal depth
+        gsap.to(".mock-browser", {
+          y: -28,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".card--web",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        });
+
+        // ERP pipeline floats with subtle depth
+        gsap.to(".erp-pipeline", {
+          y: -18,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".card--erp",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.9,
+          },
+        });
+
+        // AI chat visual floats with depth
+        gsap.to(".ai-chat", {
+          y: -22,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".card--ai",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.1,
+          },
+        });
+
+        // Uptime widget subtle float
+        gsap.to(".uptime", {
+          y: -15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".card--cloud",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
       });
     },
     { scope: containerRef }
@@ -42,6 +144,40 @@ export default function ServicesBento() {
 
   return (
     <section ref={containerRef} id="hizmetler" className="section services">
+      {/* Ambient background glows */}
+      <div className="ambient" aria-hidden>
+        <div
+          className="ambient__orb"
+          style={
+            {
+              "--c1": "rgba(0, 113, 227, 0.22)",
+              "--c2": "rgba(94, 92, 230, 0.15)",
+              "--s": "620px",
+              "--o": "0.35",
+              top: "10%",
+              right: "2%",
+              "--dx": "50px",
+              "--dy": "-40px",
+            } as React.CSSProperties
+          }
+        />
+        <div
+          className="ambient__orb"
+          style={
+            {
+              "--c1": "rgba(46, 196, 182, 0.22)",
+              "--c2": "rgba(154, 92, 245, 0.18)",
+              "--s": "540px",
+              "--o": "0.3",
+              bottom: "15%",
+              left: "3%",
+              "--dx": "-40px",
+              "--dy": "30px",
+            } as React.CSSProperties
+          }
+        />
+      </div>
+
       <div className="wrap">
         <div className="section__head">
           <span className="eyebrow">ÖZEL YAZILIM HİZMETLERİ</span>

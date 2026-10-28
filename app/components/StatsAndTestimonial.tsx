@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Quote } from "./icons";
 import AnimatedNumber from "./AnimatedNumber";
 
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
 export default function StatsAndTestimonial() {
+  const sectionRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -26,8 +32,42 @@ export default function StatsAndTestimonial() {
     return () => observer.disconnect();
   }, []);
 
+  useGSAP(
+    () => {
+      const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (isReduced) return;
+
+      // Ambient background glow parallax
+      gsap.to(".stats .ambient__orb", {
+        y: 110,
+        x: -40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      // Ambient background glow parallax (no collision between cards)
+      gsap.to(".stats .ambient__orb", {
+        y: 80,
+        x: -30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="section stats" aria-label="Rakamlarla Efesoft ve Müşteri Yorumları">
+    <section ref={sectionRef} className="section stats" aria-label="Rakamlarla Efesoft ve Müşteri Yorumları">
       {/* Ambient background glow */}
       <div className="ambient" aria-hidden>
         <div

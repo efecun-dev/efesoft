@@ -13,6 +13,7 @@ interface ProductItem {
   name: string;
   tagline: string;
   category: string;
+  version: string;
   desc: string;
   color: string;
   icon: typeof Chart;
@@ -26,6 +27,7 @@ const PRODUCTS: ProductItem[] = [
     name: "EfeERP Enterprise",
     tagline: "Uçtan Uca Kurumsal Kaynak Planlama",
     category: "LİSANSLI KURUMSAL YAZILIM",
+    version: "v6.4 LTS · Cloud & On-Prem",
     desc: "Üretimden finansa, stok takibinden e-Dönüşüm (e-Fatura, e-İrsaliye) entegrasyonlarına kadar tüm şirket operasyonlarınızı tek bir merkezi bulut panelinden yönetin.",
     color: "#0071e3",
     icon: Chart,
@@ -42,6 +44,7 @@ const PRODUCTS: ProductItem[] = [
     name: "EfeCRM Omni",
     tagline: "360° Müşteri & Satış Otomasyonu",
     category: "LİSANSLI SATIŞ YAZILIMI",
+    version: "v4.9 AI · Omnichannel",
     desc: "Müşteri adaylarınızı sadık müşterilere dönüştürün. WhatsApp Business, IP Santral ve e-Posta kanallarını birleştiren omnichannel iletişim platformu.",
     color: "#ff2d55",
     icon: Users,
@@ -58,6 +61,7 @@ const PRODUCTS: ProductItem[] = [
     name: "EfePOS Cloud",
     tagline: "Yeni Nesil Perakende & Restoran Otomasyonu",
     category: "LİSANSLI PERAKENDE SİSTEMİ",
+    version: "v5.2 · Offline-First Engine",
     desc: "Restoranlar, kafeler ve perakende mağazaları için tasarlanmış yüksek hızlı bulut kasa. İnternet kopsa dahi kesintisiz satış yapabilen offline-first mimari.",
     color: "#30d158",
     icon: Cart,
@@ -74,6 +78,7 @@ const PRODUCTS: ProductItem[] = [
     name: "EfeHR Portal",
     tagline: "Modern İnsan Kaynakları & Bordro",
     category: "LİSANSLI İK ÇÖZÜMÜ",
+    version: "v3.8 · Biometric & SGK",
     desc: "Çalışanlarınızın izin, masraf, zimmet ve bordro süreçlerini dijitalleştirin. Şirket içi iletişimi ve performans değerlendirmelerini tek merkezde toplayın.",
     color: "#af52de",
     icon: IdCard,
@@ -108,6 +113,36 @@ export default function ProductsSection() {
       triggers.push(st);
     });
 
+    if (!isReduced) {
+      // Section header reveal
+      const headTween = gsap.from(".products .section__head > *", {
+        y: 32,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".products .section__head",
+          start: "top 85%",
+          once: true,
+        },
+      });
+      if (headTween.scrollTrigger) triggers.push(headTween.scrollTrigger);
+
+      // Stage HUD subtle float parallax
+      const hudTween = gsap.to(".products__hud", {
+        y: -18,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+      if (hudTween.scrollTrigger) triggers.push(hudTween.scrollTrigger);
+    }
+
     return () => {
       triggers.forEach((t) => t.kill());
     };
@@ -133,11 +168,26 @@ export default function ProductsSection() {
 
         <div className="products__grid">
           {/* Sticky 3D Interactive Stage */}
-          <div className="products__stage glass glass--refract">
+          <div className="products__stage glass glass--refract" data-spot>
             <div
               className="products__stage-bg"
               style={{ "--accent": activeProduct.color } as React.CSSProperties}
             />
+
+            {/* Stage Top Telemetry Bar */}
+            <div className="products__stage-top">
+              <span className="products__stage-pill glass">
+                <span
+                  className="products__stage-dot"
+                  style={{ background: activeProduct.color }}
+                />
+                <span>{activeProduct.version}</span>
+              </span>
+              <span className="products__stage-index">
+                0{activeIndex + 1} / 0{PRODUCTS.length}
+              </span>
+            </div>
+
             {/* Three.js 3D Interactive Morphing Artifacts */}
             <ProductsScene activeIndex={activeIndex} />
 

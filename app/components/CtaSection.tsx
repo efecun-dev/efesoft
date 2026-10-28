@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, Check } from "./icons";
+import { useState, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { ArrowRight, Check, Mail, ShieldCheck, Clock, FileCheck } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function CtaSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [contact, setContact] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
 
@@ -17,8 +23,53 @@ export default function CtaSection() {
     }, 800);
   };
 
+  useGSAP(
+    () => {
+      const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (isReduced) return;
+
+      // Internal glowing orbs parallax inside CTA panel
+      gsap.to(".cta .ambient__orb:first-child", {
+        y: 70,
+        x: -40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      gsap.to(".cta .ambient__orb:last-child", {
+        y: -60,
+        x: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+      });
+
+      // CTA content subtle lift on scroll
+      gsap.to(".cta__inner", {
+        y: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.9,
+        },
+      });
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section id="iletisim" className="section cta">
+    <section ref={sectionRef} id="iletisim" className="section cta">
       <div className="wrap">
         <div className="cta__panel glass glass--refract" data-spot>
           {/* Internal ambient glowing orbs */}
@@ -56,12 +107,15 @@ export default function CtaSection() {
           </div>
 
           <div className="cta__inner">
-            <span className="eyebrow" style={{ justifyContent: "center" }}>
-              BİRLİKTE ÜRETELİM
-            </span>
+            {/* Top Accent Pill Badge */}
+            <div className="cta__badge">
+              <span className="cta__badge-pulse" />
+              <span>ÜCRETSİZ MİMARİ ANALİZ & DEMO</span>
+            </div>
+
             <h2 className="cta__title">
               Şirketinizin dijital geleceğini <br />
-              <span className="text-gradient">bugün inşa edelim.</span>
+              <span className="text-gradient">birlikte inşa edelim.</span>
             </h2>
             <p className="cta__text">
               İster sıfırdan kurumsal özel yazılım projeniz için teklif alın,
@@ -71,37 +125,60 @@ export default function CtaSection() {
             {status === "success" ? (
               <div className="cta__success glass">
                 <div className="cta__success-icon">
-                  <Check />
+                  <Check size={20} />
                 </div>
-                <span>Talebiniz alındı! Uzmanımız 15 dakika içinde sizi arayacak.</span>
+                <span>Talebiniz alındı! Uzman mühendisimiz 15 dakika içinde sizinle iletişime geçecek.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="cta__form glass" id="lead-form">
-                <input
-                  type="text"
-                  required
-                  placeholder="İş e-postanız veya telefon numaranız"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  aria-label="İletişim adresi"
-                  disabled={status === "submitting"}
-                />
-                <button
-                  type="submit"
-                  className="btn btn--primary"
-                  disabled={status === "submitting"}
-                  id="lead-submit-btn"
-                >
-                  {status === "submitting" ? "Gönderiliyor..." : "Görüşme Başlat"}
-                  <ArrowRight />
-                </button>
-              </form>
+              <div className="cta__form-shell">
+                <form onSubmit={handleSubmit} className="cta__form" id="lead-form">
+                  <div className="cta__input-wrap">
+                    <div className="cta__input-icon-shell">
+                      <Mail size={18} className="cta__input-icon" />
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      placeholder="İş e-postanız veya telefonunuz"
+                      value={contact}
+                      onChange={(e) => setContact(e.target.value)}
+                      aria-label="İletişim adresi"
+                      disabled={status === "submitting"}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="cta__submit-btn"
+                    disabled={status === "submitting"}
+                    id="lead-submit-btn"
+                  >
+                    <span>{status === "submitting" ? "Gönderiliyor..." : "Görüşme Başlat"}</span>
+                    <ArrowRight size={17} className="cta__submit-arrow" />
+                  </button>
+                </form>
+              </div>
             )}
+
+            {/* Mobile-Friendly Trust Badges Row */}
+            <div className="cta__trust-pills">
+              <div className="cta__trust-pill">
+                <Clock size={13} />
+                <span>15 Dk İçinde Dönüş</span>
+              </div>
+              <div className="cta__trust-pill">
+                <ShieldCheck size={13} />
+                <span>Gizlilik Sözleşmesi (NDA)</span>
+              </div>
+              <div className="cta__trust-pill">
+                <FileCheck size={13} />
+                <span>Sıfır Taahhüt</span>
+              </div>
+            </div>
 
             <p className="cta__fine" data-state={status === "success" ? "ok" : undefined}>
               {status === "success"
                 ? "Bilgileriniz KVKK kapsamında %100 güvende saklanır."
-                : "Bilgileriniz KVKK kapsamında saklanır, spam e-posta göndermeyiz."}
+                : "Bilgileriniz KVKK kapsamında korunur, asla üçüncü taraflarla paylaşılmaz."}
             </p>
           </div>
         </div>
