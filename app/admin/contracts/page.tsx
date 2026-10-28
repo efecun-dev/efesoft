@@ -505,13 +505,13 @@ export default function AdminContractsPage() {
       prev.map((c) =>
         c.id === id
           ? {
-              ...c,
-              status: nextStatus,
-              statusLabel: meta.label,
-              signatureProgress: meta.progress,
-              signatureStepsText: meta.stepText,
-              remainingText: meta.remaining,
-            }
+            ...c,
+            status: nextStatus,
+            statusLabel: meta.label,
+            signatureProgress: meta.progress,
+            signatureStepsText: meta.stepText,
+            remainingText: meta.remaining,
+          }
           : c
       )
     );
@@ -523,7 +523,7 @@ export default function AdminContractsPage() {
 
   const handleCopyHash = (id: string, hash: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(hash).catch(() => {});
+      navigator.clipboard.writeText(hash).catch(() => { });
     }
     setCopiedHashId(id);
     window.setTimeout(() => setCopiedHashId(null), 1800);
@@ -1015,19 +1015,19 @@ export default function AdminContractsPage() {
                   item.status === "signed"
                     ? "adm-badge--success"
                     : item.status === "awaiting_signature"
-                    ? "adm-badge--info"
-                    : item.status === "legal_review"
-                    ? "adm-badge--purple"
-                    : "adm-badge--warning";
+                      ? "adm-badge--info"
+                      : item.status === "legal_review"
+                        ? "adm-badge--purple"
+                        : "adm-badge--warning";
 
                 const progressColor =
                   item.status === "signed"
                     ? "#1a9e4b"
                     : item.status === "awaiting_signature"
-                    ? "#0071e3"
-                    : item.status === "legal_review"
-                    ? "#9a5cf5"
-                    : "#d97706";
+                      ? "#0071e3"
+                      : item.status === "legal_review"
+                        ? "#9a5cf5"
+                        : "#d97706";
 
                 return (
                   <Fragment key={item.id}>
