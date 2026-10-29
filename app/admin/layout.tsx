@@ -319,6 +319,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isContractsRoute = pathname?.startsWith("/admin/contracts");
   const isProductsRoute = pathname?.startsWith("/admin/products");
   const isLicensesRoute = pathname?.startsWith("/admin/licenses");
+  const isDemosRoute = pathname?.startsWith("/admin/demos");
   const currentTab = isAnalyticsRoute
     ? "analytics"
     : isSystemHealthRoute
@@ -335,6 +336,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ? "products"
     : isLicensesRoute
     ? "licenses"
+    : isDemosRoute
+    ? "demos"
     : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
@@ -356,6 +359,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             !isContractsRoute &&
             !isProductsRoute &&
             !isLicensesRoute &&
+            !isDemosRoute &&
             currentTab === "dashboard",
         },
         {
@@ -438,7 +442,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           badgeType: "blue",
           active: isLicensesRoute || currentTab === "licenses",
         },
-        { id: "demos", label: "Canlı Demo İstekleri", icon: <IconDemo />, badge: "3", badgeType: "amber" },
+        {
+          id: "demos",
+          label: "Canlı Demo İstekleri",
+          icon: <IconDemo />,
+          href: "/admin/demos",
+          badge: "3 Yeni",
+          badgeType: "amber",
+          active: isDemosRoute || currentTab === "demos",
+        },
         { id: "releases", label: "Sürümler & Changelog", icon: <IconReleases /> },
       ],
     },
@@ -707,6 +719,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   ? "Ürün Yönetimi & Lisans Kataloğu"
                   : isLicensesRoute
                   ? "Lisans Anahtarları & Dağıtım Motoru"
+                  : isDemosRoute
+                  ? "Canlı Demo İstekleri & Sandbox Yönetimi"
                   : "Dashboard"}
               </span>
             </div>

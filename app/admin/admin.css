@@ -2023,3 +2023,14 @@ textarea.adm-input {
   color: var(--adm-danger);
   margin-left: 2px;
 }
+
+/* Spinner Animation Helper */
+@keyframes admSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-animate {
+  animation: admSpin 0.75s linear infinite;
+  display: inline-block;
+}
