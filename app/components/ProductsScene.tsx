@@ -34,6 +34,8 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
     const initRaf = requestAnimationFrame(() => {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      const isSmall = window.matchMedia("(max-width: 900px)").matches;
+
       const canvas = document.createElement("canvas");
       const glOpts: WebGLContextAttributes = {
         alpha: true,
@@ -57,7 +59,7 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
       } catch {
         return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.0 : 1.25));
       renderer.toneMapping = THREE.NeutralToneMapping;
       renderer.toneMappingExposure = 1.18;
       renderer.setClearColor(0x000000, 0);
@@ -89,21 +91,22 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
-    // Glass Material Generator
+    // Optimized Apple-Grade Glass Material Generator (Zero dispersion, fast single-pass/reflective)
     const createGlass = (color: string) => {
       return new THREE.MeshPhysicalMaterial({
         color: new THREE.Color(color),
         metalness: 0.04,
-        roughness: 0.06,
-        transmission: 0.96,
-        thickness: 1.9,
-        ior: 1.52,
-        dispersion: 0.68,
+        roughness: 0.05,
+        transmission: isSmall ? 0 : 0.88,
+        thickness: 1.3,
+        ior: 1.48,
         iridescence: 0.9,
-        iridescenceIOR: 1.32,
-        iridescenceThicknessRange: [120, 640],
+        iridescenceIOR: 1.3,
+        iridescenceThicknessRange: [120, 560],
         clearcoat: 1,
         clearcoatRoughness: 0.04,
+        transparent: true,
+        opacity: isSmall ? 0.82 : 1,
         attenuationColor: new THREE.Color(color),
         attenuationDistance: 2.4,
       });
@@ -128,7 +131,7 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
         metalness: 0.2,
       });
 
-    // 4 Distinct Multi-Part 3D Sculptural Artifacts
+    // 4 Distinct Multi-Part 3D Sculptural Artifacts (Lightweight High-Precision Geometries)
     const artifacts: THREE.Group[] = [];
 
     // Artifact 0: EfeERP Prism (Faceted Octahedron + Inner Glowing Core + Dual Gyro Rings + Data Satellites)
@@ -138,11 +141,11 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
     g0.add(m0);
     const core0 = new THREE.Mesh(new THREE.OctahedronGeometry(0.55, 1), createCoreMat("#2997ff"));
     g0.add(core0);
-    const ring0A = new THREE.Mesh(new THREE.TorusGeometry(1.88, 0.045, 24, 96), metalMat);
-    const ring0B = new THREE.Mesh(new THREE.TorusGeometry(2.18, 0.025, 20, 96), metalMat);
+    const ring0A = new THREE.Mesh(new THREE.TorusGeometry(1.88, 0.045, 16, 64), metalMat);
+    const ring0B = new THREE.Mesh(new THREE.TorusGeometry(2.18, 0.025, 16, 64), metalMat);
     ring0B.rotation.x = Math.PI / 2.4;
     g0.add(ring0A, ring0B);
-    const sat0A = new THREE.Mesh(new THREE.SphereGeometry(0.14, 24, 24), createCoreMat("#0071e3"));
+    const sat0A = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), createCoreMat("#0071e3"));
     sat0A.position.set(1.88, 0, 0);
     ring0A.add(sat0A);
     artifacts.push(g0);
@@ -150,17 +153,17 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
 
     // Artifact 1: EfeCRM Torus Knot + Orbiting Omni-Channel Nodes + Glass Halo
     const g1 = new THREE.Group();
-    const knotGeo = new THREE.TorusKnotGeometry(1.02, 0.3, 140, 36, 2, 3);
+    const knotGeo = new THREE.TorusKnotGeometry(1.02, 0.3, 72, 20, 2, 3);
     const m1 = new THREE.Mesh(knotGeo, createGlass("#ff2d55"));
     g1.add(m1);
     const crmOrbitGroup = new THREE.Group();
-    const crmRing = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.03, 20, 96), metalMat);
+    const crmRing = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.03, 16, 64), metalMat);
     crmRing.rotation.x = Math.PI / 3;
     crmOrbitGroup.add(crmRing);
     for (let i = 0; i < 3; i++) {
       const a = (i / 3) * Math.PI * 2;
       const orb = new THREE.Mesh(
-        new THREE.SphereGeometry(0.18, 32, 32),
+        new THREE.SphereGeometry(0.18, 16, 16),
         createCoreMat("#ff2d55")
       );
       orb.position.set(Math.cos(a) * 1.95, Math.sin(a) * 1.95, 0);
@@ -172,20 +175,20 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
 
     // Artifact 2: EfePOS Rounded Vault Cube + Levitating Contactless Rings & Metallic Coin
     const g2 = new THREE.Group();
-    const boxGeo = new RoundedBoxGeometry(1.55, 1.55, 1.55, 6, 0.28);
+    const boxGeo = new RoundedBoxGeometry(1.55, 1.55, 1.55, 3, 0.28);
     const m2 = new THREE.Mesh(boxGeo, createGlass("#30d158"));
     g2.add(m2);
     const posCore = new THREE.Mesh(
-      new RoundedBoxGeometry(0.68, 0.68, 0.68, 4, 0.14),
+      new RoundedBoxGeometry(0.68, 0.68, 0.68, 2, 0.14),
       createCoreMat("#30d158")
     );
     g2.add(posCore);
-    const coinGeo = new THREE.CylinderGeometry(0.52, 0.52, 0.08, 48);
+    const coinGeo = new THREE.CylinderGeometry(0.52, 0.52, 0.08, 32);
     const coin = new THREE.Mesh(coinGeo, metalMat);
     coin.rotation.x = Math.PI / 3;
     coin.position.set(1.05, 0.9, 0.95);
     g2.add(coin);
-    const waveRing = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.035, 20, 96), metalMat);
+    const waveRing = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.035, 16, 64), metalMat);
     waveRing.rotation.x = -Math.PI / 3;
     waveRing.rotation.y = Math.PI / 6;
     g2.add(waveRing);
@@ -194,26 +197,26 @@ export default function ProductsScene({ activeIndex }: ProductsSceneProps) {
 
     // Artifact 3: EfeHR Nested Biomorphic Spheres + Dual Saturn Halos + Orbiting Pearls
     const g3 = new THREE.Group();
-    const sphereOuterGeo = new THREE.IcosahedronGeometry(1.3, 4);
+    const sphereOuterGeo = new THREE.IcosahedronGeometry(1.3, 2);
     const m3 = new THREE.Mesh(sphereOuterGeo, createGlass("#af52de"));
     g3.add(m3);
     const innerBall = new THREE.Mesh(
-      new THREE.SphereGeometry(0.65, 32, 32),
+      new THREE.SphereGeometry(0.65, 20, 20),
       createCoreMat("#da8fff")
     );
     g3.add(innerBall);
-    const haloGeo = new THREE.TorusGeometry(2.05, 0.04, 20, 100);
+    const haloGeo = new THREE.TorusGeometry(2.05, 0.04, 16, 64);
     const halo = new THREE.Mesh(haloGeo, metalMat);
     halo.rotation.x = Math.PI / 2.3;
     g3.add(halo);
-    const halo2 = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.025, 16, 90), metalMat);
+    const halo2 = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.025, 16, 64), metalMat);
     halo2.rotation.y = Math.PI / 2.6;
     g3.add(halo2);
     artifacts.push(g3);
     scene.add(g3);
 
     // Subtle floating pedestal ring under active artifact
-    const pedestalGeo = new THREE.RingGeometry(1.2, 1.24, 64);
+    const pedestalGeo = new THREE.RingGeometry(1.2, 1.24, 48);
     const pedestalMat = new THREE.MeshBasicMaterial({
       color: 0x0071e3,
       side: THREE.DoubleSide,

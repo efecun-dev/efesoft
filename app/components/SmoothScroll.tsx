@@ -15,6 +15,10 @@ gsap.registerPlugin(ScrollTrigger);
 export default function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    
+    // On mobile touch devices, allow native 120Hz GPU compositor scrolling for zero input lag
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouch) return;
 
     const lenis = new Lenis({
       autoRaf: false,
@@ -26,7 +30,7 @@ export default function SmoothScroll() {
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     return () => {
       gsap.ticker.remove(tick);

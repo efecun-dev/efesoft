@@ -19,7 +19,13 @@ export default function SpotlightTracker() {
     let activeSpot: HTMLElement | null = null;
     let activeTilt: HTMLElement | null = null;
 
-    const onPointerMove = (e: PointerEvent) => {
+    let rafId: number | null = null;
+    let pendingEvent: PointerEvent | null = null;
+
+    const processPointer = () => {
+      rafId = null;
+      const e = pendingEvent;
+      if (!e) return;
       const target = e.target as Element | null;
       if (!target) return;
 
@@ -50,8 +56,8 @@ export default function SpotlightTracker() {
           gsap.to(activeTilt, {
             rotateX: 0,
             rotateY: 0,
-            duration: 0.7,
-            ease: "power3.out",
+            duration: 0.5,
+            ease: "power2.out",
             overwrite: "auto",
           });
         }
@@ -60,18 +66,25 @@ export default function SpotlightTracker() {
 
       if (tiltEl) {
         const rect = tiltEl.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
-        const ny = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to 0.5
-        const maxTilt = tiltEl.classList.contains("widget") ? 6 : 3.5;
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;
+        const ny = (e.clientY - rect.top) / rect.height - 0.5;
+        const maxTilt = tiltEl.classList.contains("widget") ? 5 : 3;
 
         gsap.to(tiltEl, {
           rotateY: nx * maxTilt * 2,
           rotateX: -ny * maxTilt * 2,
           transformPerspective: 1100,
-          duration: 0.45,
+          duration: 0.35,
           ease: "power2.out",
           overwrite: "auto",
         });
+      }
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      pendingEvent = e;
+      if (rafId === null) {
+        rafId = requestAnimationFrame(processPointer);
       }
     };
 
@@ -109,6 +122,7 @@ export default function SpotlightTracker() {
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       window.removeEventListener("pointermove", onPointerMove);
       cleanups.forEach((fn) => fn());
     };

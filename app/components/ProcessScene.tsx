@@ -5,14 +5,18 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 interface ProcessSceneProps {
-  progress: number; // 0 to 1
+  progress?: number; // 0 to 1
+  progressRef?: React.RefObject<number>;
   activeStep: number; // 0 to 3
 }
 
-export default function ProcessScene({ progress, activeStep }: ProcessSceneProps) {
+export default function ProcessScene({ progress, progressRef: externalProgressRef, activeStep }: ProcessSceneProps) {
   const mountRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef(progress);
-  progressRef.current = progress;
+  const internalProgressRef = useRef(progress ?? 0);
+  if (progress !== undefined) {
+    internalProgressRef.current = progress;
+  }
+  const effectiveProgressRef = externalProgressRef || internalProgressRef;
 
   const activeStepRef = useRef(activeStep);
   activeStepRef.current = activeStep;
@@ -47,7 +51,7 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       } catch {
         return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
       renderer.toneMapping = THREE.NeutralToneMapping;
       renderer.toneMappingExposure = 1.35;
       renderer.setClearColor(0x000000, 0);
@@ -121,7 +125,7 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
     bezelMesh.position.set(0, 0.6, screenDepth / 2 + 0.01);
     compGroup.add(bezelMesh);
 
-    // Glass Screen Display Surface
+    // Glass Screen Display Surface (Zero transmission overhead)
     const screenGeo = new THREE.PlaneGeometry(screenWidth - 0.08, screenHeight - 0.08);
     const screenMat = new THREE.MeshPhysicalMaterial({
       color: 0x070b14,
@@ -129,7 +133,6 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       emissiveIntensity: 0.35,
       metalness: 0.1,
       roughness: 0.05,
-      transmission: 0.1,
       clearcoat: 1.0,
       clearcoatRoughness: 0.05,
     });
@@ -435,7 +438,7 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
     let animId = 0;
     let lastTime = performance.now();
     const startTime = performance.now();
-    let currentLerpProgress = progressRef.current;
+    let currentLerpProgress = effectiveProgressRef.current ?? 0;
     let isVisible = true;
 
     const io = new IntersectionObserver(([entry]) => {
@@ -450,6 +453,9 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       new THREE.Color("#00a2ff"), // Step 4: Azure
     ];
 
+    let lastDashboardUpdate = 0;
+    let lastDrawnStep = -1;
+
     const render = () => {
       animId = requestAnimationFrame(render);
       if (!isVisible) return;
@@ -460,7 +466,7 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       lastTime = now;
 
       // Responsive progress lerp
-      const targetP = progressRef.current;
+      const targetP = effectiveProgressRef.current ?? 0;
       currentLerpProgress += (targetP - currentLerpProgress) * 0.12;
       const p = currentLerpProgress;
 
@@ -474,10 +480,6 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       rig.position.x = 0;
 
       // Clean multi-axis rotation synchronized with the 4 steps
-      // Step 1: Front-facing slightly angled view of the screen
-      // Step 2: Isometric perspective showing the CPU chip and screen
-      // Step 3: Front-isometric view highlighting the security shield
-      // Step 4: Perspective showing the cloud satellites and uplink
       const targetRotY = -0.35 + p * Math.PI * 1.8;
       const targetRotX = 0.12 + Math.sin(p * Math.PI * 2) * 0.08;
 
@@ -495,8 +497,13 @@ export default function ProcessScene({ progress, activeStep }: ProcessSceneProps
       chipMat.emissive.lerp(targetCol, 0.08);
       stepLight.color.lerp(targetCol, 0.08);
 
-      // Redraw Dashboard screen texture periodically
-      drawDashboard(activeStep, time);
+      // Throttled Dashboard screen texture update (runs at ~10 FPS or on step change, saving 90% GPU texture upload bandwidth)
+      if (activeStep !== lastDrawnStep || now - lastDashboardUpdate > 95) {
+        lastDashboardUpdate = now;
+        lastDrawnStep = activeStep;
+        drawDashboard(activeStep, time);
+        screenTex.needsUpdate = true;
+      }
 
       // Step 3: Security Shield
       if (activeStep === 2) {

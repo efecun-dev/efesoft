@@ -131,8 +131,10 @@ export default function ProcessSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const modelCarrierRef = useRef<HTMLDivElement>(null);
   const progressFillRef = useRef<HTMLDivElement>(null);
+  const coordsRef = useRef<HTMLSpanElement>(null);
+  const scrollProgressRef = useRef(0);
+  const activeStepRef = useRef(0);
   const [activeStep, setActiveStep] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useGSAP(
     () => {
@@ -164,7 +166,7 @@ export default function ProcessSection() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          setScrollProgress(p);
+          scrollProgressRef.current = p;
 
           // Proportional travel of the 4 stations (0.0 to 1.0)
           const travelProgress = Math.min(p / 0.88, 1);
@@ -181,9 +183,17 @@ export default function ProcessSection() {
             });
           }
 
-          // Proportional active step calculation (0, 1, 2, 3)
+          // Direct DOM coordinate update without React re-render thrashing
           const step = Math.min(Math.floor(travelProgress * 3.999), 3);
-          setActiveStep(step);
+          if (coordsRef.current) {
+            coordsRef.current.textContent = `ADIM ${step + 1} / 4 · ROT: ${(p * 360).toFixed(0)}°`;
+          }
+
+          // Only trigger React state update when the active step actually changes (0, 1, 2, 3)
+          if (step !== activeStepRef.current) {
+            activeStepRef.current = step;
+            setActiveStep(step);
+          }
         },
       });
 
@@ -314,14 +324,14 @@ export default function ProcessSection() {
                 <Cpu size={13} />
                 <span>EfeFlow™ Studio Workstation</span>
               </span>
-              <span className="process-flow__model-coords">
-                {`ADIM ${activeStep + 1} / 4 · ROT: ${(scrollProgress * 360).toFixed(0)}°`}
+              <span ref={coordsRef} className="process-flow__model-coords">
+                {`ADIM ${activeStep + 1} / 4 · ROT: ${(scrollProgressRef.current * 360).toFixed(0)}°`}
               </span>
             </div>
 
             {/* Three.js 3D Workstation Canvas */}
             <div className="process-flow__canvas-container">
-              <ProcessScene progress={scrollProgress} activeStep={activeStep} />
+              <ProcessScene progressRef={scrollProgressRef} activeStep={activeStep} />
             </div>
 
             {/* Model Bottom Hardware Readout */}
