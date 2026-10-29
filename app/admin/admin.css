@@ -1849,6 +1849,63 @@ tbody.adm-data-switch > tr:not(.adm-expand-row):nth-of-type(13) {
   transform: translate3d(0, 0, 0) scale(1) !important;
 }
 
+/* Modal Internal Structure */
+.adm-modal-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--adm-border);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.adm-modal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--adm-text);
+  letter-spacing: -0.01em;
+}
+
+.adm-modal-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--adm-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  margin-left: auto;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.adm-modal-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--adm-text);
+}
+
+.adm-modal-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.adm-modal-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--adm-border);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px;
+  background: var(--adm-surface-2);
+  flex-shrink: 0;
+}
+
 /* ==========================================================================
    Admin Form Controls, Search Box & Inputs
    ========================================================================== */

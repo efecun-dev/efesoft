@@ -813,21 +813,12 @@ export default function AdminDemosPage() {
   };
 
   return (
-    <div className="adm-page" style={{ padding: "20px 24px", maxWidth: "1600px", margin: "0 auto" }}>
+    <div className="adm-content adm-tab-transition">
       {/* -------------------------------------------------------------------- */}
       {/*  HEADER & HERO ACTION BAR                                            */}
       {/* -------------------------------------------------------------------- */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "14px",
-          marginBottom: "16px",
-        }}
-      >
-        <div>
+      <div className="adm-header">
+        <div className="adm-header__title-group">
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
             <span
               className="adm-badge adm-badge--blue"
@@ -846,23 +837,13 @@ export default function AdminDemosPage() {
             </span>
           </div>
 
-          <h1
-            style={{
-              fontSize: "20px",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              color: "var(--adm-text)",
-              margin: 0,
-            }}
-          >
-            Canlı Demo İstekleri &amp; Sandbox Yönetimi
-          </h1>
-          <p style={{ margin: "2px 0 0 0", fontSize: "12.5px", color: "var(--adm-text-secondary)" }}>
+          <h1 className="adm-header__title">Canlı Demo İstekleri &amp; Sandbox Yönetimi</h1>
+          <p className="adm-header__subtitle">
             Kurumsal potansiyel müşterilerin interaktif sunum randevuları, izole Docker sandbox ortamları ve POC deneme süreçleri.
           </p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div className="adm-header__controls">
           <button
             type="button"
             className="adm-topbar__btn"
@@ -1094,8 +1075,8 @@ export default function AdminDemosPage() {
                   <th style={{ width: "140px", whiteSpace: "nowrap" }}>Talep Türü</th>
                   <th style={{ width: "150px", whiteSpace: "nowrap" }}>Durum / Randevu</th>
                   <th style={{ width: "170px", whiteSpace: "nowrap" }}>Sandbox Tenant</th>
-                  <th style={{ width: "110px", whiteSpace: "nowrap" }}>Potansiyel</th>
-                  <th style={{ width: "130px", textAlign: "right", whiteSpace: "nowrap" }}>İşlemler</th>
+                  <th style={{ width: "125px", whiteSpace: "nowrap" }}>Potansiyel</th>
+                  <th style={{ width: "165px", textAlign: "right", whiteSpace: "nowrap" }}>İşlemler</th>
                 </tr>
               </thead>
               <tbody key={`${selectedProduct}-${selectedStatus}-${selectedType}`} className="adm-data-switch">
@@ -1307,32 +1288,40 @@ export default function AdminDemosPage() {
 
                         {/* Actions */}
                         <td style={{ textAlign: "right", whiteSpace: "nowrap" }} onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "4px", whiteSpace: "nowrap" }}>
-                            {/* Deploy Sandbox Button */}
-                            {(!demo.sandbox || demo.sandbox.status !== "running") && (
-                              <button
-                                type="button"
-                                className="adm-topbar__btn"
-                                style={{ height: "26px", padding: "0 7px", fontSize: "11px" }}
-                                onClick={() => setShowProvisionModal(demo)}
-                                title="İzole sandbox ortamı ayağa kaldır"
-                              >
-                                <Play size={11} />
-                                <span style={{ marginLeft: "4px" }}>Sandbox</span>
-                              </button>
-                            )}
-
-                            {/* Schedule Call Button */}
-                            {demo.status === "pending" && (
+                          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "6px", whiteSpace: "nowrap" }}>
+                            {demo.status === "pending" ? (
                               <button
                                 type="button"
                                 className="adm-topbar__btn adm-topbar__btn--primary"
-                                style={{ height: "26px", padding: "0 7px", fontSize: "11px" }}
+                                style={{ height: "26px", padding: "0 8px", fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px" }}
                                 onClick={() => setShowScheduleModal(demo)}
                                 title="Canlı sunum için randevu takvimi oluştur"
                               >
                                 <Calendar size={11} />
-                                <span style={{ marginLeft: "4px" }}>Randevu</span>
+                                <span>Randevu</span>
+                              </button>
+                            ) : demo.sandbox && demo.sandbox.status === "running" ? (
+                              <a
+                                href={demo.sandbox.fullUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="adm-topbar__btn"
+                                style={{ height: "26px", padding: "0 8px", fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
+                                title="Sandbox ortamına giriş yap"
+                              >
+                                <ExternalLink size={11} />
+                                <span>Giriş</span>
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                className="adm-topbar__btn"
+                                style={{ height: "26px", padding: "0 8px", fontSize: "11px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                                onClick={() => setShowProvisionModal(demo)}
+                                title="İzole sandbox ortamı ayağa kaldır"
+                              >
+                                <Play size={11} />
+                                <span>Sandbox</span>
                               </button>
                             )}
 
@@ -1340,9 +1329,9 @@ export default function AdminDemosPage() {
                             <button
                               type="button"
                               className="adm-topbar__btn"
-                              style={{ height: "26px", padding: "0 7px", fontSize: "11px" }}
+                              style={{ width: "26px", height: "26px", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                               onClick={() => setShowContactModal(demo)}
-                              title="Giriş bilgilerini WhatsApp / E-Posta ile ilet"
+                              title="Giriş ve randevu bilgilerini WhatsApp / E-Posta ile ilet"
                             >
                               <Send size={11} />
                             </button>
@@ -1875,8 +1864,9 @@ export default function AdminDemosPage() {
                 type="button"
                 className="adm-modal-close"
                 onClick={() => setShowProvisionModal(null)}
+                aria-label="Kapat"
               >
-                ✕
+                <X size={15} />
               </button>
             </div>
 
@@ -1990,8 +1980,9 @@ export default function AdminDemosPage() {
                 type="button"
                 className="adm-modal-close"
                 onClick={() => setShowScheduleModal(null)}
+                aria-label="Kapat"
               >
-                ✕
+                <X size={15} />
               </button>
             </div>
 
@@ -2102,8 +2093,9 @@ export default function AdminDemosPage() {
                 type="button"
                 className="adm-modal-close"
                 onClick={() => setShowContactModal(null)}
+                aria-label="Kapat"
               >
-                ✕
+                <X size={15} />
               </button>
             </div>
 
@@ -2194,8 +2186,9 @@ Efesoft Kurumsal Çözümler Ekibi`}
                 type="button"
                 className="adm-modal-close"
                 onClick={() => setShowExtendModal(null)}
+                aria-label="Kapat"
               >
-                ✕
+                <X size={15} />
               </button>
             </div>
 
@@ -2256,8 +2249,9 @@ Efesoft Kurumsal Çözümler Ekibi`}
               type="button"
               className="adm-modal-close"
               onClick={() => setShowCreateModal(false)}
+              aria-label="Kapat"
             >
-              ✕
+              <X size={15} />
             </button>
           </div>
 
