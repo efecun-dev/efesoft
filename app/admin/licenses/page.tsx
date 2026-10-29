@@ -1232,21 +1232,21 @@ export default function AdminLicensesPage() {
       {viewMode === "table" ? (
         <div className="adm-card" style={{ padding: "0", overflow: "hidden" }}>
           <div className="adm-table-wrap">
-            <table className="adm-table">
+            <table className="adm-table" style={{ width: "100%", minWidth: "1120px" }}>
               <thead>
                 <tr>
-                  <th style={{ width: "32px" }}></th>
-                  <th>Lisans &amp; Müşteri</th>
-                  <th>Lisans Anahtarı</th>
-                  <th>Ürün &amp; Paket</th>
-                  <th>Koltuk (Seats)</th>
-                  <th>Hedef / Dağıtım</th>
-                  <th>Geçerlilik</th>
-                  <th>Heartbeat</th>
-                  <th style={{ textAlign: "right" }}>İşlemler</th>
+                  <th style={{ width: "36px", textAlign: "center" }}></th>
+                  <th style={{ width: "240px", whiteSpace: "nowrap" }}>Lisans &amp; Müşteri</th>
+                  <th style={{ width: "230px", whiteSpace: "nowrap" }}>Lisans Anahtarı</th>
+                  <th style={{ width: "210px", whiteSpace: "nowrap" }}>Ürün &amp; Paket</th>
+                  <th style={{ width: "130px", whiteSpace: "nowrap" }}>Koltuk (Seats)</th>
+                  <th style={{ width: "150px", whiteSpace: "nowrap" }}>Hedef / Dağıtım</th>
+                  <th style={{ width: "120px", whiteSpace: "nowrap" }}>Geçerlilik</th>
+                  <th style={{ width: "110px", whiteSpace: "nowrap" }}>Heartbeat</th>
+                  <th style={{ width: "120px", textAlign: "right", whiteSpace: "nowrap" }}>İşlemler</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody key={`${selectedProduct}-${selectedStatus}-${selectedDeployment}`} className="adm-data-switch">
                 {filteredLicenses.map((lic) => {
                   const isExpanded = expandedLicenseId === lic.id;
                   const isRevealed = revealedKeys[lic.id];
@@ -1256,13 +1256,13 @@ export default function AdminLicensesPage() {
                     <Fragment key={lic.id}>
                       <tr
                         style={{
-                          background: isExpanded ? "rgba(0, 113, 227, 0.02)" : undefined,
+                          background: isExpanded ? "rgba(0, 113, 227, 0.03)" : undefined,
                           cursor: "pointer",
                         }}
                         onClick={() => setExpandedLicenseId(isExpanded ? null : lic.id)}
                       >
                         {/* Expand Toggle */}
-                        <td>
+                        <td style={{ width: "36px", textAlign: "center", whiteSpace: "nowrap" }}>
                           <button
                             type="button"
                             style={{
@@ -1270,18 +1270,22 @@ export default function AdminLicensesPage() {
                               border: "none",
                               color: isExpanded ? "var(--adm-primary)" : "var(--adm-text-secondary)",
                               cursor: "pointer",
-                              padding: "2px",
-                              display: "grid",
+                              padding: "4px",
+                              display: "inline-grid",
                               placeItems: "center",
+                              borderRadius: "4px",
+                              transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease",
+                              transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                             }}
+                            title={isExpanded ? "Detayları Kapat" : "Detayları İncele"}
                           >
-                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            <ChevronDown size={14} />
                           </button>
                         </td>
 
                         {/* Client & ID */}
-                        <td>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", whiteSpace: "nowrap" }}>
                             <div
                               style={{
                                 width: "28px",
@@ -1299,11 +1303,11 @@ export default function AdminLicensesPage() {
                             >
                               {lic.productType.toUpperCase()}
                             </div>
-                            <div>
-                              <div style={{ fontWeight: 600, color: "var(--adm-text)" }}>
+                            <div style={{ minWidth: 0 }}>
+                              <div style={{ fontWeight: 600, color: "var(--adm-text)", whiteSpace: "nowrap" }}>
                                 {lic.clientName}
                               </div>
-                              <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)", display: "flex", gap: "6px" }}>
+                              <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)", display: "flex", gap: "6px", whiteSpace: "nowrap" }}>
                                 <span>{lic.clientCode}</span>
                                 <span>·</span>
                                 <span style={{ fontFamily: "var(--font-mono)" }}>{lic.id}</span>
@@ -1313,18 +1317,20 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* License Key with Unmask & Copy */}
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <td onClick={(e) => e.stopPropagation()} style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
                             <span
                               style={{
                                 fontFamily: "var(--font-mono)",
                                 fontSize: "11.5px",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
+                                padding: "3px 8px",
+                                borderRadius: "5px",
                                 background: "var(--adm-surface-2)",
                                 border: "1px solid var(--adm-border)",
                                 letterSpacing: "0.03em",
                                 color: isRevealed ? "#0f172a" : "#64748b",
+                                whiteSpace: "nowrap",
+                                display: "inline-block",
                               }}
                             >
                               {isRevealed ? lic.licenseKey : maskLicenseKey(lic.licenseKey)}
@@ -1351,9 +1357,9 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* Product & Tier */}
-                        <td>
-                          <div style={{ fontWeight: 500 }}>{lic.product}</div>
-                          <div style={{ display: "flex", gap: "4px", marginTop: "2px" }}>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ fontWeight: 500, whiteSpace: "nowrap" }}>{lic.product}</div>
+                          <div style={{ display: "flex", gap: "4px", marginTop: "2px", whiteSpace: "nowrap" }}>
                             <span className="adm-badge adm-badge--neutral" style={{ fontSize: "10px" }}>
                               {lic.tierLabel}
                             </span>
@@ -1375,12 +1381,12 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* Seats */}
-                        <td>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "11px", marginBottom: "3px" }}>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "11px", marginBottom: "3px", width: "95px" }}>
                             <span style={{ fontWeight: 600 }}>{lic.activeSeats} / {lic.allocatedSeats}</span>
                             <span style={{ color: "var(--adm-text-secondary)" }}>%{seatPercent}</span>
                           </div>
-                          <div style={{ width: "90px", height: "4px", background: "rgba(0,0,0,0.06)", borderRadius: "2px", overflow: "hidden" }}>
+                          <div style={{ width: "95px", height: "4px", background: "rgba(0,0,0,0.06)", borderRadius: "2px", overflow: "hidden" }}>
                             <div
                               style={{
                                 width: `${seatPercent}%`,
@@ -1393,8 +1399,8 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* Deployment & Target */}
-                        <td>
-                          <div style={{ fontSize: "11.5px", fontWeight: 500 }}>{lic.deploymentLabel}</div>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ fontSize: "11.5px", fontWeight: 500, whiteSpace: "nowrap" }}>{lic.deploymentLabel}</div>
                           <div
                             style={{
                               fontSize: "10.5px",
@@ -1412,13 +1418,14 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* Validity & Expiration */}
-                        <td>
-                          <div style={{ fontSize: "11.5px", fontWeight: 500 }}>{lic.validUntil}</div>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ fontSize: "11.5px", fontWeight: 500, whiteSpace: "nowrap" }}>{lic.validUntil}</div>
                           <div
                             style={{
                               fontSize: "10.5px",
                               fontWeight: 600,
                               color: lic.daysRemaining <= 30 && lic.daysRemaining > 0 ? "#b45309" : lic.daysRemaining === 0 ? "#dc2626" : "var(--adm-text-secondary)",
+                              whiteSpace: "nowrap",
                             }}
                           >
                             {lic.daysRemaining === 0 ? "Süresi Doldu" : `${lic.daysRemaining} gün kaldı`}
@@ -1426,8 +1433,8 @@ export default function AdminLicensesPage() {
                         </td>
 
                         {/* Heartbeat Status */}
-                        <td>
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
                             <span
                               style={{
                                 width: "7px",
@@ -1440,20 +1447,21 @@ export default function AdminLicensesPage() {
                                     ? "#f59e0b"
                                     : "#ef4444",
                                 boxShadow: lic.heartbeat.status === "healthy" ? "0 0 6px rgba(22, 163, 74, 0.4)" : undefined,
+                                flexShrink: 0,
                               }}
                             />
-                            <span style={{ fontSize: "11px", fontWeight: 500 }}>
+                            <span style={{ fontSize: "11px", fontWeight: 500, whiteSpace: "nowrap" }}>
                               {lic.heartbeat.status === "healthy" ? "Canlı" : lic.heartbeat.status === "idle" ? "Boşta" : "Erişilemez"}
                             </span>
                           </div>
-                          <div style={{ fontSize: "10px", color: "var(--adm-text-secondary)", marginTop: "1px" }}>
+                          <div style={{ fontSize: "10px", color: "var(--adm-text-secondary)", marginTop: "1px", whiteSpace: "nowrap" }}>
                             {lic.heartbeat.lastPing}
                           </div>
                         </td>
 
                         {/* Actions */}
-                        <td style={{ textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "4px" }}>
+                        <td style={{ textAlign: "right", whiteSpace: "nowrap" }} onClick={(e) => e.stopPropagation()}>
+                          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "4px", whiteSpace: "nowrap" }}>
                             <button
                               type="button"
                               className="adm-topbar__btn"
@@ -1489,133 +1497,139 @@ export default function AdminLicensesPage() {
                       </tr>
 
                       {/* ------------------------------------------------------------ */}
-                      {/*  EXPANDED ROW: 360° CRYPTOGRAPHIC LICENSE INSPECTOR         */}
+                      {/*  SMOOTH ANIMATED EXPANDABLE DETAIL ROW                       */}
                       {/* ------------------------------------------------------------ */}
-                      {isExpanded && (
-                        <tr style={{ background: "#f8fafc" }}>
-                          <td colSpan={9} style={{ padding: "16px 20px" }}>
-                            <div
-                              style={{
-                                display: "grid",
-                                gridTemplateColumns: "1.4fr 1.2fr 1.2fr",
-                                gap: "16px",
-                                background: "#ffffff",
-                                padding: "16px",
-                                borderRadius: "10px",
-                                border: "1px solid var(--adm-border)",
-                              }}
-                            >
-                              {/* Col 1: Cryptographic Signature & Fingerprint */}
-                              <div>
-                                <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
-                                  Kriptografik İmza &amp; Donanım Kilidi
-                                </div>
-
-                                <div style={{ display: "grid", gap: "8px", fontSize: "11.5px" }}>
+                      <tr className={`adm-expand-row ${isExpanded ? "adm-expand-row--open" : ""}`}>
+                        <td colSpan={9} className="adm-expand-cell">
+                          <div className="adm-expand-grid">
+                            <div className="adm-expand-inner">
+                              <div className="adm-expand-body">
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1.4fr 1.2fr 1.2fr",
+                                    gap: "16px",
+                                    background: "#ffffff",
+                                    padding: "16px 18px",
+                                    borderRadius: "10px",
+                                    border: "1px solid var(--adm-border)",
+                                    boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
+                                    borderLeft: `3px solid ${lic.themeColor}`,
+                                  }}
+                                >
+                                  {/* Col 1: Cryptographic Signature & Fingerprint */}
                                   <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>İmza Algoritması:</span>
-                                    <div style={{ fontWeight: 600, color: "var(--adm-text)", fontFamily: "var(--font-mono)" }}>
-                                      {lic.crypto.algorithm}
+                                    <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
+                                      Kriptografik İmza &amp; Donanım Kilidi
+                                    </div>
+
+                                    <div style={{ display: "grid", gap: "8px", fontSize: "11.5px" }}>
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>İmza Algoritması:</span>
+                                        <div style={{ fontWeight: 600, color: "var(--adm-text)", fontFamily: "var(--font-mono)" }}>
+                                          {lic.crypto.algorithm}
+                                        </div>
+                                      </div>
+
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>SHA-256 Anahtar Parmak İzi:</span>
+                                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "#0284c7", wordBreak: "break-all" }}>
+                                          {lic.crypto.sha256Fingerprint}
+                                        </div>
+                                      </div>
+
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>Donanım / Domain Eşlemesi:</span>
+                                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", fontWeight: 600, color: "var(--adm-text)" }}>
+                                          [{lic.boundTarget.type.toUpperCase()}] {lic.boundTarget.value}
+                                        </div>
+                                      </div>
+
+                                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px" }}>
+                                        <span className="adm-badge adm-badge--success" style={{ fontSize: "10.5px" }}>
+                                          Efesoft Root CA İmzalı ✓
+                                        </span>
+                                        <span style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)", fontFamily: "var(--font-mono)" }}>
+                                          {lic.crypto.caSerial}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
 
+                                  {/* Col 2: Authorized Modules */}
                                   <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>SHA-256 Anahtar Parmak İzi:</span>
-                                    <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "#0284c7", wordBreak: "break-all" }}>
-                                      {lic.crypto.sha256Fingerprint}
+                                    <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
+                                      Yetkili Ürün Modülleri ({lic.modules.length})
+                                    </div>
+
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                                      {lic.modules.map((m) => (
+                                        <span
+                                          key={m}
+                                          style={{
+                                            fontSize: "11px",
+                                            padding: "3px 8px",
+                                            borderRadius: "5px",
+                                            background: "var(--adm-surface-2)",
+                                            border: "1px solid var(--adm-border)",
+                                            color: "var(--adm-text)",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: "4px",
+                                          }}
+                                        >
+                                          <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: lic.themeColor }} />
+                                          {m}
+                                        </span>
+                                      ))}
+                                    </div>
+
+                                    <div style={{ marginTop: "12px", fontSize: "11px", color: "var(--adm-text-secondary)" }}>
+                                      <b>Yıllık Lisans Bedeli:</b> {lic.annualValueFormatted} / Yıl ({lic.monthlyRevenueFormatted}/Ay)
                                     </div>
                                   </div>
 
+                                  {/* Col 3: Realtime Telemetry & Heartbeat Details */}
                                   <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>Donanım / Domain Eşlemesi:</span>
-                                    <div style={{ fontFamily: "var(--font-mono)", fontSize: "11px", fontWeight: 600, color: "var(--adm-text)" }}>
-                                      [{lic.boundTarget.type.toUpperCase()}] {lic.boundTarget.value}
+                                    <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
+                                      Canlı Node &amp; Heartbeat Takibi
                                     </div>
-                                  </div>
 
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px" }}>
-                                    <span className="adm-badge adm-badge--success" style={{ fontSize: "10.5px" }}>
-                                      Efesoft Root CA İmzalı ✓
-                                    </span>
-                                    <span style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)", fontFamily: "var(--font-mono)" }}>
-                                      {lic.crypto.caSerial}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
+                                    <div style={{ display: "grid", gap: "6px", fontSize: "11.5px" }}>
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>Bağlı Veri Merkezi:</span>
+                                        <div style={{ fontWeight: 600 }}>{lic.heartbeat.datacenter}</div>
+                                      </div>
 
-                              {/* Col 2: Authorized Modules */}
-                              <div>
-                                <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
-                                  Yetkili Ürün Modülleri ({lic.modules.length})
-                                </div>
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>Çalışan Sürüm:</span>
+                                        <div style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{lic.heartbeat.versionRunning}</div>
+                                      </div>
 
-                                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                                  {lic.modules.map((m) => (
-                                    <span
-                                      key={m}
-                                      style={{
-                                        fontSize: "11px",
-                                        padding: "3px 8px",
-                                        borderRadius: "5px",
-                                        background: "var(--adm-surface-2)",
-                                        border: "1px solid var(--adm-border)",
-                                        color: "var(--adm-text)",
-                                        display: "inline-flex",
-                                        alignItems: "center",
-                                        gap: "4px",
-                                      }}
-                                    >
-                                      <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: lic.themeColor }} />
-                                      {m}
-                                    </span>
-                                  ))}
-                                </div>
+                                      <div>
+                                        <span style={{ color: "var(--adm-text-secondary)" }}>Ağ Gecikmesi (Latency):</span>
+                                        <div style={{ fontWeight: 600, color: "#16a34a" }}>{lic.heartbeat.latencyMs} ms</div>
+                                      </div>
 
-                                <div style={{ marginTop: "12px", fontSize: "11px", color: "var(--adm-text-secondary)" }}>
-                                  <b>Yıllık Lisans Bedeli:</b> {lic.annualValueFormatted} / Yıl ({lic.monthlyRevenueFormatted}/Ay)
-                                </div>
-                              </div>
-
-                              {/* Col 3: Realtime Telemetry & Heartbeat Details */}
-                              <div>
-                                <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "8px" }}>
-                                  Canlı Node &amp; Heartbeat Takibi
-                                </div>
-
-                                <div style={{ display: "grid", gap: "6px", fontSize: "11.5px" }}>
-                                  <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>Bağlı Veri Merkezi:</span>
-                                    <div style={{ fontWeight: 600 }}>{lic.heartbeat.datacenter}</div>
-                                  </div>
-
-                                  <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>Çalışan Sürüm:</span>
-                                    <div style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{lic.heartbeat.versionRunning}</div>
-                                  </div>
-
-                                  <div>
-                                    <span style={{ color: "var(--adm-text-secondary)" }}>Ağ Gecikmesi (Latency):</span>
-                                    <div style={{ fontWeight: 600, color: "#16a34a" }}>{lic.heartbeat.latencyMs} ms</div>
-                                  </div>
-
-                                  <div style={{ marginTop: "6px", display: "flex", gap: "6px" }}>
-                                    <button
-                                      type="button"
-                                      className="adm-topbar__btn adm-topbar__btn--primary"
-                                      style={{ height: "28px", padding: "0 10px", fontSize: "11px" }}
-                                      onClick={() => setShowDownloadModal(lic)}
-                                    >
-                                      <Terminal size={11} />
-                                      <span>Aktivasyon Kılavuzu</span>
-                                    </button>
+                                      <div style={{ marginTop: "6px", display: "flex", gap: "6px" }}>
+                                        <button
+                                          type="button"
+                                          className="adm-topbar__btn adm-topbar__btn--primary"
+                                          style={{ height: "28px", padding: "0 10px", fontSize: "11px" }}
+                                          onClick={() => setShowDownloadModal(lic)}
+                                        >
+                                          <Terminal size={11} />
+                                          <span>Aktivasyon Kılavuzu</span>
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </td>
-                        </tr>
-                      )}
+                          </div>
+                        </td>
+                      </tr>
                     </Fragment>
                   );
                 })}
