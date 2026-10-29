@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { AdminModal } from "../AdminModal";
 import {
   FileSignature,
   FileText,
@@ -1622,17 +1623,13 @@ export default function AdminContractsPage() {
       </div>
 
       {/* Animated Official Contract / Proposal Document Preview Modal */}
-      <div
-        className={`adm-modal-overlay ${previewContract ? "adm-modal-overlay--open" : ""}`}
-        onClick={() => setPreviewContract(null)}
+      <AdminModal
+        isOpen={Boolean(previewContract)}
+        onClose={() => setPreviewContract(null)}
+        maxWidth="680px"
       >
-        <div
-          className="adm-modal-card"
-          style={{ maxWidth: "680px" }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {previewContract && (
-            <>
+        {previewContract && (
+          <div>
               <div className="adm-card__head" style={{ background: "#f8fafc" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <FileText size={15} color="var(--adm-primary)" />
@@ -1789,10 +1786,9 @@ export default function AdminContractsPage() {
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
-        </div>
-      </div>
+        </AdminModal>
     </div>
   );
 }

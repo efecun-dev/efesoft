@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, useMemo } from "react";
+import { AdminModal } from "../AdminModal";
 import {
   Package,
   Layers,
@@ -1126,7 +1127,8 @@ export default function AdminProductsPage() {
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                style={{ background: "none", border: "none", color: "var(--adm-text-secondary)", cursor: "pointer", padding: "4px" }}
+                className="adm-search__clear"
+                title="Aramayı Temizle"
               >
                 <X size={12} />
               </button>
@@ -1881,200 +1883,204 @@ export default function AdminProductsPage() {
       {/* -------------------------------------------------------------------- */}
       {/*  MODAL 1: ADD NEW PRODUCT / MODULE                                   */}
       {/* -------------------------------------------------------------------- */}
-      <div className={`adm-modal-overlay ${showAddModal ? "adm-modal-overlay--open" : ""}`} onClick={() => setShowAddModal(false)}>
-        <div className="adm-modal-card" style={{ maxWidth: "540px" }} onClick={(e) => e.stopPropagation()}>
-          <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Package size={17} color="#0071e3" />
-              <h3 style={{ fontSize: "15px", fontWeight: 700, margin: 0 }}>Yeni Ürün / Modül Paketi Tanımla</h3>
-            </div>
-            <button type="button" onClick={() => setShowAddModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-              <X size={17} />
-            </button>
+      <AdminModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        maxWidth="540px"
+      >
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Package size={17} color="#0071e3" />
+            <h3 style={{ fontSize: "15px", fontWeight: 700, margin: 0 }}>Yeni Ürün / Modül Paketi Tanımla</h3>
           </div>
+          <button type="button" onClick={() => setShowAddModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
+            <X size={17} />
+          </button>
+        </div>
 
-          <form onSubmit={handleCreateProduct} style={{ padding: "18px 20px" }}>
-            <div style={{ display: "grid", gap: "12px" }}>
+        <form onSubmit={handleCreateProduct} style={{ padding: "18px 20px" }}>
+          <div style={{ display: "grid", gap: "12px" }}>
+            <div>
+              <label className="adm-label" style={{ marginBottom: "5px" }}>
+                Ürün Adı <span className="adm-label-required">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="örn: EfeWMS Akıllı Depo Otomasyonu"
+                value={newProdName}
+                onChange={(e) => setNewProdName(e.target.value)}
+                className="adm-input"
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                  Ürün Adı *
+                <label className="adm-label" style={{ marginBottom: "5px" }}>
+                  Ürün Kodu <span className="adm-label-required">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="örn: EfeWMS Akıllı Depo Otomasyonu"
-                  value={newProdName}
-                  onChange={(e) => setNewProdName(e.target.value)}
+                  placeholder="örn: EFE-WMS-CORE"
+                  value={newProdCode}
+                  onChange={(e) => setNewProdCode(e.target.value)}
                   className="adm-input"
-                  style={{ width: "100%", height: "34px" }}
+                  style={{ fontFamily: "var(--font-mono)" }}
                 />
               </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                    Ürün Kodu *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="örn: EFE-WMS-CORE"
-                    value={newProdCode}
-                    onChange={(e) => setNewProdCode(e.target.value)}
-                    className="adm-input"
-                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                    Kategori *
-                  </label>
-                  <select
-                    value={newProdCategory}
-                    onChange={(e) => setNewProdCategory(e.target.value as typeof newProdCategory)}
-                    className="adm-input"
-                    style={{ width: "100%", height: "34px" }}
-                  >
-                    <option value="erp">Kurumsal ERP &amp; Finans</option>
-                    <option value="crm">CRM, Satış &amp; İletişim</option>
-                    <option value="pos">Perakende, Mağaza &amp; POS</option>
-                    <option value="ai">Yapay Zeka &amp; Altyapı</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                    İlk Sürüm
-                  </label>
-                  <input
-                    type="text"
-                    value={newProdVersion}
-                    onChange={(e) => setNewProdVersion(e.target.value)}
-                    className="adm-input"
-                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                    Taban Fiyat (₺ / Ay)
-                  </label>
-                  <input
-                    type="number"
-                    value={newProdPrice}
-                    onChange={(e) => setNewProdPrice(e.target.value)}
-                    className="adm-input"
-                    style={{ width: "100%", height: "34px" }}
-                  />
-                </div>
-              </div>
-
               <div>
-                <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                  Kısa Slogan &amp; Açıklama
+                <label className="adm-label" style={{ marginBottom: "5px" }}>
+                  Kategori <span className="adm-label-required">*</span>
                 </label>
-                <textarea
-                  rows={2}
-                  placeholder="Ürünün çözdüğü temel problemi ve faydasını 1-2 cümleyle özetleyin..."
-                  value={newProdTagline}
-                  onChange={(e) => setNewProdTagline(e.target.value)}
+                <select
+                  value={newProdCategory}
+                  onChange={(e) => setNewProdCategory(e.target.value as typeof newProdCategory)}
                   className="adm-input"
-                  style={{ width: "100%", padding: "7px 10px", fontSize: "12px" }}
+                >
+                  <option value="erp">Kurumsal ERP &amp; Finans</option>
+                  <option value="crm">CRM, Satış &amp; İletişim</option>
+                  <option value="pos">Perakende, Mağaza &amp; POS</option>
+                  <option value="ai">Yapay Zeka &amp; Altyapı</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div>
+                <label className="adm-label" style={{ marginBottom: "5px" }}>
+                  İlk Sürüm
+                </label>
+                <input
+                  type="text"
+                  value={newProdVersion}
+                  onChange={(e) => setNewProdVersion(e.target.value)}
+                  className="adm-input"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                />
+              </div>
+              <div>
+                <label className="adm-label" style={{ marginBottom: "5px" }}>
+                  Taban Fiyat (₺ / Ay)
+                </label>
+                <input
+                  type="number"
+                  value={newProdPrice}
+                  onChange={(e) => setNewProdPrice(e.target.value)}
+                  className="adm-input"
                 />
               </div>
             </div>
 
-            <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-              <button type="button" className="adm-topbar__btn" onClick={() => setShowAddModal(false)}>
-                İptal
-              </button>
-              <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
-                Ürünü Kaydet &amp; Kataloğa Ekle
-              </button>
+            <div>
+              <label className="adm-label" style={{ marginBottom: "5px" }}>
+                Kısa Slogan &amp; Açıklama
+              </label>
+              <textarea
+                rows={2}
+                placeholder="Ürünün çözdüğü temel problemi ve faydasını 1-2 cümleyle özetleyin..."
+                value={newProdTagline}
+                onChange={(e) => setNewProdTagline(e.target.value)}
+                className="adm-input"
+              />
             </div>
-          </form>
-        </div>
-      </div>
+          </div>
+
+          <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+            <button type="button" className="adm-topbar__btn" onClick={() => setShowAddModal(false)}>
+              İptal
+            </button>
+            <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
+              Ürünü Kaydet &amp; Kataloğa Ekle
+            </button>
+          </div>
+        </form>
+      </AdminModal>
 
       {/* -------------------------------------------------------------------- */}
       {/*  MODAL 2: PRICING & TIER MATRIX COMPARISON                          */}
       {/* -------------------------------------------------------------------- */}
-      <div className={`adm-modal-overlay ${showMatrixModal ? "adm-modal-overlay--open" : ""}`} onClick={() => setShowMatrixModal(false)}>
-        <div className="adm-modal-card" style={{ maxWidth: "840px" }} onClick={(e) => e.stopPropagation()}>
-          <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div>
-              <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>EfeOS Çapraz Ürün &amp; Paket Fiyatlandırma Matrisi</h3>
-              <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
-                Kurumsal müşterilere verilecek tekliflerde kullanılacak güncel taban liste fiyatları.
-              </p>
-            </div>
-            <button type="button" onClick={() => setShowMatrixModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-              <X size={17} />
-            </button>
+      <AdminModal
+        isOpen={showMatrixModal}
+        onClose={() => setShowMatrixModal(false)}
+        maxWidth="840px"
+      >
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>EfeOS Çapraz Ürün &amp; Paket Fiyatlandırma Matrisi</h3>
+            <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
+              Kurumsal müşterilere verilecek tekliflerde kullanılacak güncel taban liste fiyatları.
+            </p>
           </div>
+          <button type="button" onClick={() => setShowMatrixModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
+            <X size={17} />
+          </button>
+        </div>
 
-          <div style={{ padding: "18px", maxHeight: "65vh", overflowY: "auto" }}>
-            <div className="adm-table-wrap">
-              <table className="adm-table">
-                <thead>
-                  <tr>
-                    <th>Ürün</th>
-                    <th>Starter Paket</th>
-                    <th>Professional Paket</th>
-                    <th>Enterprise Suite</th>
-                    <th>Özel Mimari / On-Prem</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((p) => {
-                    const starter = p.pricingTiers.find((t) => t.tierId === "starter");
-                    const pro = p.pricingTiers.find((t) => t.tierId === "pro");
-                    const ent = p.pricingTiers.find((t) => t.tierId === "enterprise");
+        <div style={{ padding: "18px", maxHeight: "65vh", overflowY: "auto" }}>
+          <div className="adm-table-wrap">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Ürün</th>
+                  <th>Starter Paket</th>
+                  <th>Professional Paket</th>
+                  <th>Enterprise Suite</th>
+                  <th>Özel Mimari / On-Prem</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => {
+                  const starter = p.pricingTiers.find((t) => t.tierId === "starter");
+                  const pro = p.pricingTiers.find((t) => t.tierId === "pro");
+                  const ent = p.pricingTiers.find((t) => t.tierId === "enterprise");
 
-                    return (
-                      <tr key={p.id}>
-                        <td>
-                          <strong>{p.name}</strong>
-                          <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)" }}>{p.code}</div>
-                        </td>
-                        <td>
-                          <div style={{ fontWeight: 600 }}>{starter ? starter.monthlyPriceFormatted + "/Ay" : "-"}</div>
-                          <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{starter?.seatsText}</div>
-                        </td>
-                        <td>
-                          <div style={{ fontWeight: 600, color: p.themeColor }}>{pro ? pro.monthlyPriceFormatted + "/Ay" : "-"}</div>
-                          <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{pro?.seatsText}</div>
-                        </td>
-                        <td>
-                          <div style={{ fontWeight: 700, color: "#16a34a" }}>{ent ? ent.monthlyPriceFormatted + "/Ay" : "-"}</div>
-                          <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{ent?.seatsText}</div>
-                        </td>
-                        <td>
-                          <span className="adm-badge adm-badge--neutral">Teklif İsteyiniz</span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div style={{ padding: "12px 20px", borderTop: "1px solid var(--adm-border)", display: "flex", justifyContent: "flex-end" }}>
-            <button type="button" className="adm-topbar__btn" onClick={() => setShowMatrixModal(false)}>
-              Kapat
-            </button>
+                  return (
+                    <tr key={p.id}>
+                      <td>
+                        <strong>{p.name}</strong>
+                        <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)" }}>{p.code}</div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600 }}>{starter ? starter.monthlyPriceFormatted + "/Ay" : "-"}</div>
+                        <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{starter?.seatsText}</div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: p.themeColor }}>{pro ? pro.monthlyPriceFormatted + "/Ay" : "-"}</div>
+                        <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{pro?.seatsText}</div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 700, color: "#16a34a" }}>{ent ? ent.monthlyPriceFormatted + "/Ay" : "-"}</div>
+                        <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>{ent?.seatsText}</div>
+                      </td>
+                      <td>
+                        <span className="adm-badge adm-badge--neutral">Teklif İsteyiniz</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
+
+        <div style={{ padding: "12px 20px", borderTop: "1px solid var(--adm-border)", display: "flex", justifyContent: "flex-end" }}>
+          <button type="button" className="adm-topbar__btn" onClick={() => setShowMatrixModal(false)}>
+            Kapat
+          </button>
+        </div>
+      </AdminModal>
 
       {/* -------------------------------------------------------------------- */}
       {/*  MODAL 3: DEPLOY RELEASE                                             */}
       {/* -------------------------------------------------------------------- */}
-      {showReleaseModal && (
-        <div className="adm-modal-overlay adm-modal-overlay--open" onClick={() => !isDeploying && setShowReleaseModal(null)}>
-          <div className="adm-modal-card" style={{ maxWidth: "480px" }} onClick={(e) => e.stopPropagation()}>
+      <AdminModal
+        isOpen={Boolean(showReleaseModal)}
+        onClose={() => !isDeploying && setShowReleaseModal(null)}
+        maxWidth="480px"
+      >
+        {showReleaseModal && (
+          <div>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <GitBranch size={16} color="#8b5cf6" />
@@ -2094,8 +2100,8 @@ export default function AdminProductsPage() {
 
               <div style={{ display: "grid", gap: "10px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
-                    Hedef Sürüm Etiketi (SemVer)
+                  <label className="adm-label" style={{ marginBottom: "5px" }}>
+                    Hedef Sürüm Etiketi (SemVer) <span className="adm-label-required">*</span>
                   </label>
                   <input
                     type="text"
@@ -2103,12 +2109,12 @@ export default function AdminProductsPage() {
                     value={releaseVersion}
                     onChange={(e) => setReleaseVersion(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
+                    style={{ fontFamily: "var(--font-mono)" }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label className="adm-label" style={{ marginBottom: "5px" }}>
                     Changelog / Değişiklik Notları
                   </label>
                   <textarea
@@ -2117,7 +2123,6 @@ export default function AdminProductsPage() {
                     value={releaseNotes}
                     onChange={(e) => setReleaseNotes(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", padding: "7px 10px", fontSize: "12px" }}
                   />
                 </div>
               </div>
@@ -2148,15 +2153,19 @@ export default function AdminProductsPage() {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </AdminModal>
 
       {/* -------------------------------------------------------------------- */}
       {/*  MODAL 4: SANDBOX DEMO ENVIRONMENT GENERATOR                         */}
       {/* -------------------------------------------------------------------- */}
-      {showDemoModal && (
-        <div className="adm-modal-overlay adm-modal-overlay--open" onClick={() => setShowDemoModal(null)}>
-          <div className="adm-modal-card" style={{ maxWidth: "500px" }} onClick={(e) => e.stopPropagation()}>
+      <AdminModal
+        isOpen={Boolean(showDemoModal)}
+        onClose={() => setShowDemoModal(null)}
+        maxWidth="500px"
+      >
+        {showDemoModal && (
+          <div>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Play size={16} color="#0071e3" />
@@ -2223,8 +2232,8 @@ export default function AdminProductsPage() {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </AdminModal>
     </div>
   );
 }

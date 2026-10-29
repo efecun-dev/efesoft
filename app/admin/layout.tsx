@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./admin.css";
 import Image from "next/image";
+import { AdminModal } from "./AdminModal";
 
 // SVG Icons for clean, low-dependency Apple-like admin UI
 function IconDashboard() {
@@ -761,126 +762,95 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Animated Global Quick-Quote Modal */}
-        <div
-          className={`adm-modal-overlay ${showQuoteModal ? "adm-modal-overlay--open" : ""}`}
-          onClick={() => setShowQuoteModal(false)}
+        <AdminModal
+          isOpen={showQuoteModal}
+          onClose={() => setShowQuoteModal(false)}
+          maxWidth="520px"
         >
-          <div
-            className="adm-modal-card"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="adm-card__head">
-              <span className="adm-card__title">Hızlı Kurumsal Teklif & Sözleşme Oluştur</span>
-              <span className="adm-badge adm-badge--info">EfeOS PDF Motoru</span>
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setQuoteSent(true);
-                window.setTimeout(() => setShowQuoteModal(false), 900);
-              }}
-              className="adm-card__body"
-              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-            >
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                    Şirket / Kurum Ünvanı *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: KoçSistem A.Ş."
-                    style={{
-                      height: "32px",
-                      padding: "0 10px",
-                      borderRadius: "6px",
-                      border: "1px solid var(--adm-border)",
-                      fontSize: "12px",
-                    }}
-                  />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                    Çözüm Paketi / Modül
-                  </label>
-                  <select
-                    style={{
-                      height: "32px",
-                      padding: "0 8px",
-                      borderRadius: "6px",
-                      border: "1px solid var(--adm-border)",
-                      fontSize: "12px",
-                      background: "#ffffff",
-                    }}
-                  >
-                    <option>Özel Kurumsal Yazılım & AI</option>
-                    <option>EfeERP Enterprise Bulut Lisansı</option>
-                    <option>EfeCRM & B2B Bayi Portalı</option>
-                    <option>EfePOS Perakende Zincir Paketi</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                    Yetkili E-Posta *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="yetkili@sirket.com.tr"
-                    style={{
-                      height: "32px",
-                      padding: "0 10px",
-                      borderRadius: "6px",
-                      border: "1px solid var(--adm-border)",
-                      fontSize: "12px",
-                    }}
-                  />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <label style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)" }}>
-                    Teklif Bedeli (₺ + KDV) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Örn: ₺750.000"
-                    style={{
-                      height: "32px",
-                      padding: "0 10px",
-                      borderRadius: "6px",
-                      border: "1px solid var(--adm-border)",
-                      fontSize: "12px",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "6px" }}>
-                <button
-                  type="button"
-                  onClick={() => setShowQuoteModal(false)}
-                  className="adm-topbar__btn"
-                >
-                  Vazgeç
-                </button>
-                <button
-                  type="submit"
-                  className="adm-topbar__btn adm-topbar__btn--primary"
-                  style={{
-                    background: quoteSent ? "#1a9e4b" : undefined,
-                    borderColor: quoteSent ? "#1a9e4b" : undefined,
-                  }}
-                >
-                  {quoteSent ? "PDF Teklif Hazırlandı & Gönderildi ✓" : "PDF Oluştur & Müşteriye Gönder"}
-                </button>
-              </div>
-            </form>
+          <div className="adm-card__head">
+            <span className="adm-card__title">Hızlı Kurumsal Teklif & Sözleşme Oluştur</span>
+            <span className="adm-badge adm-badge--info">EfeOS PDF Motoru</span>
           </div>
-        </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setQuoteSent(true);
+              window.setTimeout(() => setShowQuoteModal(false), 900);
+            }}
+            className="adm-card__body"
+            style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "18px 20px" }}
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div className="adm-form-group">
+                <label className="adm-label">
+                  Şirket / Kurum Ünvanı <span className="adm-label-required">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Örn: KoçSistem A.Ş."
+                  className="adm-input"
+                />
+              </div>
+              <div className="adm-form-group">
+                <label className="adm-label">
+                  Çözüm Paketi / Modül
+                </label>
+                <select className="adm-input">
+                  <option>Özel Kurumsal Yazılım & AI</option>
+                  <option>EfeERP Enterprise Bulut Lisansı</option>
+                  <option>EfeCRM & B2B Bayi Portalı</option>
+                  <option>EfePOS Perakende Zincir Paketi</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div className="adm-form-group">
+                <label className="adm-label">
+                  Yetkili E-Posta <span className="adm-label-required">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="yetkili@sirket.com.tr"
+                  className="adm-input"
+                />
+              </div>
+              <div className="adm-form-group">
+                <label className="adm-label">
+                  Teklif Bedeli (₺ + KDV) <span className="adm-label-required">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Örn: ₺750.000"
+                  className="adm-input"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "6px" }}>
+              <button
+                type="button"
+                onClick={() => setShowQuoteModal(false)}
+                className="adm-topbar__btn"
+              >
+                Vazgeç
+              </button>
+              <button
+                type="submit"
+                className="adm-topbar__btn adm-topbar__btn--primary"
+                style={{
+                  background: quoteSent ? "#1a9e4b" : undefined,
+                  borderColor: quoteSent ? "#1a9e4b" : undefined,
+                }}
+              >
+                {quoteSent ? "PDF Teklif Hazırlandı & Gönderildi ✓" : "PDF Oluştur & Müşteriye Gönder"}
+              </button>
+            </div>
+          </form>
+        </AdminModal>
 
         {/* Animated Page Stage (Crisp Spatial Slide & Staggered Cascade) */}
         <div
