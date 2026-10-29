@@ -316,6 +316,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isClientsRoute = pathname?.startsWith("/admin/clients");
   const isPipelineRoute = pathname?.startsWith("/admin/pipeline");
   const isContractsRoute = pathname?.startsWith("/admin/contracts");
+  const isProductsRoute = pathname?.startsWith("/admin/products");
   const currentTab = isAnalyticsRoute
     ? "analytics"
     : isSystemHealthRoute
@@ -328,6 +329,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ? "pipeline"
     : isContractsRoute
     ? "contracts"
+    : isProductsRoute
+    ? "products"
     : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
@@ -347,6 +350,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             !isClientsRoute &&
             !isPipelineRoute &&
             !isContractsRoute &&
+            !isProductsRoute &&
             currentTab === "dashboard",
         },
         {
@@ -411,7 +415,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     {
       category: "ÜRÜNLER & LİSANSLAR",
       items: [
-        { id: "products", label: "Ürün Yönetimi (ERP, CRM, POS)", icon: <IconProducts /> },
+        {
+          id: "products",
+          label: "Ürün Yönetimi (ERP, CRM, POS)",
+          icon: <IconProducts />,
+          href: "/admin/products",
+          badge: "4 Ürün",
+          badgeType: "blue",
+          active: isProductsRoute || currentTab === "products",
+        },
         { id: "licenses", label: "Lisans Anahtarları (1.248)", icon: <IconKey /> },
         { id: "demos", label: "Canlı Demo İstekleri", icon: <IconDemo />, badge: "3", badgeType: "amber" },
         { id: "releases", label: "Sürümler & Changelog", icon: <IconReleases /> },
