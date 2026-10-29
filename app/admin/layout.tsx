@@ -318,6 +318,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isPipelineRoute = pathname?.startsWith("/admin/pipeline");
   const isContractsRoute = pathname?.startsWith("/admin/contracts");
   const isProductsRoute = pathname?.startsWith("/admin/products");
+  const isLicensesRoute = pathname?.startsWith("/admin/licenses");
   const currentTab = isAnalyticsRoute
     ? "analytics"
     : isSystemHealthRoute
@@ -332,6 +333,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ? "contracts"
     : isProductsRoute
     ? "products"
+    : isLicensesRoute
+    ? "licenses"
     : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
@@ -352,6 +355,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             !isPipelineRoute &&
             !isContractsRoute &&
             !isProductsRoute &&
+            !isLicensesRoute &&
             currentTab === "dashboard",
         },
         {
@@ -425,7 +429,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           badgeType: "blue",
           active: isProductsRoute || currentTab === "products",
         },
-        { id: "licenses", label: "Lisans Anahtarları (1.248)", icon: <IconKey /> },
+        {
+          id: "licenses",
+          label: "Lisans Anahtarları",
+          icon: <IconKey />,
+          href: "/admin/licenses",
+          badge: "1.248",
+          badgeType: "blue",
+          active: isLicensesRoute || currentTab === "licenses",
+        },
         { id: "demos", label: "Canlı Demo İstekleri", icon: <IconDemo />, badge: "3", badgeType: "amber" },
         { id: "releases", label: "Sürümler & Changelog", icon: <IconReleases /> },
       ],
@@ -691,6 +703,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   ? "Satış Görüşmeleri & Pipeline"
                   : isContractsRoute
                   ? "Sözleşmeler & Teklifler"
+                  : isProductsRoute
+                  ? "Ürün Yönetimi & Lisans Kataloğu"
+                  : isLicensesRoute
+                  ? "Lisans Anahtarları & Dağıtım Motoru"
                   : "Dashboard"}
               </span>
             </div>
