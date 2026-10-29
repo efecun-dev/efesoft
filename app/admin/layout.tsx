@@ -320,6 +320,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isProductsRoute = pathname?.startsWith("/admin/products");
   const isLicensesRoute = pathname?.startsWith("/admin/licenses");
   const isDemosRoute = pathname?.startsWith("/admin/demos");
+  const isReleasesRoute = pathname?.startsWith("/admin/releases");
   const currentTab = isAnalyticsRoute
     ? "analytics"
     : isSystemHealthRoute
@@ -338,6 +339,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ? "licenses"
     : isDemosRoute
     ? "demos"
+    : isReleasesRoute
+    ? "releases"
     : activeTab;
 
   // Full operational scope covering every aspect of Efesoft software business
@@ -360,6 +363,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             !isProductsRoute &&
             !isLicensesRoute &&
             !isDemosRoute &&
+            !isReleasesRoute &&
             currentTab === "dashboard",
         },
         {
@@ -451,7 +455,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           badgeType: "amber",
           active: isDemosRoute || currentTab === "demos",
         },
-        { id: "releases", label: "Sürümler & Changelog", icon: <IconReleases /> },
+        {
+          id: "releases",
+          label: "Sürümler & Changelog",
+          icon: <IconReleases />,
+          href: "/admin/releases",
+          badge: "v4.2.0",
+          badgeType: "green",
+          active: isReleasesRoute || currentTab === "releases",
+        },
       ],
     },
     {
@@ -721,6 +733,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   ? "Lisans Anahtarları & Dağıtım Motoru"
                   : isDemosRoute
                   ? "Canlı Demo İstekleri & Sandbox Yönetimi"
+                  : isReleasesRoute
+                  ? "Sürümler & Changelog Yönetimi"
                   : "Dashboard"}
               </span>
             </div>
