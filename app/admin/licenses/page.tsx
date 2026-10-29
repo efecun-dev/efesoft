@@ -1052,77 +1052,77 @@ export default function AdminLicensesPage() {
       <div className="adm-kpi-grid">
         {/* KPI 1 */}
         <div className="adm-kpi-card">
-          <div className="adm-kpi-card__head">
+          <div className="adm-kpi-card__top">
             <span className="adm-kpi-card__label">Toplam Aktif Lisans</span>
-            <div className="adm-kpi-card__icon-wrap" style={{ background: "rgba(0, 113, 227, 0.1)", color: "#0071e3" }}>
-              <Key size={14} />
-            </div>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(0, 113, 227, 0.1)", color: "#0071e3" }}>
+              <Key size={13} />
+            </span>
           </div>
-          <div className="adm-kpi-card__value">1.248 Lisans</div>
-          <div className="adm-kpi-card__subtext">
+          <div className="adm-kpi-card__val">1.248 Lisans</div>
+          <div className="adm-kpi-card__sub">
             <span style={{ color: "#16a34a", fontWeight: 600 }}>%94.2 Aktif</span> · 42 POC Deneme · 18 Askıda
           </div>
         </div>
 
         {/* KPI 2 */}
         <div className="adm-kpi-card">
-          <div className="adm-kpi-card__head">
+          <div className="adm-kpi-card__top">
             <span className="adm-kpi-card__label">Koltuk Tahsisi (Seat Quota)</span>
-            <div className="adm-kpi-card__icon-wrap" style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
-              <Users size={14} />
-            </div>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
+              <Users size={13} />
+            </span>
           </div>
-          <div className="adm-kpi-card__value">
+          <div className="adm-kpi-card__val">
             {kpis.totalActiveSeats.toLocaleString("tr-TR")} / {kpis.totalAllocatedSeats.toLocaleString("tr-TR")}
           </div>
-          <div className="adm-kpi-card__subtext">
-            <span style={{ color: "#16a34a", fontWeight: 600 }}>%{kpis.seatUtilizationPercent} Doluluk</span> · Lisanslı Eşzamanlı Kullanıcı
+          <div className="adm-kpi-card__sub">
+            <span style={{ color: "#16a34a", fontWeight: 600 }}>%{kpis.seatUtilizationPercent} Doluluk</span> · Lisanslı Kullanıcı
           </div>
         </div>
 
         {/* KPI 3 */}
         <div className="adm-kpi-card">
-          <div className="adm-kpi-card__head">
+          <div className="adm-kpi-card__top">
             <span className="adm-kpi-card__label">Canlı Heartbeat Telemetrisi</span>
-            <div className="adm-kpi-card__icon-wrap" style={{ background: "rgba(22, 163, 74, 0.1)", color: "#16a34a" }}>
-              <Activity size={14} />
-            </div>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(22, 163, 74, 0.1)", color: "#16a34a" }}>
+              <Activity size={13} />
+            </span>
           </div>
-          <div className="adm-kpi-card__value">
+          <div className="adm-kpi-card__val">
             842 Canlı Düğüm
           </div>
-          <div className="adm-kpi-card__subtext">
-            <span style={{ color: "#16a34a", fontWeight: 600 }}>%99.98 Uptime</span> · 14ms Avg Cluster Ping
+          <div className="adm-kpi-card__sub">
+            <span style={{ color: "#16a34a", fontWeight: 600 }}>%99.98 Uptime</span> · 14ms Avg Ping
           </div>
         </div>
 
         {/* KPI 4 */}
         <div className="adm-kpi-card">
-          <div className="adm-kpi-card__head">
+          <div className="adm-kpi-card__top">
             <span className="adm-kpi-card__label">Yıllık Lisans Hacmi (ARR)</span>
-            <div className="adm-kpi-card__icon-wrap" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
-              <Zap size={14} />
-            </div>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
+              <Zap size={13} />
+            </span>
           </div>
-          <div className="adm-kpi-card__value">₺18.420.000</div>
-          <div className="adm-kpi-card__subtext">
-            <span style={{ color: "#0071e3", fontWeight: 600 }}>₺1.53M / Ay</span> · Kurumsal Bakım &amp; SLA Dahil
+          <div className="adm-kpi-card__val">₺18.420.000</div>
+          <div className="adm-kpi-card__sub">
+            <span style={{ color: "#0071e3", fontWeight: 600 }}>₺1.53M / Ay</span> · Kurumsal SLA Dahil
           </div>
         </div>
 
         {/* KPI 5 */}
         <div className="adm-kpi-card">
-          <div className="adm-kpi-card__head">
+          <div className="adm-kpi-card__top">
             <span className="adm-kpi-card__label">Yenileme Bekleyenler (30 Gün)</span>
-            <div className="adm-kpi-card__icon-wrap" style={{ background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>
-              <Clock size={14} />
-            </div>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>
+              <Clock size={13} />
+            </span>
           </div>
-          <div className="adm-kpi-card__value" style={{ color: "#b45309" }}>
+          <div className="adm-kpi-card__val" style={{ color: "#b45309" }}>
             14 Müşteri
           </div>
-          <div className="adm-kpi-card__subtext">
-            ₺1.84M Sözleşme Hacmi · Otomatik Hatırlatma Aktif
+          <div className="adm-kpi-card__sub">
+            ₺1.84M Hacim · Otomatik Hatırlatma Aktif
           </div>
         </div>
       </div>

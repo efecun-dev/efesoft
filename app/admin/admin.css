@@ -868,11 +868,13 @@
   border-color: rgba(0, 113, 227, 0.3);
 }
 
-.adm-kpi-card__top {
+.adm-kpi-card__top,
+.adm-kpi-card__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
+  width: 100%;
 }
 
 .adm-kpi-card__label {
@@ -881,7 +883,8 @@
   color: var(--adm-text-secondary);
 }
 
-.adm-kpi-card__icon {
+.adm-kpi-card__icon,
+.adm-kpi-card__icon-wrap {
   width: 24px;
   height: 24px;
   border-radius: 6px;
@@ -891,7 +894,8 @@
   flex-shrink: 0;
 }
 
-.adm-kpi-card__val {
+.adm-kpi-card__val,
+.adm-kpi-card__value {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -900,7 +904,8 @@
   line-height: 1.1;
 }
 
-.adm-kpi-card__sub {
+.adm-kpi-card__sub,
+.adm-kpi-card__subtext {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
