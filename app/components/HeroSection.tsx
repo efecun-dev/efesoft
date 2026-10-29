@@ -83,14 +83,29 @@ export default function HeroSection() {
         const w2x = gsap.quickTo(".widget--license", "x", { duration: 1.1, ease: "power3.out" });
         const w3x = gsap.quickTo(".widget--code", "x", { duration: 0.75, ease: "power3.out" });
 
-        const onMove = (e: PointerEvent) => {
-          const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+        let rafId: number | null = null;
+        let lastEvent: PointerEvent | null = null;
+
+        const handlePointer = () => {
+          rafId = null;
+          if (!lastEvent) return;
+          const nx = (lastEvent.clientX / window.innerWidth - 0.5) * 2;
           w1x(nx * -18);
           w2x(nx * 26);
           w3x(nx * -14);
         };
+
+        const onMove = (e: PointerEvent) => {
+          lastEvent = e;
+          if (rafId === null) {
+            rafId = requestAnimationFrame(handlePointer);
+          }
+        };
         window.addEventListener("pointermove", onMove, { passive: true });
-        cleanupPointer = () => window.removeEventListener("pointermove", onMove);
+        cleanupPointer = () => {
+          if (rafId !== null) cancelAnimationFrame(rafId);
+          window.removeEventListener("pointermove", onMove);
+        };
       }
 
       /* ---------- Multi-plane scroll parallax scrub ---------- */

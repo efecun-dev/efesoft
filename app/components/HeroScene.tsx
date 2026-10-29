@@ -63,8 +63,7 @@ float snoise(vec3 v){
 }
 `;
 
-// Soft animated aurora gradient rendered as a full-screen quad. Because it is
-// an opaque scene object, the glass objects refract it in their transmission pass.
+// Soft animated aurora gradient rendered as a full-screen quad.
 const BG_VERT = /* glsl */ `
 varying vec2 vUv;
 void main(){
@@ -74,6 +73,7 @@ void main(){
 `;
 
 const BG_FRAG = /* glsl */ `
+precision mediump float;
 uniform float uTime;
 uniform float uAspect;
 uniform vec3 uBase;
@@ -118,26 +118,26 @@ void main(){
 
 /* ------------------------------------------------------------------------ */
 
-// Ultra-optimized Centerpiece Liquid Glass material (single-pass, zero dispersion overhead)
-function makeCenterGlass(isMobile: boolean, overrides: Partial<THREE.MeshPhysicalMaterialParameters> = {}) {
+// Ultra-optimized Centerpiece Liquid Glass material (single-pass, zero dispersion, zero offscreen transmission overhead)
+function makeCenterGlass(overrides: Partial<THREE.MeshPhysicalMaterialParameters> = {}) {
   return new THREE.MeshPhysicalMaterial({
     color: 0xffffff,
     metalness: 0.02,
-    roughness: 0.05,
-    transmission: isMobile ? 0 : 0.88,
-    thickness: 1.2,
+    roughness: 0.03,
+    transmission: 0,
     ior: 1.45,
-    iridescence: 0.88,
-    iridescenceIOR: 1.28,
-    iridescenceThicknessRange: [120, 580],
-    clearcoat: 1,
-    clearcoatRoughness: 0.04,
-    specularIntensity: 1,
-    envMapIntensity: 1.35,
+    iridescence: 0.96,
+    iridescenceIOR: 1.34,
+    iridescenceThicknessRange: [120, 620],
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.03,
+    specularIntensity: 1.0,
+    envMapIntensity: 1.6,
     attenuationColor: new THREE.Color("#eaf2ff"),
     attenuationDistance: 2.2,
-    transparent: isMobile,
-    opacity: isMobile ? 0.9 : 1,
+    transparent: true,
+    opacity: 0.82,
+    depthWrite: false,
     ...overrides,
   });
 }
@@ -210,7 +210,7 @@ export default function HeroScene() {
         markReady();
         return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.0 : 1.3));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isSmall ? 1.0 : 1.25));
       renderer.toneMapping = THREE.NeutralToneMapping;
       renderer.toneMappingExposure = 1.06;
       renderer.setClearColor(0x000000, 0);
@@ -270,7 +270,7 @@ export default function HeroScene() {
       uTime: { value: 0 },
       uAmp: { value: 0.2 },
     };
-    const blobMat = makeCenterGlass(isSmall, { thickness: 1.6 });
+    const blobMat = makeCenterGlass({ thickness: 1.6 });
     blobMat.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = blobUniforms.uTime;
       shader.uniforms.uAmp = blobUniforms.uAmp;
@@ -307,8 +307,9 @@ export default function HeroScene() {
         )
         .replace("#include <begin_vertex>", "vec3 transformed = dispPos;");
     };
-    const blobGeo = new THREE.IcosahedronGeometry(1.32, isSmall ? 16 : 22);
+    const blobGeo = new THREE.IcosahedronGeometry(1.32, isSmall ? 4 : 6);
     const blob = new THREE.Mesh(blobGeo, blobMat);
+    blob.renderOrder = 2;
     rig.add(blob);
 
     /* ---------- precision orbital gyroscope rings ---------- */
@@ -319,13 +320,13 @@ export default function HeroScene() {
       clearcoat: 1,
       iridescence: 0.6,
     });
-    const outerGyroGeo = new THREE.TorusGeometry(2.05, 0.022, 16, 72);
+    const outerGyroGeo = new THREE.TorusGeometry(2.05, 0.022, 12, 48);
     const outerGyro = new THREE.Mesh(outerGyroGeo, metalRingMat);
     outerGyro.rotation.x = Math.PI * 0.32;
     outerGyro.rotation.y = Math.PI * 0.12;
     rig.add(outerGyro);
 
-    const innerGyroGeo = new THREE.TorusGeometry(1.68, 0.032, 16, 64);
+    const innerGyroGeo = new THREE.TorusGeometry(1.68, 0.032, 12, 48);
     const innerGyro = new THREE.Mesh(
       innerGyroGeo,
       makeSatelliteGlass("#cfe4ff", { roughness: 0.06 })
@@ -335,17 +336,17 @@ export default function HeroScene() {
     rig.add(innerGyro);
 
     /* ---------- secondary glass objects (zero multi-pass overhead) ---------- */
-    const torusGeo = new THREE.TorusGeometry(0.46, 0.17, 20, 48);
+    const torusGeo = new THREE.TorusGeometry(0.46, 0.17, 14, 32);
     const torus = new THREE.Mesh(torusGeo, makeSatelliteGlass("#eaf2ff"));
     torus.position.set(-1.85, 1.15, 0.4);
     rig.add(torus);
 
-    const cubeGeo = new RoundedBoxGeometry(0.78, 0.78, 0.78, 3, 0.18);
+    const cubeGeo = new RoundedBoxGeometry(0.78, 0.78, 0.78, 2, 0.18);
     const cube = new THREE.Mesh(cubeGeo, makeSatelliteGlass("#dbeafe", { iridescence: 1 }));
     cube.position.set(1.65, -1.25, 0.6);
     rig.add(cube);
 
-    const capsuleGeo = new THREE.CapsuleGeometry(0.16, 0.7, 8, 16);
+    const capsuleGeo = new THREE.CapsuleGeometry(0.16, 0.7, 6, 12);
     const capsule = new THREE.Mesh(capsuleGeo, makeSatelliteGlass("#e0e7ff"));
     capsule.position.set(1.55, 1.45, -0.2);
     capsule.rotation.z = -0.7;
@@ -357,7 +358,7 @@ export default function HeroScene() {
     rig.add(octa);
 
     /* ---------- solid color orbs (seen through the glass) ---------- */
-    const orbGeo = new THREE.SphereGeometry(1, 24, 24);
+    const orbGeo = new THREE.SphereGeometry(1, 16, 16);
     const orbSpecs = [
       { color: "#0a84ff", r: 0.34, radius: 2.15, speed: 0.32, phase: 0.0, tilt: 0.35, z: -0.6 },
       { color: "#5e5ce6", r: 0.24, radius: 1.8, speed: -0.42, phase: 2.1, tilt: -0.5, z: -1.1 },
@@ -368,17 +369,15 @@ export default function HeroScene() {
     const orbs = orbSpecs.map((s) => {
       const m = new THREE.Mesh(
         orbGeo,
-        new THREE.MeshPhysicalMaterial({
+        new THREE.MeshStandardMaterial({
           color: s.color,
-          roughness: 0.25,
-          metalness: 0.0,
-          clearcoat: 1,
-          clearcoatRoughness: 0.1,
-          sheen: 0.6,
-          sheenColor: new THREE.Color("#ffffff"),
+          roughness: 0.15,
+          metalness: 0.06,
+          envMapIntensity: 0.9,
         })
       );
       m.scale.setScalar(s.r);
+      m.renderOrder = 1;
       rig.add(m);
       return { mesh: m, ...s };
     });
@@ -432,6 +431,7 @@ export default function HeroScene() {
       `,
     });
     const particleField = new THREE.Points(particleGeo, particleMat);
+    particleField.renderOrder = 3;
     rig.add(particleField);
 
     /* ---------- layout ---------- */
