@@ -659,7 +659,8 @@
   flex-shrink: 0;
 }
 
-.adm-topbar__btn {
+.adm-topbar__btn,
+.adm-btn {
   height: 32px;
   padding: 0 12px;
   border-radius: 7px;
@@ -677,20 +678,34 @@
   border: 1px solid var(--adm-border);
   background: var(--adm-surface);
   color: var(--adm-text);
+  font-family: inherit;
 }
 
-.adm-topbar__btn:hover {
+.adm-topbar__btn:hover,
+.adm-btn:hover {
   background: var(--adm-surface-2);
 }
 
-.adm-topbar__btn--primary {
+.adm-topbar__btn--primary,
+.adm-btn--primary {
   background: var(--adm-primary);
   border-color: var(--adm-primary);
   color: #ffffff;
 }
 
-.adm-topbar__btn--primary:hover {
+.adm-topbar__btn--primary:hover,
+.adm-btn--primary:hover {
   background: #0060c4;
+}
+
+.adm-btn--secondary {
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  color: var(--adm-text);
+}
+
+.adm-btn--secondary:hover {
+  background: var(--adm-surface-2);
 }
 
 .adm-topbar__icon-btn {
@@ -912,13 +927,15 @@
   vertical-align: middle;
 }
 
-.adm-badge--success {
+.adm-badge--success,
+.adm-badge--green {
   background: var(--adm-success-soft);
   color: var(--adm-success);
   border: 1px solid rgba(26, 158, 75, 0.18);
 }
 
-.adm-badge--warning {
+.adm-badge--warning,
+.adm-badge--amber {
   background: var(--adm-warning-soft);
   color: #b45309;
   border: 1px solid rgba(245, 158, 11, 0.22);

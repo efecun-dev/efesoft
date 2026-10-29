@@ -958,7 +958,7 @@ export default function AdminProductsPage() {
   const totalModules = products.reduce((acc, p) => acc + p.modules.length, 0);
 
   return (
-    <div className="adm-page adm-tab-transition">
+    <div className="adm-content adm-tab-transition">
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -988,127 +988,110 @@ export default function AdminProductsPage() {
       {/* -------------------------------------------------------------------- */}
       {/*  PAGE HEADER & ACTIONS                                               */}
       {/* -------------------------------------------------------------------- */}
-      <div className="adm-page__header" style={{ marginBottom: "20px" }}>
-        <div>
+      <div className="adm-header">
+        <div className="adm-header__title-group">
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <span className="adm-badge adm-badge--info">EfeOS v4.8 Ürün Kataloğu &amp; Lisans Motoru</span>
-            <span className="adm-badge adm-badge--success">Tüm Sistemler Uptime %99.98</span>
+            <span className="adm-badge adm-badge--blue">EfeOS v4.8 Ürün Kataloğu</span>
+            <span className="adm-badge adm-badge--success">Uptime %99.98</span>
           </div>
-          <h1 className="adm-page__title" style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.03em" }}>
-            Ürün Yönetimi &amp; Lisans Mimarisi
-          </h1>
-          <p className="adm-page__desc" style={{ fontSize: "13.5px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
-            Efesoft tescilli kurumsal yazılım ürünleri (ERP, CRM, POS, AI), modül mimarileri, paket fiyatlandırmaları ve lisans kural motoru.
+          <h1 className="adm-header__title">Ürün Yönetimi &amp; Lisans Kataloğu</h1>
+          <p className="adm-header__subtitle">
+            Efesoft tescilli kurumsal yazılım ürünleri (ERP, CRM, POS, AI), modül mimarileri, tenant dağıtım modelleri ve lisans kural motoru.
           </p>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+        <div className="adm-header__controls">
           <button
             type="button"
-            className="adm-btn adm-btn--secondary"
+            className="adm-topbar__btn"
             onClick={() => setShowMatrixModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
           >
-            <SlidersHorizontal size={14} />
-            <span>Paket &amp; Fiyat Matrisi</span>
+            <SlidersHorizontal size={13} />
+            <span>Fiyat Matrisi</span>
           </button>
 
           <button
             type="button"
-            className="adm-btn adm-btn--primary"
+            className="adm-topbar__btn adm-topbar__btn--primary"
             onClick={() => setShowAddModal(true)}
-            style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
           >
-            <Plus size={15} />
-            <span>Yeni Ürün / Modül Tanımla</span>
+            <Plus size={14} />
+            <span>Yeni Ürün / Modül</span>
           </button>
         </div>
       </div>
 
       {/* -------------------------------------------------------------------- */}
-      {/*  TOP EXECUTIVE METRIC CARDS                                          */}
+      {/*  TOP EXECUTIVE METRIC CARDS (Standard adm-kpi-grid)                  */}
       {/* -------------------------------------------------------------------- */}
       <div
+        className="adm-kpi-grid adm-data-switch"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-          gap: "12px",
-          marginBottom: "20px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          marginBottom: "16px",
         }}
       >
         {/* KPI 1 */}
-        <div className="adm-card" style={{ padding: "16px 18px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-              Aktif Ürün &amp; Çekirdek
-            </span>
-            <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "rgba(0,113,227,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0071e3" }}>
+        <div className="adm-kpi-card">
+          <div className="adm-kpi-card__top">
+            <span className="adm-kpi-card__label">Aktif Ürün &amp; Çekirdek</span>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(0, 113, 227, 0.1)", color: "#0071e3" }}>
               <Package size={15} />
-            </div>
+            </span>
           </div>
-          <div style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.03em", color: "var(--adm-text)" }}>
-            {products.length} Ana Ürün
-          </div>
-          <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span className="adm-badge adm-badge--blue" style={{ padding: "1px 5px", fontSize: "10px" }}>{totalModules} Modül</span>
-            <span>EfeOS Ekosistem Çekirdeği</span>
+          <div className="adm-kpi-card__val">{products.length} Ana Ürün</div>
+          <div className="adm-kpi-card__sub">
+            <span className="adm-badge adm-badge--blue">{totalModules} Modül</span>
+            <span style={{ color: "var(--adm-text-secondary)" }}>EfeOS Çekirdeği</span>
           </div>
         </div>
 
         {/* KPI 2 */}
-        <div className="adm-card" style={{ padding: "16px 18px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-              Lisanslı Koltuk (Seats)
-            </span>
-            <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "rgba(139,92,246,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#8b5cf6" }}>
+        <div className="adm-kpi-card">
+          <div className="adm-kpi-card__top">
+            <span className="adm-kpi-card__label">Lisanslı Koltuk (Seats)</span>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
               <Users size={15} />
-            </div>
+            </span>
           </div>
-          <div style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.03em", color: "var(--adm-text)" }}>
-            {totalSeats.toLocaleString("tr-TR")} Koltuk
-          </div>
-          <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span className="adm-badge adm-badge--purple" style={{ padding: "1px 5px", fontSize: "10px" }}>{totalTenants} Kurumsal Müşteri</span>
-            <span>+%28 Yıllık Büyüme</span>
+          <div className="adm-kpi-card__val">{totalSeats.toLocaleString("tr-TR")} Koltuk</div>
+          <div className="adm-kpi-card__sub">
+            <span className="adm-badge adm-badge--purple">{totalTenants} Kurumsal Müşteri</span>
+            <span style={{ color: "var(--adm-text-secondary)" }}>+%28 Yıllık</span>
           </div>
         </div>
 
         {/* KPI 3 */}
-        <div className="adm-card" style={{ padding: "16px 18px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-              Yazılım MRR (Aylık Düzenli Gelir)
-            </span>
-            <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "rgba(16,185,129,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#10b981" }}>
+        <div className="adm-kpi-card">
+          <div className="adm-kpi-card__top">
+            <span className="adm-kpi-card__label">Aylık Lisans Geliri (MRR)</span>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(26, 158, 75, 0.1)", color: "#1a9e4b" }}>
               <CreditCard size={15} />
-            </div>
+            </span>
           </div>
-          <div style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.03em", color: "#16a34a" }}>
+          <div className="adm-kpi-card__val" style={{ color: "#16a34a" }}>
             ₺{totalRevenue.toLocaleString("tr-TR")}
-            <span style={{ fontSize: "13px", fontWeight: 500, color: "var(--adm-text-secondary)" }}> / Ay</span>
           </div>
-          <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", marginTop: "4px" }}>
-            Yıllık ARR: <strong>₺{(totalRevenue * 12).toLocaleString("tr-TR")}</strong> (%34 Brüt Marj)
+          <div className="adm-kpi-card__sub">
+            <span className="adm-badge adm-badge--success">ARR ₺{(totalRevenue * 12 / 1000000).toFixed(1)}M</span>
+            <span style={{ color: "var(--adm-text-secondary)" }}>%34 Brüt Marj</span>
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="adm-card" style={{ padding: "16px 18px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--adm-text-secondary)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-              Altyapı &amp; Güvenlik SLA
-            </span>
-            <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "rgba(245,158,11,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#f59e0b" }}>
+        <div className="adm-kpi-card">
+          <div className="adm-kpi-card__top">
+            <span className="adm-kpi-card__label">Altyapı &amp; Güvenlik SLA</span>
+            <span className="adm-kpi-card__icon" style={{ background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>
               <ShieldCheck size={15} />
-            </div>
+            </span>
           </div>
-          <div style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.03em", color: "var(--adm-text)" }}>
-            %99.98 Uptime
-          </div>
-          <div style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span className="adm-badge adm-badge--success" style={{ padding: "1px 5px", fontSize: "10px" }}>0 Güvenlik Açığı</span>
-            <span>mTLS v2 Ağ Geçidi</span>
+          <div className="adm-kpi-card__val">%99.98 Uptime</div>
+          <div className="adm-kpi-card__sub">
+            <span className="adm-badge adm-badge--warning">mTLS v2 Aktif</span>
+            <span style={{ color: "var(--adm-text-secondary)" }}>0 Güvenlik Açığı</span>
           </div>
         </div>
       </div>
@@ -1119,57 +1102,39 @@ export default function AdminProductsPage() {
       <div
         className="adm-card"
         style={{
-          padding: "12px 16px",
+          padding: "10px 14px",
           marginBottom: "16px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: "10px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "1 1 300px" }}>
-          <div style={{ position: "relative", width: "100%", maxWidth: "340px" }}>
-            <Search
-              size={14}
-              style={{
-                position: "absolute",
-                left: "11px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "var(--adm-text-secondary)",
-              }}
-            />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: "1 1 320px", flexWrap: "wrap" }}>
+          {/* Search Box */}
+          <div className="adm-search" style={{ width: "260px" }}>
+            <Search size={13} className="adm-search__icon" />
             <input
               type="text"
-              placeholder="Ürün adı, modül, kod veya teknoloji ara..."
+              placeholder="Ürün adı, modül, kod ara..."
+              className="adm-search__input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="adm-input"
-              style={{ paddingLeft: "32px", fontSize: "13px", height: "34px", width: "100%" }}
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                style={{
-                  position: "absolute",
-                  right: "8px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--adm-text-secondary)",
-                  cursor: "pointer",
-                }}
+                style={{ background: "none", border: "none", color: "var(--adm-text-secondary)", cursor: "pointer", padding: "4px" }}
               >
-                <X size={14} />
+                <X size={12} />
               </button>
             )}
           </div>
 
-          {/* Category Filter Pills */}
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", overflowX: "auto" }}>
+          {/* Segmented Category Buttons */}
+          <div className="adm-seg">
             {[
               { id: "all", label: "Tümü" },
               { id: "erp", label: "ERP & Finans" },
@@ -1180,20 +1145,8 @@ export default function AdminProductsPage() {
               <button
                 key={cat.id}
                 type="button"
+                className={`adm-seg__btn ${categoryFilter === cat.id ? "adm-seg__btn--active" : ""}`}
                 onClick={() => setCategoryFilter(cat.id as ProductCategory)}
-                style={{
-                  padding: "5px 11px",
-                  borderRadius: "6px",
-                  fontSize: "12px",
-                  fontWeight: categoryFilter === cat.id ? 600 : 500,
-                  border: "1px solid",
-                  borderColor: categoryFilter === cat.id ? "var(--adm-primary)" : "var(--adm-border)",
-                  background: categoryFilter === cat.id ? "var(--adm-primary-soft)" : "transparent",
-                  color: categoryFilter === cat.id ? "var(--adm-primary)" : "var(--adm-text-secondary)",
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.15s ease",
-                }}
               >
                 {cat.label}
               </button>
@@ -1202,58 +1155,27 @@ export default function AdminProductsPage() {
         </div>
 
         {/* View Toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "var(--adm-bg)",
-              border: "1px solid var(--adm-border)",
-              borderRadius: "7px",
-              padding: "2px",
-            }}
+        <div className="adm-seg">
+          <button
+            type="button"
+            className={`adm-seg__btn ${viewMode === "grid" ? "adm-seg__btn--active" : ""}`}
+            onClick={() => setViewMode("grid")}
+            title="Bento Kart Görünümü"
+            style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "0 10px" }}
           >
-            <button
-              type="button"
-              onClick={() => setViewMode("grid")}
-              title="Kart Görünümü"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "28px",
-                height: "28px",
-                borderRadius: "5px",
-                border: "none",
-                background: viewMode === "grid" ? "#ffffff" : "transparent",
-                color: viewMode === "grid" ? "var(--adm-primary)" : "var(--adm-text-secondary)",
-                boxShadow: viewMode === "grid" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                cursor: "pointer",
-              }}
-            >
-              <Grid3X3 size={15} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("table")}
-              title="Detaylı Tablo Görünümü"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "28px",
-                height: "28px",
-                borderRadius: "5px",
-                border: "none",
-                background: viewMode === "table" ? "#ffffff" : "transparent",
-                color: viewMode === "table" ? "var(--adm-primary)" : "var(--adm-text-secondary)",
-                boxShadow: viewMode === "table" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                cursor: "pointer",
-              }}
-            >
-              <List size={15} />
-            </button>
-          </div>
+            <Grid3X3 size={13} />
+            <span>Kartlar</span>
+          </button>
+          <button
+            type="button"
+            className={`adm-seg__btn ${viewMode === "table" ? "adm-seg__btn--active" : ""}`}
+            onClick={() => setViewMode("table")}
+            title="Tablo Görünümü"
+            style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "0 10px" }}
+          >
+            <List size={13} />
+            <span>Tablo</span>
+          </button>
         </div>
       </div>
 
@@ -1264,9 +1186,9 @@ export default function AdminProductsPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
-            gap: "16px",
-            marginBottom: "24px",
+            gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
+            gap: "14px",
+            marginBottom: "20px",
           }}
         >
           {filteredProducts.map((prod, idx) => {
@@ -1281,7 +1203,7 @@ export default function AdminProductsPage() {
                   display: "flex",
                   flexDirection: "column",
                   border: isExpanded ? `1.5px solid ${prod.themeColor}` : "1px solid var(--adm-border)",
-                  boxShadow: isExpanded ? `0 8px 24px -6px ${prod.themeColor}33` : "var(--adm-card-shadow)",
+                  boxShadow: isExpanded ? `0 8px 24px -6px ${prod.themeColor}33` : "var(--adm-shadow-xs)",
                   transition: "border 0.2s ease, box-shadow 0.2s ease",
                   animationDelay: `${idx * 0.05}s`,
                 }}
@@ -1289,54 +1211,52 @@ export default function AdminProductsPage() {
                 {/* Header Banner */}
                 <div
                   style={{
-                    padding: "18px 20px 14px",
+                    padding: "16px 18px 12px",
                     borderBottom: "1px solid var(--adm-border)",
                     background: `linear-gradient(180deg, ${prod.themeBg} 0%, rgba(255,255,255,0) 100%)`,
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px", marginBottom: "8px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <div
                         style={{
-                          width: "38px",
-                          height: "38px",
-                          borderRadius: "10px",
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "9px",
                           background: prod.themeColor,
                           color: "#ffffff",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           boxShadow: `0 4px 12px ${prod.themeColor}40`,
+                          flexShrink: 0,
                         }}
                       >
-                        {prod.category === "erp" && <Layers size={20} />}
-                        {prod.category === "crm" && <Users size={20} />}
-                        {prod.category === "pos" && <CreditCard size={20} />}
-                        {prod.category === "ai" && <Sparkles size={20} />}
+                        {prod.category === "erp" && <Layers size={18} />}
+                        {prod.category === "crm" && <Users size={18} />}
+                        {prod.category === "pos" && <CreditCard size={18} />}
+                        {prod.category === "ai" && <Sparkles size={18} />}
                       </div>
                       <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          <h3 style={{ fontSize: "16px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--adm-text)" }}>
-                            {prod.name}
-                          </h3>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                        <h3 style={{ fontSize: "15px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--adm-text)" }}>
+                          {prod.name}
+                        </h3>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px", flexWrap: "wrap" }}>
                           <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--adm-text-secondary)" }}>
                             {prod.code}
                           </span>
-                          <span style={{ fontSize: "11px", color: "var(--adm-border)" }}>•</span>
-                          <span className={`adm-badge adm-badge--${prod.badgeType}`} style={{ padding: "0.5px 6px", fontSize: "10.5px" }}>
+                          <span className={`adm-badge adm-badge--${prod.badgeType === "amber" ? "warning" : prod.badgeType === "green" ? "success" : prod.badgeType}`}>
                             {prod.version}
                           </span>
-                          <span className="adm-badge adm-badge--success" style={{ padding: "0.5px 6px", fontSize: "10px" }}>
+                          <span className="adm-badge adm-badge--success">
                             {prod.statusLabel}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#16a34a" }}>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#16a34a" }}>
                         {prod.monthlyRevenueFormatted}
                         <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--adm-text-secondary)" }}>/Ay</span>
                       </div>
@@ -1346,7 +1266,7 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
 
-                  <p style={{ fontSize: "12.5px", color: "var(--adm-text-secondary)", lineHeight: 1.45, marginTop: "6px" }}>
+                  <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", lineHeight: 1.45, marginTop: "4px" }}>
                     {prod.tagline}
                   </p>
                 </div>
@@ -1354,50 +1274,51 @@ export default function AdminProductsPage() {
                 {/* Key Metrics Row */}
                 <div
                   style={{
-                    padding: "10px 20px",
+                    padding: "8px 18px",
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "8px",
+                    gap: "6px",
                     borderBottom: "1px solid var(--adm-border)",
                     background: "rgba(0,0,0,0.015)",
-                    fontSize: "11.5px",
+                    fontSize: "11px",
                   }}
                 >
                   <div>
-                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10.5px" }}>BAŞLANGIÇ</div>
+                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10px", textTransform: "uppercase" }}>BAŞLANGIÇ</div>
                     <div style={{ fontWeight: 600, color: "var(--adm-text)" }}>{prod.basePriceFormatted}</div>
                   </div>
                   <div>
-                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10.5px" }}>UPTIME &amp; SLA</div>
+                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10px", textTransform: "uppercase" }}>UPTIME &amp; SLA</div>
                     <div style={{ fontWeight: 600, color: "#16a34a", display: "flex", alignItems: "center", gap: "3px" }}>
-                      <Activity size={12} /> {prod.uptimePercentage} ({prod.avgLatency})
+                      <Activity size={11} /> {prod.uptimePercentage} ({prod.avgLatency})
                     </div>
                   </div>
                   <div>
-                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10.5px" }}>AKTİF MODÜLLER</div>
-                    <div style={{ fontWeight: 600, color: "var(--adm-text)" }}>{prod.modules.length} Paket Bileşeni</div>
+                    <div style={{ color: "var(--adm-text-secondary)", fontSize: "10px", textTransform: "uppercase" }}>MODÜL SAYISI</div>
+                    <div style={{ fontWeight: 600, color: "var(--adm-text)" }}>{prod.modules.length} Bileşen</div>
                   </div>
                 </div>
 
                 {/* Modules Snippet Chips */}
-                <div style={{ padding: "12px 20px", flex: 1 }}>
-                  <div style={{ fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-                    Öne Çıkan Modüller
+                <div style={{ padding: "12px 18px", flex: 1 }}>
+                  <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+                    Dahili Modüller
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
                     {prod.modules.slice(0, 5).map((m) => (
                       <span
                         key={m.id}
                         style={{
                           fontSize: "11px",
-                          padding: "3px 8px",
+                          padding: "2.5px 7px",
                           borderRadius: "5px",
-                          background: "var(--adm-bg)",
+                          background: "var(--adm-surface)",
                           border: "1px solid var(--adm-border)",
                           color: "var(--adm-text)",
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "4px",
+                          whiteSpace: "nowrap",
                         }}
                       >
                         <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: m.category === "compliance" ? "#16a34a" : m.category === "ai" ? "#f59e0b" : prod.themeColor }} />
@@ -1408,11 +1329,12 @@ export default function AdminProductsPage() {
                       <span
                         style={{
                           fontSize: "11px",
-                          padding: "3px 7px",
+                          padding: "2.5px 6px",
                           borderRadius: "5px",
                           background: "transparent",
                           color: "var(--adm-primary)",
                           fontWeight: 600,
+                          whiteSpace: "nowrap",
                         }}
                       >
                         +{prod.modules.length - 5} modül daha
@@ -1421,10 +1343,10 @@ export default function AdminProductsPage() {
                   </div>
 
                   {/* Deployment Chips */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "10px", flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "10px", flexWrap: "wrap" }}>
                     <span style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>Dağıtım:</span>
                     {prod.deploymentTypes.map((d) => (
-                      <span key={d} className="adm-badge adm-badge--neutral" style={{ fontSize: "10px", padding: "1px 6px" }}>
+                      <span key={d} className="adm-badge adm-badge--neutral" style={{ fontSize: "10px", padding: "1px 5px" }}>
                         {d}
                       </span>
                     ))}
@@ -1434,37 +1356,38 @@ export default function AdminProductsPage() {
                 {/* Action Footer */}
                 <div
                   style={{
-                    padding: "10px 16px",
+                    padding: "8px 14px",
                     borderTop: "1px solid var(--adm-border)",
                     background: "rgba(0,0,0,0.01)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    gap: "8px",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <button
                       type="button"
-                      className="adm-btn adm-btn--secondary"
+                      className="adm-topbar__btn"
                       onClick={() => setShowDemoModal(prod)}
-                      style={{ height: "28px", padding: "0 10px", fontSize: "11.5px", display: "flex", alignItems: "center", gap: "4px" }}
+                      style={{ height: "28px", padding: "0 10px", fontSize: "11.5px", display: "inline-flex", alignItems: "center", gap: "4px" }}
                       title="Anlık demo sandbox ortamı başlat"
                     >
-                      <Play size={12} color="#0071e3" />
+                      <Play size={11} color="#0071e3" />
                       <span>Demo Başlat</span>
                     </button>
 
                     <button
                       type="button"
-                      className="adm-btn adm-btn--secondary"
+                      className="adm-topbar__btn"
                       onClick={() => {
                         setShowReleaseModal(prod);
                         setReleaseVersion(prod.version.replace(/(\d+)$/, (n) => String(Number(n) + 1)));
                       }}
-                      style={{ height: "28px", padding: "0 10px", fontSize: "11.5px", display: "flex", alignItems: "center", gap: "4px" }}
+                      style={{ height: "28px", padding: "0 10px", fontSize: "11.5px", display: "inline-flex", alignItems: "center", gap: "4px" }}
                       title="Yeni patch veya sürüm yayınla"
                     >
-                      <GitBranch size={12} />
+                      <GitBranch size={11} />
                       <span>Sürüm Dağıt</span>
                     </button>
                   </div>
@@ -1472,20 +1395,11 @@ export default function AdminProductsPage() {
                   <button
                     type="button"
                     onClick={() => setExpandedProductId(isExpanded ? null : prod.id)}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      color: isExpanded ? prod.themeColor : "var(--adm-primary)",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
+                    className={`adm-topbar__btn ${isExpanded ? "adm-topbar__btn--primary" : ""}`}
+                    style={{ height: "28px", padding: "0 12px", fontSize: "11.5px", display: "inline-flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap" }}
                   >
                     <span>{isExpanded ? "Detayları Kapat" : "360° İncele"}</span>
-                    {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                   </button>
                 </div>
               </div>
@@ -1496,7 +1410,7 @@ export default function AdminProductsPage() {
         /* ------------------------------------------------------------------ */
         /*  VIEW MODE 2: COMPACT DATA TABLE                                   */
         /* ------------------------------------------------------------------ */
-        <div className="adm-card" style={{ padding: "0", overflow: "hidden", marginBottom: "24px" }}>
+        <div className="adm-card" style={{ padding: "0", overflow: "hidden", marginBottom: "20px" }}>
           <div className="adm-table-wrap">
             <table className="adm-table">
               <thead>
@@ -1526,9 +1440,9 @@ export default function AdminProductsPage() {
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <div
                               style={{
-                                width: "30px",
-                                height: "30px",
-                                borderRadius: "8px",
+                                width: "28px",
+                                height: "28px",
+                                borderRadius: "7px",
                                 background: prod.themeColor,
                                 color: "#ffffff",
                                 display: "flex",
@@ -1537,10 +1451,10 @@ export default function AdminProductsPage() {
                                 flexShrink: 0,
                               }}
                             >
-                              {prod.category === "erp" && <Layers size={16} />}
-                              {prod.category === "crm" && <Users size={16} />}
-                              {prod.category === "pos" && <CreditCard size={16} />}
-                              {prod.category === "ai" && <Sparkles size={16} />}
+                              {prod.category === "erp" && <Layers size={15} />}
+                              {prod.category === "crm" && <Users size={15} />}
+                              {prod.category === "pos" && <CreditCard size={15} />}
+                              {prod.category === "ai" && <Sparkles size={15} />}
                             </div>
                             <div>
                               <div style={{ fontWeight: 600, color: "var(--adm-text)" }}>{prod.name}</div>
@@ -1555,7 +1469,7 @@ export default function AdminProductsPage() {
                         </td>
                         <td>
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                            <span className={`adm-badge adm-badge--${prod.badgeType}`} style={{ fontSize: "10px" }}>
+                            <span className={`adm-badge adm-badge--${prod.badgeType === "amber" ? "warning" : prod.badgeType === "green" ? "success" : prod.badgeType}`} style={{ fontSize: "10px" }}>
                               {prod.version}
                             </span>
                             <span className="adm-badge adm-badge--success" style={{ fontSize: "9.5px" }}>
@@ -1564,7 +1478,7 @@ export default function AdminProductsPage() {
                           </div>
                         </td>
                         <td>
-                          <div style={{ fontWeight: 600, fontSize: "12.5px" }}>
+                          <div style={{ fontWeight: 600, fontSize: "12px" }}>
                             {prod.activeTenantsCount} Müşteri
                           </div>
                           <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)" }}>
@@ -1572,7 +1486,7 @@ export default function AdminProductsPage() {
                           </div>
                         </td>
                         <td>
-                          <div style={{ fontWeight: 700, color: "#16a34a", fontSize: "13px" }}>
+                          <div style={{ fontWeight: 700, color: "#16a34a", fontSize: "12.5px" }}>
                             {prod.monthlyRevenueFormatted}
                           </div>
                           <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)" }}>
@@ -1591,7 +1505,7 @@ export default function AdminProductsPage() {
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "6px" }}>
                             <button
                               type="button"
-                              className="adm-btn adm-btn--secondary"
+                              className="adm-topbar__btn"
                               onClick={() => setShowDemoModal(prod)}
                               style={{ height: "26px", padding: "0 8px", fontSize: "11px" }}
                             >
@@ -1599,7 +1513,7 @@ export default function AdminProductsPage() {
                             </button>
                             <button
                               type="button"
-                              className="adm-btn adm-btn--secondary"
+                              className="adm-topbar__btn"
                               onClick={() => {
                                 setShowReleaseModal(prod);
                                 setReleaseVersion(prod.version.replace(/(\d+)$/, (n) => String(Number(n) + 1)));
@@ -1611,15 +1525,10 @@ export default function AdminProductsPage() {
                             <button
                               type="button"
                               onClick={() => setExpandedProductId(isExpanded ? null : prod.id)}
-                              style={{
-                                background: "transparent",
-                                border: "none",
-                                color: "var(--adm-text-secondary)",
-                                padding: "4px",
-                                cursor: "pointer",
-                              }}
+                              className={`adm-topbar__btn ${isExpanded ? "adm-topbar__btn--primary" : ""}`}
+                              style={{ height: "26px", padding: "0 8px", fontSize: "11px" }}
                             >
-                              {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                              {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                             </button>
                           </div>
                         </td>
@@ -1644,10 +1553,10 @@ export default function AdminProductsPage() {
           <div
             className="adm-card adm-row-cascade"
             style={{
-              padding: "24px",
-              marginBottom: "32px",
+              padding: "20px",
+              marginBottom: "28px",
               border: `1.5px solid ${prod.themeColor}`,
-              boxShadow: `0 12px 36px -8px ${prod.themeColor}26`,
+              boxShadow: `0 8px 28px -6px ${prod.themeColor}26`,
             }}
           >
             {/* Drawer Header */}
@@ -1656,18 +1565,18 @@ export default function AdminProductsPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                paddingBottom: "16px",
+                paddingBottom: "14px",
                 borderBottom: "1px solid var(--adm-border)",
-                marginBottom: "20px",
+                marginBottom: "16px",
                 flexWrap: "wrap",
-                gap: "12px",
+                gap: "10px",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <div
                   style={{
-                    width: "42px",
-                    height: "42px",
+                    width: "40px",
+                    height: "40px",
                     borderRadius: "10px",
                     background: prod.themeColor,
                     color: "#ffffff",
@@ -1675,21 +1584,24 @@ export default function AdminProductsPage() {
                     alignItems: "center",
                     justifyContent: "center",
                     boxShadow: `0 4px 14px ${prod.themeColor}40`,
+                    flexShrink: 0,
                   }}
                 >
-                  {prod.category === "erp" && <Layers size={22} />}
-                  {prod.category === "crm" && <Users size={22} />}
-                  {prod.category === "pos" && <CreditCard size={22} />}
-                  {prod.category === "ai" && <Sparkles size={22} />}
+                  {prod.category === "erp" && <Layers size={20} />}
+                  {prod.category === "crm" && <Users size={20} />}
+                  {prod.category === "pos" && <CreditCard size={20} />}
+                  {prod.category === "ai" && <Sparkles size={20} />}
                 </div>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <h2 style={{ fontSize: "18px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--adm-text)" }}>
+                    <h2 style={{ fontSize: "17px", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--adm-text)" }}>
                       {prod.name}
                     </h2>
-                    <span className={`adm-badge adm-badge--${prod.badgeType}`}>{prod.version}</span>
+                    <span className={`adm-badge adm-badge--${prod.badgeType === "amber" ? "warning" : prod.badgeType === "green" ? "success" : prod.badgeType}`}>
+                      {prod.version}
+                    </span>
                   </div>
-                  <div style={{ fontSize: "12.5px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
+                  <div style={{ fontSize: "12px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
                     {prod.description}
                   </div>
                 </div>
@@ -1698,68 +1610,40 @@ export default function AdminProductsPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <button
                   type="button"
-                  className="adm-btn adm-btn--secondary"
+                  className="adm-topbar__btn"
                   onClick={() => setShowDemoModal(prod)}
-                  style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px" }}
                 >
-                  <Play size={13} color="#0071e3" />
+                  <Play size={12} color="#0071e3" />
                   <span>Sandbox Demo Başlat</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setExpandedProductId(null)}
-                  style={{
-                    background: "var(--adm-bg)",
-                    border: "1px solid var(--adm-border)",
-                    borderRadius: "6px",
-                    padding: "6px",
-                    color: "var(--adm-text-secondary)",
-                    cursor: "pointer",
-                  }}
+                  className="adm-topbar__btn"
+                  style={{ padding: "0 8px", height: "30px" }}
                 >
-                  <X size={16} />
+                  <X size={15} />
                 </button>
               </div>
             </div>
 
             {/* Segmented Control Tabs */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                borderBottom: "1px solid var(--adm-border)",
-                paddingBottom: "12px",
-                marginBottom: "20px",
-                overflowX: "auto",
-              }}
-            >
+            <div className="adm-seg" style={{ marginBottom: "16px", width: "fit-content" }}>
               {[
-                { id: "modules", label: `Modül Kataloğu (${prod.modules.length})`, icon: <Package size={14} /> },
-                { id: "pricing", label: `Paketler & Fiyatlandırma (${prod.pricingTiers.length})`, icon: <CreditCard size={14} /> },
-                { id: "tenants", label: `Canlı Müşteri Kümeleri (${prod.tenants.length})`, icon: <Building2 size={14} /> },
-                { id: "tech", label: "Teknoloji Stack & API", icon: <Terminal size={14} /> },
+                { id: "modules", label: `Modüller (${prod.modules.length})`, icon: <Package size={13} /> },
+                { id: "pricing", label: `Paketler & Fiyat (${prod.pricingTiers.length})`, icon: <CreditCard size={13} /> },
+                { id: "tenants", label: `Müşteri Kümeleri (${prod.tenants.length})`, icon: <Building2 size={13} /> },
+                { id: "tech", label: "Teknoloji Stack & API", icon: <Terminal size={13} /> },
               ].map((tab) => {
                 const isActive = activeDetailTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     type="button"
+                    className={`adm-seg__btn ${isActive ? "adm-seg__btn--active" : ""}`}
                     onClick={() => setActiveDetailTab(tab.id as typeof activeDetailTab)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "7px 14px",
-                      borderRadius: "7px",
-                      fontSize: "12.5px",
-                      fontWeight: isActive ? 600 : 500,
-                      border: "none",
-                      background: isActive ? prod.themeColor : "transparent",
-                      color: isActive ? "#ffffff" : "var(--adm-text-secondary)",
-                      cursor: "pointer",
-                      transition: "all 0.15s ease",
-                    }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}
                   >
                     {tab.icon}
                     <span>{tab.label}</span>
@@ -1770,46 +1654,46 @@ export default function AdminProductsPage() {
 
             {/* TAB CONTENT 1: MODULES */}
             {activeDetailTab === "modules" && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "10px" }}>
                 {prod.modules.map((mod) => (
                   <div
                     key={mod.id}
                     style={{
-                      padding: "14px 16px",
-                      borderRadius: "10px",
+                      padding: "12px 14px",
+                      borderRadius: "9px",
                       border: "1px solid var(--adm-border)",
-                      background: "var(--adm-bg)",
+                      background: "var(--adm-surface)",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
                     }}
                   >
                     <div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "5px" }}>
                         <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--adm-text-secondary)" }}>
                           {mod.code}
                         </span>
                         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                           {mod.isAddon && (
-                            <span className="adm-badge adm-badge--amber" style={{ fontSize: "9.5px", padding: "1px 5px" }}>
+                            <span className="adm-badge adm-badge--warning" style={{ fontSize: "9px", padding: "1px 5px" }}>
                               Ek Eklenti
                             </span>
                           )}
-                          <span className={`adm-badge adm-badge--${mod.status === "beta" ? "warning" : "success"}`} style={{ fontSize: "9.5px", padding: "1px 5px" }}>
+                          <span className={`adm-badge adm-badge--${mod.status === "beta" ? "warning" : "success"}`} style={{ fontSize: "9px", padding: "1px 5px" }}>
                             {mod.status === "beta" ? "Beta" : "Aktif"}
                           </span>
                         </div>
                       </div>
 
-                      <h4 style={{ fontSize: "14px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                      <h4 style={{ fontSize: "13.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "3px" }}>
                         {mod.name}
                       </h4>
-                      <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", lineHeight: 1.45 }}>
+                      <p style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", lineHeight: 1.45 }}>
                         {mod.description}
                       </p>
                     </div>
 
-                    <div style={{ marginTop: "12px", paddingTop: "8px", borderTop: "1px dashed var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "11px" }}>
+                    <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px dashed var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "11px" }}>
                       <span style={{ color: "var(--adm-text-secondary)" }}>
                         Dahil: {mod.includedInTiers.join(", ")}
                       </span>
@@ -1824,15 +1708,15 @@ export default function AdminProductsPage() {
 
             {/* TAB CONTENT 2: PRICING TIERS */}
             {activeDetailTab === "pricing" && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px" }}>
                 {prod.pricingTiers.map((tier) => (
                   <div
                     key={tier.tierId}
                     style={{
-                      padding: "20px",
-                      borderRadius: "12px",
+                      padding: "18px",
+                      borderRadius: "11px",
                       border: tier.isPopular ? `2px solid ${prod.themeColor}` : "1px solid var(--adm-border)",
-                      background: tier.isPopular ? `linear-gradient(180deg, ${prod.themeBg} 0%, rgba(255,255,255,0) 40%)` : "var(--adm-bg)",
+                      background: tier.isPopular ? `linear-gradient(180deg, ${prod.themeBg} 0%, rgba(255,255,255,0) 40%)` : "var(--adm-surface)",
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
@@ -1843,14 +1727,14 @@ export default function AdminProductsPage() {
                       <div
                         style={{
                           position: "absolute",
-                          top: "-10px",
-                          right: "16px",
+                          top: "-9px",
+                          right: "14px",
                           background: prod.themeColor,
                           color: "#ffffff",
-                          fontSize: "10px",
+                          fontSize: "9.5px",
                           fontWeight: 700,
-                          padding: "2px 8px",
-                          borderRadius: "12px",
+                          padding: "2px 7px",
+                          borderRadius: "10px",
                           textTransform: "uppercase",
                           letterSpacing: "0.04em",
                         }}
@@ -1860,30 +1744,30 @@ export default function AdminProductsPage() {
                     )}
 
                     <div>
-                      <h3 style={{ fontSize: "16px", fontWeight: 700, color: "var(--adm-text)" }}>{tier.tierName}</h3>
-                      <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", marginTop: "3px" }}>{tier.summary}</p>
+                      <h3 style={{ fontSize: "15px", fontWeight: 700, color: "var(--adm-text)" }}>{tier.tierName}</h3>
+                      <p style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>{tier.summary}</p>
 
-                      <div style={{ margin: "16px 0 12px" }}>
-                        <div style={{ fontSize: "24px", fontWeight: 800, color: "var(--adm-text)", letterSpacing: "-0.03em" }}>
+                      <div style={{ margin: "14px 0 10px" }}>
+                        <div style={{ fontSize: "22px", fontWeight: 800, color: "var(--adm-text)", letterSpacing: "-0.03em" }}>
                           {tier.monthlyPriceFormatted}
-                          <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--adm-text-secondary)" }}> / Ay</span>
+                          <span style={{ fontSize: "11.5px", fontWeight: 500, color: "var(--adm-text-secondary)" }}> / Ay</span>
                         </div>
-                        <div style={{ fontSize: "11px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
+                        <div style={{ fontSize: "10.5px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
                           {tier.annualPriceFormatted}
                         </div>
-                        <div style={{ fontSize: "11.5px", fontWeight: 600, color: prod.themeColor, marginTop: "4px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 600, color: prod.themeColor, marginTop: "4px" }}>
                           ✓ {tier.seatsText}
                         </div>
                       </div>
 
-                      <div style={{ borderTop: "1px solid var(--adm-border)", paddingTop: "12px" }}>
-                        <div style={{ fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "8px" }}>
+                      <div style={{ borderTop: "1px solid var(--adm-border)", paddingTop: "10px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "6px" }}>
                           Paket Kapsamı:
                         </div>
-                        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "6px" }}>
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "5px" }}>
                           {tier.features.map((feat, i) => (
-                            <li key={i} style={{ fontSize: "12px", color: "var(--adm-text-secondary)", display: "flex", alignItems: "flex-start", gap: "6px" }}>
-                              <CheckCircle2 size={13} color="#16a34a" style={{ flexShrink: 0, marginTop: "2px" }} />
+                            <li key={i} style={{ fontSize: "11.5px", color: "var(--adm-text-secondary)", display: "flex", alignItems: "flex-start", gap: "6px" }}>
+                              <CheckCircle2 size={12} color="#16a34a" style={{ flexShrink: 0, marginTop: "2px" }} />
                               <span>{feat}</span>
                             </li>
                           ))}
@@ -1891,12 +1775,12 @@ export default function AdminProductsPage() {
                       </div>
                     </div>
 
-                    <div style={{ marginTop: "20px" }}>
+                    <div style={{ marginTop: "16px" }}>
                       <button
                         type="button"
-                        className="adm-btn adm-btn--secondary"
+                        className="adm-topbar__btn"
                         onClick={() => showToast(`"${tier.tierName}" teklif şablonu satış motoruna yüklendi.`)}
-                        style={{ width: "100%", justifyContent: "center", fontSize: "12px" }}
+                        style={{ width: "100%", justifyContent: "center", fontSize: "11.5px" }}
                       >
                         Teklif Hazırla
                       </button>
@@ -1909,7 +1793,7 @@ export default function AdminProductsPage() {
             {/* TAB CONTENT 3: TENANTS */}
             {activeDetailTab === "tenants" && (
               <div>
-                <div style={{ fontSize: "13px", color: "var(--adm-text-secondary)", marginBottom: "12px" }}>
+                <div style={{ fontSize: "12.5px", color: "var(--adm-text-secondary)", marginBottom: "10px" }}>
                   Bu ürün mimarisinde çalışan aktif kurumsal müşteri kümeleri ve barındırma modelleri:
                 </div>
                 <div className="adm-table-wrap">
@@ -1943,25 +1827,25 @@ export default function AdminProductsPage() {
 
             {/* TAB CONTENT 4: TECH & API */}
             {activeDetailTab === "tech" && (
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "14px" }}>
                 {/* Tech Stack Details */}
-                <div style={{ padding: "16px", borderRadius: "10px", background: "var(--adm-bg)", border: "1px solid var(--adm-border)" }}>
-                  <h4 style={{ fontSize: "13.5px", fontWeight: 700, marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Server size={15} color={prod.themeColor} />
+                <div style={{ padding: "14px", borderRadius: "9px", background: "var(--adm-surface)", border: "1px solid var(--adm-border)" }}>
+                  <h4 style={{ fontSize: "13px", fontWeight: 700, marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <Server size={14} color={prod.themeColor} />
                     <span>Mimari &amp; Dağıtım Spesifikasyonları</span>
                   </h4>
-                  <div style={{ display: "grid", gap: "10px" }}>
+                  <div style={{ display: "grid", gap: "8px" }}>
                     {prod.techStack.map((item, idx) => (
-                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "6px" }}>
+                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "5px" }}>
                         <span style={{ color: "var(--adm-text-secondary)" }}>{item.label}:</span>
                         <strong style={{ color: "var(--adm-text)", fontFamily: "var(--font-mono)" }}>{item.value}</strong>
                       </div>
                     ))}
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "6px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "5px" }}>
                       <span style={{ color: "var(--adm-text-secondary)" }}>Docker İmajı:</span>
-                      <strong style={{ color: "var(--adm-text)", fontFamily: "var(--font-mono)", fontSize: "11px" }}>{prod.dockerImage}</strong>
+                      <strong style={{ color: "var(--adm-text)", fontFamily: "var(--font-mono)", fontSize: "10.5px" }}>{prod.dockerImage}</strong>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "6px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", borderBottom: "1px dashed var(--adm-border)", paddingBottom: "5px" }}>
                       <span style={{ color: "var(--adm-text-secondary)" }}>Son Commit Hash:</span>
                       <strong style={{ color: "var(--adm-text)", fontFamily: "var(--font-mono)" }}>#{prod.lastCommitHash} ({prod.releaseDate})</strong>
                     </div>
@@ -1969,7 +1853,7 @@ export default function AdminProductsPage() {
                 </div>
 
                 {/* API Example Terminal */}
-                <div style={{ padding: "16px", borderRadius: "10px", background: "#0f172a", color: "#f8fafc", fontFamily: "var(--font-mono)", fontSize: "11.5px", border: "1px solid #1e293b" }}>
+                <div style={{ padding: "14px", borderRadius: "9px", background: "#0f172a", color: "#f8fafc", fontFamily: "var(--font-mono)", fontSize: "11px", border: "1px solid #1e293b" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px", borderBottom: "1px solid #334155", paddingBottom: "6px" }}>
                     <span style={{ color: "#94a3b8" }}>// EfeOS License Verify Endpoint</span>
                     <span style={{ color: "#30d158" }}>HTTPS mTLS v2</span>
@@ -1984,7 +1868,7 @@ export default function AdminProductsPage() {
     "seats_requested": 140
   }'`}
                   </pre>
-                  <div style={{ marginTop: "12px", color: "#38bdf8", borderTop: "1px dashed #334155", paddingTop: "8px" }}>
+                  <div style={{ marginTop: "10px", color: "#38bdf8", borderTop: "1px dashed #334155", paddingTop: "6px" }}>
                     Response: 200 OK · {prod.avgLatency} (Signature Valid)
                   </div>
                 </div>
@@ -1998,21 +1882,21 @@ export default function AdminProductsPage() {
       {/*  MODAL 1: ADD NEW PRODUCT / MODULE                                   */}
       {/* -------------------------------------------------------------------- */}
       <div className={`adm-modal-overlay ${showAddModal ? "adm-modal-overlay--open" : ""}`} onClick={() => setShowAddModal(false)}>
-        <div className="adm-modal-card" style={{ maxWidth: "560px" }} onClick={(e) => e.stopPropagation()}>
-          <div style={{ padding: "18px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="adm-modal-card" style={{ maxWidth: "540px" }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Package size={18} color="#0071e3" />
-              <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>Yeni Ürün / Modül Paketi Tanımla</h3>
+              <Package size={17} color="#0071e3" />
+              <h3 style={{ fontSize: "15px", fontWeight: 700, margin: 0 }}>Yeni Ürün / Modül Paketi Tanımla</h3>
             </div>
             <button type="button" onClick={() => setShowAddModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-              <X size={18} />
+              <X size={17} />
             </button>
           </div>
 
-          <form onSubmit={handleCreateProduct} style={{ padding: "20px" }}>
-            <div style={{ display: "grid", gap: "14px" }}>
+          <form onSubmit={handleCreateProduct} style={{ padding: "18px 20px" }}>
+            <div style={{ display: "grid", gap: "12px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                   Ürün Adı *
                 </label>
                 <input
@@ -2022,34 +1906,34 @@ export default function AdminProductsPage() {
                   value={newProdName}
                   onChange={(e) => setNewProdName(e.target.value)}
                   className="adm-input"
-                  style={{ width: "100%", height: "36px" }}
+                  style={{ width: "100%", height: "34px" }}
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     Ürün Kodu *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="örn: EFE-WMS-STANDALONE"
+                    placeholder="örn: EFE-WMS-CORE"
                     value={newProdCode}
                     onChange={(e) => setNewProdCode(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", height: "36px", fontFamily: "var(--font-mono)" }}
+                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     Kategori *
                   </label>
                   <select
                     value={newProdCategory}
                     onChange={(e) => setNewProdCategory(e.target.value as typeof newProdCategory)}
                     className="adm-input"
-                    style={{ width: "100%", height: "36px" }}
+                    style={{ width: "100%", height: "34px" }}
                   >
                     <option value="erp">Kurumsal ERP &amp; Finans</option>
                     <option value="crm">CRM, Satış &amp; İletişim</option>
@@ -2059,9 +1943,9 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     İlk Sürüm
                   </label>
                   <input
@@ -2069,11 +1953,11 @@ export default function AdminProductsPage() {
                     value={newProdVersion}
                     onChange={(e) => setNewProdVersion(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", height: "36px", fontFamily: "var(--font-mono)" }}
+                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     Taban Fiyat (₺ / Ay)
                   </label>
                   <input
@@ -2081,13 +1965,13 @@ export default function AdminProductsPage() {
                     value={newProdPrice}
                     onChange={(e) => setNewProdPrice(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", height: "36px" }}
+                    style={{ width: "100%", height: "34px" }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                   Kısa Slogan &amp; Açıklama
                 </label>
                 <textarea
@@ -2096,16 +1980,16 @@ export default function AdminProductsPage() {
                   value={newProdTagline}
                   onChange={(e) => setNewProdTagline(e.target.value)}
                   className="adm-input"
-                  style={{ width: "100%", padding: "8px 12px", fontSize: "13px" }}
+                  style={{ width: "100%", padding: "7px 10px", fontSize: "12px" }}
                 />
               </div>
             </div>
 
-            <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-              <button type="button" className="adm-btn adm-btn--secondary" onClick={() => setShowAddModal(false)}>
+            <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+              <button type="button" className="adm-topbar__btn" onClick={() => setShowAddModal(false)}>
                 İptal
               </button>
-              <button type="submit" className="adm-btn adm-btn--primary">
+              <button type="submit" className="adm-topbar__btn adm-topbar__btn--primary">
                 Ürünü Kaydet &amp; Kataloğa Ekle
               </button>
             </div>
@@ -2117,20 +2001,20 @@ export default function AdminProductsPage() {
       {/*  MODAL 2: PRICING & TIER MATRIX COMPARISON                          */}
       {/* -------------------------------------------------------------------- */}
       <div className={`adm-modal-overlay ${showMatrixModal ? "adm-modal-overlay--open" : ""}`} onClick={() => setShowMatrixModal(false)}>
-        <div className="adm-modal-card" style={{ maxWidth: "880px" }} onClick={(e) => e.stopPropagation()}>
-          <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="adm-modal-card" style={{ maxWidth: "840px" }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <h3 style={{ fontSize: "17px", fontWeight: 700, margin: 0 }}>EfeOS Çapraz Ürün &amp; Paket Fiyatlandırma Matrisi</h3>
+              <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>EfeOS Çapraz Ürün &amp; Paket Fiyatlandırma Matrisi</h3>
               <p style={{ fontSize: "12px", color: "var(--adm-text-secondary)", marginTop: "2px" }}>
                 Kurumsal müşterilere verilecek tekliflerde kullanılacak güncel taban liste fiyatları.
               </p>
             </div>
             <button type="button" onClick={() => setShowMatrixModal(false)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-              <X size={18} />
+              <X size={17} />
             </button>
           </div>
 
-          <div style={{ padding: "20px", maxHeight: "65vh", overflowY: "auto" }}>
+          <div style={{ padding: "18px", maxHeight: "65vh", overflowY: "auto" }}>
             <div className="adm-table-wrap">
               <table className="adm-table">
                 <thead>
@@ -2177,8 +2061,8 @@ export default function AdminProductsPage() {
             </div>
           </div>
 
-          <div style={{ padding: "14px 24px", borderTop: "1px solid var(--adm-border)", display: "flex", justifyContent: "flex-end" }}>
-            <button type="button" className="adm-btn adm-btn--secondary" onClick={() => setShowMatrixModal(false)}>
+          <div style={{ padding: "12px 20px", borderTop: "1px solid var(--adm-border)", display: "flex", justifyContent: "flex-end" }}>
+            <button type="button" className="adm-topbar__btn" onClick={() => setShowMatrixModal(false)}>
               Kapat
             </button>
           </div>
@@ -2190,27 +2074,27 @@ export default function AdminProductsPage() {
       {/* -------------------------------------------------------------------- */}
       {showReleaseModal && (
         <div className="adm-modal-overlay adm-modal-overlay--open" onClick={() => !isDeploying && setShowReleaseModal(null)}>
-          <div className="adm-modal-card" style={{ maxWidth: "500px" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ padding: "18px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="adm-modal-card" style={{ maxWidth: "480px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <GitBranch size={17} color="#8b5cf6" />
-                <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>Yeni Sürüm (Release) Dağıt</h3>
+                <GitBranch size={16} color="#8b5cf6" />
+                <h3 style={{ fontSize: "15px", fontWeight: 700, margin: 0 }}>Yeni Sürüm (Release) Dağıt</h3>
               </div>
               {!isDeploying && (
                 <button type="button" onClick={() => setShowReleaseModal(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-                  <X size={18} />
+                  <X size={17} />
                 </button>
               )}
             </div>
 
-            <div style={{ padding: "20px" }}>
-              <div style={{ fontSize: "13px", color: "var(--adm-text-secondary)", marginBottom: "14px" }}>
+            <div style={{ padding: "18px 20px" }}>
+              <div style={{ fontSize: "12.5px", color: "var(--adm-text-secondary)", marginBottom: "12px" }}>
                 <strong>{showReleaseModal.name}</strong> için tüm tenant cluster&apos;larına canlı sıfır kesintili (zero-downtime rolling update) sürüm dağıtımı yapılacak.
               </div>
 
-              <div style={{ display: "grid", gap: "12px" }}>
+              <div style={{ display: "grid", gap: "10px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     Hedef Sürüm Etiketi (SemVer)
                   </label>
                   <input
@@ -2219,12 +2103,12 @@ export default function AdminProductsPage() {
                     value={releaseVersion}
                     onChange={(e) => setReleaseVersion(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", height: "36px", fontFamily: "var(--font-mono)" }}
+                    style={{ width: "100%", height: "34px", fontFamily: "var(--font-mono)" }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11.5px", fontWeight: 600, color: "var(--adm-text)", marginBottom: "4px" }}>
                     Changelog / Değişiklik Notları
                   </label>
                   <textarea
@@ -2233,30 +2117,30 @@ export default function AdminProductsPage() {
                     value={releaseNotes}
                     onChange={(e) => setReleaseNotes(e.target.value)}
                     className="adm-input"
-                    style={{ width: "100%", padding: "8px 12px", fontSize: "12.5px" }}
+                    style={{ width: "100%", padding: "7px 10px", fontSize: "12px" }}
                   />
                 </div>
               </div>
 
-              <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                <button type="button" disabled={isDeploying} className="adm-btn adm-btn--secondary" onClick={() => setShowReleaseModal(null)}>
+              <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                <button type="button" disabled={isDeploying} className="adm-topbar__btn" onClick={() => setShowReleaseModal(null)}>
                   İptal
                 </button>
                 <button
                   type="button"
                   disabled={isDeploying || !releaseVersion}
-                  className="adm-btn adm-btn--primary"
+                  className="adm-topbar__btn adm-topbar__btn--primary"
                   onClick={() => handleDeployRelease(showReleaseModal)}
-                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                 >
                   {isDeploying ? (
                     <>
-                      <RefreshCw size={14} className="adm-spin" />
+                      <RefreshCw size={13} className="adm-spin" />
                       <span>Cluster&apos;a Dağıtılıyor...</span>
                     </>
                   ) : (
                     <>
-                      <Zap size={14} />
+                      <Zap size={13} />
                       <span>Rolling Update Başlat</span>
                     </>
                   )}
@@ -2272,23 +2156,23 @@ export default function AdminProductsPage() {
       {/* -------------------------------------------------------------------- */}
       {showDemoModal && (
         <div className="adm-modal-overlay adm-modal-overlay--open" onClick={() => setShowDemoModal(null)}>
-          <div className="adm-modal-card" style={{ maxWidth: "520px" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ padding: "18px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="adm-modal-card" style={{ maxWidth: "500px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--adm-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Play size={17} color="#0071e3" />
-                <h3 style={{ fontSize: "16px", fontWeight: 700, margin: 0 }}>Canlı Demo / Sandbox Ortamı</h3>
+                <Play size={16} color="#0071e3" />
+                <h3 style={{ fontSize: "15px", fontWeight: 700, margin: 0 }}>Canlı Demo / Sandbox Ortamı</h3>
               </div>
               <button type="button" onClick={() => setShowDemoModal(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--adm-text-secondary)" }}>
-                <X size={18} />
+                <X size={17} />
               </button>
             </div>
 
-            <div style={{ padding: "20px" }}>
-              <div style={{ fontSize: "13px", color: "var(--adm-text-secondary)", marginBottom: "14px" }}>
+            <div style={{ padding: "18px 20px" }}>
+              <div style={{ fontSize: "12.5px", color: "var(--adm-text-secondary)", marginBottom: "12px" }}>
                 <strong>{showDemoModal.name}</strong> için izole bir test tenant&apos;ı ve geçici yönetici kimlik bilgisi hazırlandı:
               </div>
 
-              <div style={{ padding: "14px", borderRadius: "8px", background: "var(--adm-bg)", border: "1px solid var(--adm-border)", display: "grid", gap: "8px", fontSize: "12.5px" }}>
+              <div style={{ padding: "12px 14px", borderRadius: "8px", background: "var(--adm-bg)", border: "1px solid var(--adm-border)", display: "grid", gap: "7px", fontSize: "12px" }}>
                 <div>
                   <span style={{ color: "var(--adm-text-secondary)" }}>Sandbox URL:</span>
                   <div style={{ fontWeight: 600, color: "#0071e3", fontFamily: "var(--font-mono)", marginTop: "2px" }}>
@@ -2309,10 +2193,10 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
                 <button
                   type="button"
-                  className="adm-btn adm-btn--secondary"
+                  className="adm-topbar__btn"
                   onClick={() => {
                     navigator.clipboard?.writeText(
                       `https://demo.efesoft.com.tr/${showDemoModal.id}-sandbox-8491\nKullanıcı: demo.admin@efesoft.com.tr\nŞifre: EfeOS_Demo_2026!`
@@ -2320,20 +2204,20 @@ export default function AdminProductsPage() {
                     setDemoUrlCopied(true);
                     setTimeout(() => setDemoUrlCopied(false), 2000);
                   }}
-                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                 >
-                  {demoUrlCopied ? <Check size={14} color="#16a34a" /> : <Copy size={14} />}
+                  {demoUrlCopied ? <Check size={13} color="#16a34a" /> : <Copy size={13} />}
                   <span>{demoUrlCopied ? "Kopyalandı!" : "Bilgileri Kopyala"}</span>
                 </button>
                 <button
                   type="button"
-                  className="adm-btn adm-btn--primary"
+                  className="adm-topbar__btn adm-topbar__btn--primary"
                   onClick={() => {
                     window.open(`https://license.efesoft.com.tr:8443/demo?product=${showDemoModal.code}`, "_blank");
                   }}
-                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                 >
-                  <ExternalLink size={14} />
+                  <ExternalLink size={13} />
                   <span>Demoya Git</span>
                 </button>
               </div>

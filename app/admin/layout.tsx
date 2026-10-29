@@ -555,6 +555,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </>
                 );
 
+                const isActive = item.href
+                  ? item.href === "/admin"
+                    ? pathname === "/admin"
+                    : pathname ? pathname.startsWith(item.href) : false
+                  : activeTab === item.id;
+
                 return item.href ? (
                   <Link
                     key={item.id}
@@ -568,7 +574,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       setSidebarOpen(false);
                       setRailTooltip(null);
                     }}
-                    className={`adm-nav-item ${item.active ? "adm-nav-item--active" : ""}`}
+                    className={`adm-nav-item ${isActive ? "adm-nav-item--active" : ""}`}
                   >
                     {inner}
                   </Link>
@@ -584,7 +590,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       setSidebarOpen(false);
                       setRailTooltip(null);
                     }}
-                    className={`adm-nav-item ${item.active ? "adm-nav-item--active" : ""}`}
+                    className={`adm-nav-item ${isActive ? "adm-nav-item--active" : ""}`}
                   >
                     {inner}
                   </div>
